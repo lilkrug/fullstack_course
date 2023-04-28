@@ -14,7 +14,22 @@ router.get("/", validateToken, async (req, res) => {
   //   sharp(image).resize({ width: 100 }).toBuffer()
   // })
   // const resizedImages = await sharp(image).resize({ width: 100 }).toBuffer();
+  const image = fs.readFileSync('./images/smile.jpg')
+  const resizedImage = await sharp(image).resize({ width: 100 }).toBuffer();
 
+  const base64Img = Buffer.from(resizedImage).toString('base64')
+  res.json({ listOfTeams: listOfTeams, image: base64Img});
+});
+
+router.get("/", validateToken, async (req, res) => {
+  const listOfTeams = await Teams.findAll();
+  // const imagePaths = listOfTeams.map(team => team.imagePath);
+  // const imagePaths1 = listOfTeams.forEach(obj=>{
+  //   const imagePath = obj.imagePath
+  //   const image = fs.readFileSync(imagePath)
+  //   sharp(image).resize({ width: 100 }).toBuffer()
+  // })
+  // const resizedImages = await sharp(image).resize({ width: 100 }).toBuffer();
   const image = fs.readFileSync('./images/smile.jpg')
   const resizedImage = await sharp(image).resize({ width: 100 }).toBuffer();
 
@@ -48,7 +63,10 @@ router.post("/", validateToken, async (req, res) => {
     })
     if(foundedTeam==null){
       await Teams.create(team);
-      res.json(team);
+      res.json({
+        name: team.name,
+        league: team.league
+      });
     }
     else{
       res.json("Team is already created");

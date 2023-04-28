@@ -8,9 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       league: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      imagePath: {
-        type: DataTypes.STRING
       }
     });
 
@@ -18,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         Teams.hasMany(models.Players, {
           onDelete: "cascade",
         });
+    };
+    Teams.associate = (models) => {
+      Teams.hasOne(models.Images, {
+        onDelete: "cascade",
+      });
     };
 
     return Teams;
