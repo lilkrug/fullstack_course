@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
+const Teams = require("../models").Teams;
 const { validateToken } = require("../middlewares/AuthMiddleware");
-const Teams = require("../models/Teams");
 
 router.get("/", validateToken, async (req, res) => {
-  const listOfTeams = await Teams.findAll({ include: [Likes] });
+  const listOfTeams = await Teams.findAll();
   res.json({ listOfTeams: listOfTeams});
 });
 
@@ -25,6 +24,8 @@ router.get("/byplayerId/:id", async (req, res) => {
 
 router.post("/", validateToken, async (req, res) => {
   const team = req.body;
+  console.log(req.body)
+  console.log('fsadfasdfsad')
   await Teams.create(team);
   res.json(team);
 });

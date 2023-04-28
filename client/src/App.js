@@ -12,6 +12,7 @@ import ChangePassword from "./pages/ChangePassword";
 import { AuthContext } from "./helpers/AuthContext";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Teams from "./pages/Teams";
 
 function App() {
   const [authState, setAuthState] = useState({
@@ -74,6 +75,7 @@ function App() {
           </div>
           <Switch>
             <Route path="/" exact component={Home} />
+            <Route path="/teams" exact component={Teams} />
             <Route path="/createpost" exact component={CreatePost} />
             <Route path="/post/:id" exact component={Post} />
             <Route path="/registration" exact component={Registration} />
