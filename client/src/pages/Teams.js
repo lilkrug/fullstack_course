@@ -8,6 +8,7 @@ import { AuthContext } from "../helpers/AuthContext";
 
 function Teams() {
   const [listOfTeams, setListOfTeams] = useState([]);
+  const [image, setImage] = useState(null);
   const { authState } = useContext(AuthContext);
   let history = useHistory();
 
@@ -18,32 +19,44 @@ function Teams() {
     } else {
       axios
         .get("http://localhost:3001/teams", {
-          headers: { accessToken: localStorage.getItem("accessToken") },
+          headers: { accessToken: localStorage.getItem("accessToken") }
         })
         .then((response) => {
           setListOfTeams(response.data.listOfTeams);
+          setImage(response.data.image);
         });
+      // axios
+      //   .get("http://localhost:3001/teams", {
+      //     headers: { accessToken: localStorage.getItem("accessToken") },
+      //     responseType: 'arraybuffer'
+      //   })
+      //   .then((response) => {
+      //     //setListOfTeams(response.data.listOfTeams);
+      //     setListOfTeams(null);
+      //     const blob = new Blob([response.data],{type:'image/jpeg'});
+      //     setImage(URL.createObjectURL(blob));
+      //   });
     }
   }, []);
 
   return (
-    <div>
-      {listOfTeams.map((value, key) => {
-        return (
-          <div key={key} className="post">
-            <div className="title"> {value.title} </div>
-            <div
-              className="body"
-              onClick={() => {
-                history.push(`/team/${value.id}`);
-              }}
-            >
-              {value.postText}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+   <table>
+    <tbody>
+      {listOfTeams.map(item => (
+        <tr key={item.id} onClick={() => {
+          history.push(`/team/${item.id}`);
+        }}>
+          <td>
+            <img src={`data:image/jpeg;base64,${image}`} alt="Image"></img>
+            <h1>
+                {item.name}
+            </h1>
+          </td>
+          <td>{item.league}</td>
+        </tr>
+      ))}
+    </tbody>
+   </table>
   );
 }
 

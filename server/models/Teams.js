@@ -3,10 +3,14 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       league: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      imagePath: {
+        type: DataTypes.STRING
       }
     });
 

@@ -4,6 +4,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      fieldNumber:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      fieldPosition:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
       club: {
         type: DataTypes.STRING,
         allowNull: false,
