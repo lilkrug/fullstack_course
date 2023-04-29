@@ -9,17 +9,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       }
+    },{
+      timestamps: false
     });
 
     Teams.associate = (models) => {
         Teams.hasMany(models.Players, {
           onDelete: "cascade",
+          foreignKey: 'teamId'
         });
-    };
-    Teams.associate = (models) => {
-      Teams.hasOne(models.Images, {
-        onDelete: "cascade",
-      });
+        Teams.hasOne(models.Images, {
+          onDelete: "cascade",
+        });
     };
 
     return Teams;

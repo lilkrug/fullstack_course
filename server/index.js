@@ -18,6 +18,10 @@ const likesRouter = require("./routes/Likes");
 app.use("/likes", likesRouter);
 const teamsRouter = require("./routes/Teams");
 app.use("/teams", teamsRouter);
+const playersRouter = require("./routes/Players");
+app.use("/players", playersRouter);
+const fieldPositionsRouter = require("./routes/fieldPositions");
+app.use("/fieldPositions", fieldPositionsRouter);
 
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {

@@ -8,23 +8,24 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      fieldPosition:{
+      matches: {
         type: DataTypes.INTEGER,
-        allowNull: false
-      },
-      club: {
-        type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: 0,
       },
       goals: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
       },
       assists: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
       },
-    });
+    },{
+    timestamps: false});
+
     return Players;
   };
   
