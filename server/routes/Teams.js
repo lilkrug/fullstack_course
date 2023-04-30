@@ -22,6 +22,11 @@ router.get("/", validateToken, async (req, res) => {
   res.json({ listOfTeams: listOfTeams, image: base64Img});
 });
 
+router.get("/teams", validateToken, async (req, res) => {
+  const listOfTeams = await Teams.findAll();
+  res.json(listOfTeams);
+});
+
 router.get("/byId/:id", async (req, res) => {
   const id = req.params.id;
   const team = await Teams.findByPk(id);

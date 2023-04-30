@@ -8,11 +8,11 @@ const Matches = require("../models").Matches;
 router.get("/", validateToken, async (req, res) => {
     const listOfMatches = await Matches.findAll({
         include: [
-            {model: Teams, as :"firstTeam"},
-            {model: Teams, as :"secondTeam"}
+            { model: Teams, as: "firstTeam" },
+            { model: Teams, as: "secondTeam" }
         ]
     });
-    res.json({ listOfMatches: listOfMatches });
+    res.json(listOfMatches);
 });
 
 router.get("/byId/:id", async (req, res) => {
@@ -31,7 +31,7 @@ router.post("/", validateToken, async (req, res) => {
         const isTeamsExisting = await Teams.findAll({
             where: {
                 id: {
-                    [Op.in]:[match.firstTeamId,match.secondTeamId]
+                    [Op.in]: [match.firstTeamId, match.secondTeamId]
                 }
             }
         })
@@ -45,6 +45,34 @@ router.post("/", validateToken, async (req, res) => {
                 goals_first_team: match.goals_first_team,
                 goals_second_team: match.goals_second_team
             });
+        }
+        else {
+            res.json("Team doesn't exist");
+        }
+    }
+    else {
+        res.json("Missed params");
+    }
+});
+
+router.put("/:matchId", validateToken, async (req, res) => {
+    const matchId = req.params.matchId;
+    const match = req.body;
+    console.log(match)
+    if (matchId != null && match.goals_first_team != null && match.goals_second_team != null) {
+        const isMatchExisting = await Matches.findOne({
+            where: {
+                id: matchId
+            }
+        })
+        if (isMatchExisting != null) {
+            await Matches.update(
+                {
+                    goals_first_team: match.goals_first_team,
+                    goals_second_team: match.goals_second_team
+                },
+                { where: { id: matchId } })
+            res.json("Match updated successfully");
         }
         else {
             res.json("Team doesn't exist");
