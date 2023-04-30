@@ -15,14 +15,20 @@ router.get("/byTeamId/:id", async (req, res) => {
     const listOfPlayers = await Players.findAll({
         where: {
             teamId: teamId
-        }
+        },
+        include: [FieldPositions]
     });
+    console.log(listOfPlayers)
     res.json(listOfPlayers);
 });
 
 router.get("/byId/:id", async (req, res) => {
   const id = req.params.id;
-  const player = await Players.findByPk(id);
+  //const player = await Players.findByPk(id);
+  const player = await Players.findOne({
+    where: {id: id},
+    include: [FieldPositions]
+  })
   res.json(player);
 });
 

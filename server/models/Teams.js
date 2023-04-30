@@ -5,10 +5,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: true,
       },
-      league: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      }
     },{
       timestamps: false
     });
@@ -21,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
         Teams.hasOne(models.Images, {
           onDelete: "cascade",
         });
+        Teams.hasMany(models.Matches, {as: 'firstTeam', foreignKey: 'firstTeamId'});
+        Teams.hasMany(models.Matches, {as: 'secondTeam', foreignKey: 'secondTeamId'});
     };
 
     return Teams;

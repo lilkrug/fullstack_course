@@ -26,6 +26,12 @@ module.exports = (sequelize, DataTypes) => {
     },{
     timestamps: false});
 
+    Players.associate = (models) => {
+      Players.belongsTo(models.FieldPositions, {
+        foreignKey: 'fieldPositionId'
+      });
+    };
+
     return Players;
   };
   
