@@ -1,10 +1,14 @@
 const express = require("express");
 const app = express();
+const http = require("http");
+const Message = require("./models/").Message;
+const server = http.createServer(app);
 const cors = require("cors");
+const WebSocket = require("ws");
 
 app.use(express.json());
 app.use(cors());
-
+const wss = new WebSocket.Server({ server });
 const db = require("./models");
 
 // Routers
@@ -25,8 +29,23 @@ app.use("/fieldPositions", fieldPositionsRouter);
 const matchesRouter = require("./routes/matches");
 app.use("/matches", matchesRouter);
 
+wss.on("connection", (ws) => {
+  console.log("WebSocket connected");
+
+  ws.on("message", (message) => {
+    console.log(`Received message: ${message}`);
+    Message.create({ text: message }).then(() => {
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(message);
+        }
+      });
+    });
+  });
+});
+
 db.sequelize.sync().then(() => {
-  app.listen(3001, () => {
+  server.listen(3001, () => {
     console.log("Server running on port 3001");
   });
 });

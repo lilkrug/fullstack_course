@@ -62,7 +62,7 @@ router.get("/byPlayerId/:id", async (req, res) => {
 router.post("/", validateToken, async (req, res) => {
   const team = req.body;
   console.log(team)
-  if(team.name!=null && team.league!=null){
+  if(team.name!=null){
     const foundedTeam = await Teams.findOne({
       where: {
         name: team.name
@@ -71,8 +71,7 @@ router.post("/", validateToken, async (req, res) => {
     if(foundedTeam==null){
       await Teams.create(team);
       res.json({
-        name: team.name,
-        league: team.league
+        name: team.name
       });
     }
     else{
