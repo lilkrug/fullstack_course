@@ -6,10 +6,12 @@ import { AuthContext } from "../helpers/AuthContext";
 
 
 
-function Teams() {
+function Teams(props) {
   const [listOfTeams, setListOfTeams] = useState([]);
   const [image, setImage] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const { authState } = useContext(AuthContext);
+
   let history = useHistory();
 
   useEffect(() => {
@@ -25,38 +27,42 @@ function Teams() {
           setListOfTeams(response.data.listOfTeams);
           setImage(response.data.image);
         });
-      // axios
-      //   .get("http://localhost:3001/teams", {
-      //     headers: { accessToken: localStorage.getItem("accessToken") },
-      //     responseType: 'arraybuffer'
-      //   })
-      //   .then((response) => {
-      //     //setListOfTeams(response.data.listOfTeams);
-      //     setListOfTeams(null);
-      //     const blob = new Blob([response.data],{type:'image/jpeg'});
-      //     setImage(URL.createObjectURL(blob));
-      //   });
     }
   }, []);
 
   return (
-   <table>
-    <tbody>
-      {listOfTeams.map(item => (
-        <tr key={item.id} onClick={() => {
-          history.push(`/team/${item.id}`);
-        }}>
-          <td>
-            <img src={`data:image/jpeg;base64,${image}`} alt="Image"></img>
-            <h1>
-                {item.name}
-            </h1>
-          </td>
-          <td>{item.league}</td>
-        </tr>
-      ))}
-    </tbody>
-   </table>
+    <div>
+      <input
+        type="text"
+        placeholder="Search by team name..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <table>
+        <tbody>
+          {listOfTeams.filter((team) => {
+    const regex = new RegExp(`^${searchTerm}`, "i");
+    return regex.test(team.name);
+  })
+            .map((item) => (
+              <tr
+                key={item.id}
+                onClick={() => {
+                  history.push(`/team/${item.id}`);
+                }}
+              >
+                <td>
+                  <img
+                    src={`data:image/jpeg;base64,${image}`}
+                    alt="Image"
+                  ></img>
+                  <h1>{item.name}</h1>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
