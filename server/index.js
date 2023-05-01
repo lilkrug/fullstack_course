@@ -1,15 +1,37 @@
 const express = require("express");
-const app = express();
-const http = require("http");
+//const app = express();
+//const http = require("http");
+const socketIo = require('socket.io');
 const Message = require("./models/").Message;
-const server = http.createServer(app);
+//const server = http.createServer(app);
 const cors = require("cors");
-const WebSocket = require("ws");
+//const io = socketIo(server)
+
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 app.use(express.json());
 app.use(cors());
-const wss = new WebSocket.Server({ server });
+
 const db = require("./models");
+
+
+io.on('connection', async (socket) => {
+
+  // Отправляем все сохраненные сообщения при подключении нового пользователя
+  const messages = await Message.findAll();
+  socket.emit('allMessages', messages);
+
+  socket.on('newMessage', async ({ author, text }) => {
+    const message = await Message.create({ author, text });
+    io.emit('newMessage', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
 
 // Routers
 const postRouter = require("./routes/Posts");
@@ -26,26 +48,13 @@ const playersRouter = require("./routes/Players");
 app.use("/players", playersRouter);
 const fieldPositionsRouter = require("./routes/FieldPositions");
 app.use("/fieldPositions", fieldPositionsRouter);
-const matchesRouter = require("./routes/matches");
+const matchesRouter = require("./routes/Matches");
 app.use("/matches", matchesRouter);
-
-wss.on("connection", (ws) => {
-  console.log("WebSocket connected");
-
-  ws.on("message", (message) => {
-    console.log(`Received message: ${message}`);
-    Message.create({ text: message }).then(() => {
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(message);
-        }
-      });
-    });
-  });
-});
+const messageRouter = require("./routes/Messages");
+app.use("/messages", messageRouter);
 
 db.sequelize.sync().then(() => {
-  server.listen(3001, () => {
+  http.listen(3001, () => {
     console.log("Server running on port 3001");
   });
 });
