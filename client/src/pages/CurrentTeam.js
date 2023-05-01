@@ -38,7 +38,7 @@ function Team() {
   
   return (
     <div>
-      {teamObject ? (
+      {players.length!=0 ? (
     <div className="team-page">
           <h1 className="team-name">{teamObject.name}</h1>
           <div className="best-players">
@@ -91,7 +91,11 @@ function Team() {
       )
       :
       (
+        teamObject ? (
+          <h1>Команда не сформирована</h1>
+        ): (
         <h1>Данной команды не существует</h1>
+        )
       )
 }
     </div>

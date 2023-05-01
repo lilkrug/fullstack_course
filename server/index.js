@@ -16,6 +16,7 @@ app.use(cors());
 
 const db = require("./models");
 
+let messages = [];
 
 io.on('connection', async (socket) => {
 
@@ -31,6 +32,13 @@ io.on('connection', async (socket) => {
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
+});
+
+app.post('/messages',async (req, res) => {
+  const message = req.body;
+  await Message.create(message)
+  io.emit('newMessage', message);
+  res.status(200).send();
 });
 
 // Routers

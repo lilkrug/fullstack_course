@@ -24,10 +24,27 @@ router.get("/byId/:id", async (req, res) => {
     res.json(match);
 });
 
+router.get("/today", async (req, res) => {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+    const matches = await Matches.findAll({
+        where: {
+            dateTime: {
+                [Op.between]:[startOfToday, endOfToday]
+            }
+        }
+    })
+    console.log(matches)
+    res.json(matches);
+});
+
 router.post("/", validateToken, async (req, res) => {
     const match = req.body;
     console.log(match)
-    if (match.date != null && match.firstTeamId != null && match.secondTeamId != null) {
+    if (match.dateTime != null && match.firstTeamId != null && match.secondTeamId != null) {
         const isTeamsExisting = await Teams.findAll({
             where: {
                 id: {
@@ -39,7 +56,7 @@ router.post("/", validateToken, async (req, res) => {
         if (isTeamsExisting.length == 2) {
             await Matches.create(match);
             res.json({
-                date: match.date,
+                date: match.dateTime,
                 firstTeamId: match.firstTeamId,
                 secondTeamId: match.secondTeamId,
                 goals_first_team: match.goals_first_team,
@@ -59,7 +76,7 @@ router.put("/:matchId", validateToken, async (req, res) => {
     const matchId = req.params.matchId;
     const match = req.body;
     console.log(match)
-    if (matchId != null && match.goals_first_team != null && match.goals_second_team != null) {
+    if (matchId != null && match.goalsFirstTeam != null && match.goalsSecondTeam != null) {
         const isMatchExisting = await Matches.findOne({
             where: {
                 id: matchId
@@ -68,8 +85,8 @@ router.put("/:matchId", validateToken, async (req, res) => {
         if (isMatchExisting != null) {
             await Matches.update(
                 {
-                    goals_first_team: match.goals_first_team,
-                    goals_second_team: match.goals_second_team
+                    goals_first_team: match.goalsFirstTeam,
+                    goals_second_team: match.goalsSecondTeam
                 },
                 { where: { id: matchId } })
             res.json("Match updated successfully");

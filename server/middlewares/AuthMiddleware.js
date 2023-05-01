@@ -1,6 +1,7 @@
 const { verify } = require("jsonwebtoken");
+const { Users } = require("../models").Users;
 
-const validateToken = (req, res, next) => {
+const validateToken =async (req, res, next) => {
   const accessToken = req.header("accessToken");
 
   if (!accessToken) return res.json({ error: "User not logged in!" });

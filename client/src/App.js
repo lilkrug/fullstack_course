@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import CreateMatch from "./pages/CreateMatch";
+import CreateTeam from "./pages/CreateTeam";
 import UpdateMatch from "./pages/UpdateMatch";
 import Post from "./pages/Post";
 import Registration from "./pages/Registration";
@@ -68,6 +69,7 @@ function App() {
                   <Link to="/"> Home Page</Link>
                   <Link to="/createpost"> Create A Post</Link>
                   <Link to="/creatematch"> Create A Match</Link>
+                  <Link to="/createteam"> Create A Team</Link>
                   <Link to="/updatematch"> Update A Match</Link>
                   <Link to="/players"> Players</Link>
                   <Link to="/teams"> Teams</Link>
@@ -87,6 +89,7 @@ function App() {
             <Route path="/team/:id" exact component={CurrentTeam} />
             <Route path="/player/:id" exact component={CurrentPlayer} />
             <Route path="/createpost" exact component={CreatePost} />
+            <Route path="/createteam" exact component={CreateTeam} />
             <Route path="/creatematch" exact component={CreateMatch} />
             <Route path="/updatematch" exact component={UpdateMatch} />
             <Route path="/post/:id" exact component={Post} />

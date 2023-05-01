@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useHistory } from "react-router-dom";
 
 const MyForm = () => {
-  const [date, setDate] = useState('');
+  const [dateTime, setDateTime] = useState('');
   const [teams, setTeams] = useState([]);
   const [firstTeamId, setFirstTeamId] = useState('');
   const [secondTeamId, setSecondTeamId] = useState('');
@@ -33,7 +33,7 @@ const MyForm = () => {
 
     try {
       const response = await axios.post('http://localhost:3001/matches', {
-        date,
+        dateTime,
         firstTeamId,
         secondTeamId,
       },{
@@ -50,8 +50,8 @@ const MyForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="date">Date:</label>
-        <input type="date" id="date" value={date} onChange={(event) => setDate(event.target.value)} />
+        <label htmlFor="datetime">Date and Time:</label>
+        <input type="datetime-local" id="datetime" value={dateTime} onChange={(event) => setDateTime(event.target.value)} />
       </div>
       <div>
         <label htmlFor="firstTeamId">First team:</label>

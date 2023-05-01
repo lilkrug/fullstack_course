@@ -1,8 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
     const Matches = sequelize.define("Matches", {
-      date: {
+      dateTime: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        time: true,
       },
       goals_first_team: {
         type: DataTypes.INTEGER,
