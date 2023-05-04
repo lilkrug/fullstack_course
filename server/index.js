@@ -60,6 +60,8 @@ const matchesRouter = require("./routes/Matches");
 app.use("/matches", matchesRouter);
 const messageRouter = require("./routes/Messages");
 app.use("/messages", messageRouter);
+const resultsRouter = require("./routes/Results");
+app.use("/results", resultsRouter);
 
 db.sequelize.sync().then(() => {
   http.listen(3001, () => {

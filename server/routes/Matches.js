@@ -72,6 +72,27 @@ router.post("/", validateToken, async (req, res) => {
     }
 });
 
+function matchResult(goalsFirstTeam,goalsSecondTeam){
+    let pointsFirstTeam, pointsSecondTeam;
+    if(goalsFirstTeam>goalsSecondTeam){
+        pointsFirstTeam=3
+        pointsSecondTeam=0
+    }
+    else if(goalsFirstTeam<goalsSecondTeam){
+        pointsFirstTeam=0
+        pointsSecondTeam=3
+    }
+    else{
+        pointsFirstTeam=1
+        pointsSecondTeam=1
+    }
+    let result = {
+        pointsFirstTeam: pointsFirstTeam,
+        pointsSecondTeam: pointsSecondTeam
+    }
+    return result
+}
+
 router.put("/:matchId", validateToken, async (req, res) => {
     const matchId = req.params.matchId;
     const match = req.body;
@@ -89,6 +110,27 @@ router.put("/:matchId", validateToken, async (req, res) => {
                     goals_second_team: match.goalsSecondTeam
                 },
                 { where: { id: matchId } })
+            let matchResult = matchResult(match.goalsFirstTeam,match.goalsSecondTeam)
+            await Results.update(
+                {
+                    scored_goals: sequelize.literal(`scored_goals + ${match.goalsFirstTeam}`),
+                    conceded_goals: sequelize.literal(`conceded_goals + ${match.goalsSecondTeam}`),
+                    points: sequelize.literal(`points + ${matchResult.pointsFirstTeam}`)
+                },
+                {
+                    where: {id: isMatchExisting.firstTeamId}
+                }
+            )
+            await Results.update(
+                {
+                    scored_goals: sequelize.literal(`scored_goals + ${match.goalsSecondTeam}`),
+                    conceded_goals: sequelize.literal(`conceded_goals + ${match.goalsFirstTeam}`),
+                    points: sequelize.literal(`points + ${matchResult.pointsSecondTeam}`)
+                },
+                {
+                    where: {id: isMatchExisting.secondTeamId}
+                }
+            )
             res.json("Match updated successfully");
         }
         else {

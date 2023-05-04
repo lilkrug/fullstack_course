@@ -62,7 +62,7 @@ const MatchForm = () => {
                     <option value="">Select a match</option>
                     {matchList.map((match) => (
                         <option key={match.id} value={match.id} >
-                            {match.id}
+                            {match.firstTeamId}-{match.secondTeamId} {match.dateTime}
                         </option>
                     ))}
                 </Field>

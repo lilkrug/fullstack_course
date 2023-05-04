@@ -47,7 +47,7 @@ function CreateTeam() {
             autoComplete="off"
             id="inputCreatePost"
             name="name"
-            placeholder="(Ex. Title...)"
+            placeholder="(Ex. Gazmyas)"
           />
 
           <button type="submit"> Create Team</button>
