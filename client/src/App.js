@@ -39,24 +39,33 @@ import Chat from "./pages/Chat";
 // const LoginWithRouter = withRouter(Login);
 
 function App() {
+  let isAuthenticated = localStorage.getItem("accessToken")!=null
   const AuthRoute = ({ component: Component, ...rest }) => {
-  
+    isAuthenticated = localStorage.getItem("accessToken")!=null
+    console.log('isauth')
+    console.log(isAuthenticated)
     return (
       <Route
         {...rest}
         render={(props) =>
-          authState.status ? <Redirect to="/" /> : <Component {...props} />
+          isAuthenticated ? <Redirect to="/" /> : <Component {...props} />
         }
       />
     );
   };
   const PrivateRoute = ({ component: Component, ...rest }) => {
-    console.log(authState.status)
+    isAuthenticated = localStorage.getItem("accessToken")!=null
+    console.log('statea auth')
+    console.log(isAuthenticated)
+    if(!isAuthenticated){
+      setAuthState({ ...authState, status: false });
+    }
+    
     return (
       <Route
         {...rest}
         render={(props) =>
-          authState.status ?<Component {...props} /> :  <Redirect to="/" />
+          isAuthenticated ?<Component {...props} /> :  <Redirect to="/login" />
         }
       />
     );
@@ -67,11 +76,17 @@ function App() {
   const LoginWithRouter = withRouter(Login);  
   const ChatWithRouter = withRouter(Chat); 
   const TeamsWithRouter = withRouter(Teams); 
-  const ChatWithRouter = withRouter(Chat); 
-  const ChatWithRouter = withRouter(Chat); 
-  const ChatWithRouter = withRouter(Chat); 
-  const ChatWithRouter = withRouter(Chat); 
-  const ChatWithRouter = withRouter(Chat); 
+  const HomeWithRouter = withRouter(Home); 
+  const CurrentTeamWithRouter = withRouter(CurrentTeam); 
+  const CurrentPlayerWithRouter = withRouter(CurrentPlayer); 
+  const CreatePostWithRouter = withRouter(CreatePost); 
+  const CreateTeamWithRouter = withRouter(CreateTeam); 
+  const UpdateMatchWithRouter = withRouter(UpdateMatch); 
+  const CreateMatchWithRouter = withRouter(CreateMatch); 
+  const PostWithRouter = withRouter(Post); 
+  const ProfileWithRouter = withRouter(Profile); 
+  const ChangePasswordWithRouter = withRouter(ChangePassword);
+
   const [authState, setAuthState] = useState({
     username: "",
     id: 0,
@@ -89,11 +104,13 @@ function App() {
       .then((response) => {
         console.log(response.data)
         if (response.data.error) {
+          isAuthenticated = false
           if(response.data.error=='jwt expired'){
             localStorage.removeItem("accessToken");
             setAuthState({ ...authState, status: false });
             console.log(localStorage.getItem("accessToken"))
-            window.location.replace("/");
+            isAuthenticated = false
+            window.location.replace("/login");
             //history.push("/login");
           }
           localStorage.removeItem("accessToken");
@@ -146,18 +163,18 @@ function App() {
           <Switch>
             <AuthRoute path="/registration" exact component={RegistrationWithRouter} />
             <AuthRoute path="/login" exact component={LoginWithRouter} />
-            <Route path="/" exact component={Home} />
+            <PrivateRoute path="/" exact component={HomeWithRouter} />
             <PrivateRoute path="/chat" exact component={ChatWithRouter} />
             <PrivateRoute path="/teams" exact component={TeamsWithRouter} />
-            <Route path="/team/:id" exact component={CurrentTeam} />
-            <Route path="/player/:id" exact component={CurrentPlayer} />
-            <Route path="/createpost" exact component={CreatePost} />
-            <Route path="/createteam" exact component={CreateTeam} />
-            <Route path="/creatematch" exact component={CreateMatch} />
-            <Route path="/updatematch" exact component={UpdateMatch} />
-            <Route path="/post/:id" exact component={Post} />
-            <Route path="/profile/:id" exact component={Profile} />
-            <Route path="/changepassword" exact component={ChangePassword} />
+            <PrivateRoute path="/team/:id" exact component={CurrentTeamWithRouter} />
+            <PrivateRoute path="/player/:id" exact component={CurrentPlayerWithRouter} />
+            <PrivateRoute path="/createpost" exact component={CreatePostWithRouter} />
+            <PrivateRoute path="/createteam" exact component={CreateTeamWithRouter} />
+            <PrivateRoute path="/creatematch" exact component={CreateMatchWithRouter} />
+            <PrivateRoute path="/updatematch" exact component={UpdateMatchWithRouter} />
+            <PrivateRoute path="/post/:id" exact component={PostWithRouter} />
+            <PrivateRoute path="/profile/:id" exact component={ProfileWithRouter} />
+            <PrivateRoute path="/changepassword" exact component={ChangePasswordWithRouter} />
             <Route path="*" exact component={PageNotFound} />
           </Switch>
         </Router>

@@ -39,6 +39,7 @@ function Home() {
           .then((response) => {
             console.log(response.data)
             if(response.data.error!=undefined){
+              localStorage.removeItem("accessToken")
               history.push("/login");
             }
             else{

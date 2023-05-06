@@ -54,6 +54,7 @@ function Post() {
       )
       .then((response) => {
         if (response.data.error) {
+          history.push("/login");
           console.log(response.data.error);
         } else {
           console.log(response)

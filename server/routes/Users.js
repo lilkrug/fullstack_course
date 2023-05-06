@@ -39,7 +39,7 @@ router.post("/login", async (req, res) => {
     const accessToken = sign(
       { username: user.username, id: user.id },
       "importantsecret",
-      { expiresIn: "1m" }
+      { expiresIn: "15s" }
     );
     res.json({ token: accessToken, username: username, id: user.id });
     }
@@ -61,8 +61,7 @@ router.get("/basicinfo/:id",validateToken, async (req, res) => {
   const basicInfo = await Users.findByPk(id, {
     attributes: { exclude: ["password"] },
   });
-
-  res.json(basicInfo);
+  res.json(basicInfo)
 });
 
 router.put("/changepassword", validateToken, async (req, res) => {

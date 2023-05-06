@@ -24,6 +24,8 @@ function Teams(props) {
           headers: { accessToken: localStorage.getItem("accessToken") }
         })
         .then((response) => {
+          console.log('responsedataerror')
+          console.log(response.data.error!=undefined)
           if(response.data.error!=undefined){
             history.push("/login");
           }
