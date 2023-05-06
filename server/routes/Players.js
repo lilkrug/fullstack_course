@@ -10,7 +10,7 @@ router.get("/", validateToken, async (req, res) => {
   res.json({ listOfPlayers: listOfPlayers});
 });
 
-router.get("/byTeamId/:id", async (req, res) => {
+router.get("/byTeamId/:id",validateToken, async (req, res) => {
     const teamId = req.params.id;
     const listOfPlayers = await Players.findAll({
         where: {
@@ -22,7 +22,7 @@ router.get("/byTeamId/:id", async (req, res) => {
     res.json(listOfPlayers);
 });
 
-router.get("/byId/:id", async (req, res) => {
+router.get("/byId/:id",validateToken, async (req, res) => {
   const id = req.params.id;
   //const player = await Players.findByPk(id);
   const player = await Players.findOne({

@@ -19,8 +19,13 @@ const MyForm = () => {
         headers: { accessToken: localStorage.getItem("accessToken") },
       })
       .then(response => {
+        if(response.data.error!=undefined){
+          history.push("/login");
+        }
+        else{
         console.log(response.data)
         setTeams(response.data);
+        }
       })
       .catch(error => {
         console.log(error);

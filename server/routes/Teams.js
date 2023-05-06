@@ -27,13 +27,13 @@ router.get("/teams", validateToken, async (req, res) => {
   res.json(listOfTeams);
 });
 
-router.get("/byId/:id", async (req, res) => {
+router.get("/byId/:id",validateToken, async (req, res) => {
   const id = req.params.id;
   const team = await Teams.findByPk(id);
   res.json(team);
 });
 
-router.get("/bestScorerByTeamId/:id", async (req, res) => {
+router.get("/bestScorerByTeamId/:id",validateToken, async (req, res) => {
   const id = req.params.id;
   const bestScorer = await Players.findOne({
     where: { teamId: id },
@@ -42,7 +42,7 @@ router.get("/bestScorerByTeamId/:id", async (req, res) => {
   res.json(bestScorer);
 });
 
-router.get("/bestAssistantByTeamId/:id", async (req, res) => {
+router.get("/bestAssistantByTeamId/:id",validateToken, async (req, res) => {
   const id = req.params.id;
   const bestScorer = await Players.findOne({
     where: { teamId: id },
@@ -51,7 +51,7 @@ router.get("/bestAssistantByTeamId/:id", async (req, res) => {
   res.json(bestScorer);
 });
 
-router.get("/byPlayerId/:id", async (req, res) => {
+router.get("/byPlayerId/:id",validateToken, async (req, res) => {
   const id = req.params.id;
   const team = await Teams.findOne({
     where: { PlayerId: id },

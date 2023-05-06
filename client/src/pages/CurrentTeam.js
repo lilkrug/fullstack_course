@@ -14,21 +14,46 @@ function Team() {
   let history = useHistory();
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/teams/byId/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/teams/byId/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
+      if(response.data.error!=undefined){
+        history.push("/login");
+      }
+      else{
      setTeamObject(response.data);
+      }
     });
 
-    axios.get(`http://localhost:3001/players/byTeamId/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/players/byTeamId/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
       setPlayers(response.data);
     });
 
-    axios.get(`http://localhost:3001/teams/bestScorerByTeamId/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/teams/bestScorerByTeamId/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
       if(response.data!=null){
       setBestScorer(response.data);
       }
     });
 
-    axios.get(`http://localhost:3001/teams/bestAssistantByTeamId/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/teams/bestAssistantByTeamId/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
       if(response.data!=null){
       setBestAssistant(response.data);
       }

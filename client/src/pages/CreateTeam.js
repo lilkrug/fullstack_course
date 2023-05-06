@@ -29,7 +29,12 @@ function CreateTeam() {
         headers: { accessToken: localStorage.getItem("accessToken") },
       })
       .then((response) => {
+        if(response.data.error!=undefined){
+          history.push("/login");
+        }
+        else{
         history.push("/");
+        }
       });
   };
 

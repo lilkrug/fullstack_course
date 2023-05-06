@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import { BrowserRouter as Router,withRouter,  Redirect, useHistory, Route, Switch, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import CreateMatch from "./pages/CreateMatch";
@@ -20,12 +20,64 @@ import axios from "axios";
 import Teams from "./pages/Teams";
 import Chat from "./pages/Chat";
 
+// const AuthRoute = ({ component: Component, ...rest }) => {
+//   const isAuthenticated = localStorage.getItem("accessToken") != null;
+//   console.log(isAuthenticated)
+
+//   return (
+//     <Route
+//       {...rest}
+//       render={(props) =>
+//         isAuthenticated ? <Redirect to="/" /> : <Component {...props} />
+//       }
+//     />
+//   );
+// };
+
+
+// const RegistrationWithRouter = withRouter(Registration);
+// const LoginWithRouter = withRouter(Login);
+
 function App() {
+  const AuthRoute = ({ component: Component, ...rest }) => {
+  
+    return (
+      <Route
+        {...rest}
+        render={(props) =>
+          authState.status ? <Redirect to="/" /> : <Component {...props} />
+        }
+      />
+    );
+  };
+  const PrivateRoute = ({ component: Component, ...rest }) => {
+    console.log(authState.status)
+    return (
+      <Route
+        {...rest}
+        render={(props) =>
+          authState.status ?<Component {...props} /> :  <Redirect to="/" />
+        }
+      />
+    );
+  };
+  
+  
+  const RegistrationWithRouter = withRouter(Registration);
+  const LoginWithRouter = withRouter(Login);  
+  const ChatWithRouter = withRouter(Chat); 
+  const TeamsWithRouter = withRouter(Teams); 
+  const ChatWithRouter = withRouter(Chat); 
+  const ChatWithRouter = withRouter(Chat); 
+  const ChatWithRouter = withRouter(Chat); 
+  const ChatWithRouter = withRouter(Chat); 
+  const ChatWithRouter = withRouter(Chat); 
   const [authState, setAuthState] = useState({
     username: "",
     id: 0,
     status: false,
   });
+  let history = useHistory();
 
   useEffect(() => {
     axios
@@ -35,7 +87,16 @@ function App() {
         },
       })
       .then((response) => {
+        console.log(response.data)
         if (response.data.error) {
+          if(response.data.error=='jwt expired'){
+            localStorage.removeItem("accessToken");
+            setAuthState({ ...authState, status: false });
+            console.log(localStorage.getItem("accessToken"))
+            window.location.replace("/");
+            //history.push("/login");
+          }
+          localStorage.removeItem("accessToken");
           setAuthState({ ...authState, status: false });
         } else {
           setAuthState({
@@ -83,9 +144,11 @@ function App() {
             </div>
           </div>
           <Switch>
+            <AuthRoute path="/registration" exact component={RegistrationWithRouter} />
+            <AuthRoute path="/login" exact component={LoginWithRouter} />
             <Route path="/" exact component={Home} />
-            <Route path="/chat" exact component={Chat} />
-            <Route path="/teams" exact component={Teams} />
+            <PrivateRoute path="/chat" exact component={ChatWithRouter} />
+            <PrivateRoute path="/teams" exact component={TeamsWithRouter} />
             <Route path="/team/:id" exact component={CurrentTeam} />
             <Route path="/player/:id" exact component={CurrentPlayer} />
             <Route path="/createpost" exact component={CreatePost} />
@@ -93,8 +156,6 @@ function App() {
             <Route path="/creatematch" exact component={CreateMatch} />
             <Route path="/updatematch" exact component={UpdateMatch} />
             <Route path="/post/:id" exact component={Post} />
-            <Route path="/registration" exact component={Registration} />
-            <Route path="/login" exact component={Login} />
             <Route path="/profile/:id" exact component={Profile} />
             <Route path="/changepassword" exact component={ChangePassword} />
             <Route path="*" exact component={PageNotFound} />

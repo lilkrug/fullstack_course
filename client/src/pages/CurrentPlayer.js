@@ -12,11 +12,21 @@ function Player() {
   let history = useHistory();
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/players/byId/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/players/byId/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
+      if(response.data.error!=undefined){
+        history.push("/login");
+      }
+      else{
       setPlayer(response.data);
       if (response.data != null) {
         setFieldPosition(response.data.FieldPosition)
       }
+    }
     });
   }, []);
 

@@ -10,26 +10,50 @@ import { AuthContext } from "../helpers/AuthContext";
 function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
+  const [tokenValid, setTokenValid] = useState(false);
   const { authState } = useContext(AuthContext);
   let history = useHistory();
 
   useEffect(() => {
+    console.log(localStorage.getItem("accessToken"))
     if (!localStorage.getItem("accessToken")) {
       console.log(localStorage.getItem("accessToken"))
       history.push("/login");
     } else {
-      axios
-        .get("http://localhost:3001/posts", {
-          headers: { accessToken: localStorage.getItem("accessToken") },
-        })
-        .then((response) => {
-          setListOfPosts(response.data.listOfPosts);
-          setLikedPosts(
-            response.data.likedPosts.map((like) => {
-              return like.PostId;
-            })
-          );
-        });
+      // axios
+      //   .get("http://localhost:3001/auth/auth", {
+      //     headers: { accessToken: localStorage.getItem("accessToken") },
+      //   })
+      //   .then((response) => {
+      //     setTokenValid(response.data.error == undefined)
+      //     console.log('fsad')
+      //     console.log(response.data.error == undefined)
+      //     console.log(response.data.error)
+      //     console.log(tokenValid)
+      //   });
+      // if (tokenValid) {
+        axios
+          .get("http://localhost:3001/posts", {
+            headers: { accessToken: localStorage.getItem("accessToken") },
+          })
+          .then((response) => {
+            console.log(response.data)
+            if(response.data.error!=undefined){
+              history.push("/login");
+            }
+            else{
+            setListOfPosts(response.data.listOfPosts);
+            setLikedPosts(
+              response.data.likedPosts.map((like) => {
+                return like.PostId;
+              })
+            );
+            }
+          });
+      // }
+      // else{
+      //   history.push("/login");
+      // }
     }
   }, []);
 

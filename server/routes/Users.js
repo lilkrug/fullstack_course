@@ -38,7 +38,8 @@ router.post("/login", async (req, res) => {
     else{
     const accessToken = sign(
       { username: user.username, id: user.id },
-      "importantsecret"
+      "importantsecret",
+      { expiresIn: "1m" }
     );
     res.json({ token: accessToken, username: username, id: user.id });
     }
@@ -54,7 +55,7 @@ router.get("/auth", validateToken, (req, res) => {
   res.json(req.user);
 });
 
-router.get("/basicinfo/:id", async (req, res) => {
+router.get("/basicinfo/:id",validateToken, async (req, res) => {
   const id = req.params.id;
 
   const basicInfo = await Users.findByPk(id, {

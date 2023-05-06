@@ -3,6 +3,7 @@ const express = require("express");
 //const http = require("http");
 const socketIo = require('socket.io');
 const Message = require("./models/").Message;
+const { validateToken } = require("./middlewares/AuthMiddleware");
 //const server = http.createServer(app);
 const cors = require("cors");
 //const io = socketIo(server)
@@ -19,7 +20,10 @@ const db = require("./models");
 let messages = [];
 
 io.on('connection', async (socket) => {
-
+  const token = socket.handshake.auth.token;
+  console.log('token')
+  console.log(token)
+  if(token!=null){
   // Отправляем все сохраненные сообщения при подключении нового пользователя
   const messages = await Message.findAll();
   socket.emit('allMessages', messages);
@@ -32,9 +36,10 @@ io.on('connection', async (socket) => {
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
+}
 });
 
-app.post('/messages',async (req, res) => {
+app.post('/messages',validateToken,async (req, res) => {
   const message = req.body;
   await Message.create(message)
   io.emit('newMessage', message);

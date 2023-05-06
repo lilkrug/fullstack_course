@@ -1,5 +1,5 @@
 const { verify } = require("jsonwebtoken");
-const { Users } = require("../models").Users;
+const { Users } = require("../models");
 
 const validateToken =async (req, res, next) => {
   const accessToken = req.header("accessToken");
@@ -8,12 +8,14 @@ const validateToken =async (req, res, next) => {
 
   try {
     const validToken = verify(accessToken, "importantsecret");
-    req.user = validToken;
+    const user = await Users.findByPk(validToken.id);
+    if (!user) return res.json({ error: "User not found!" });
+    req.user = user;
     if (validToken) {
       return next();
     }
   } catch (err) {
-    return res.json({ error: err });
+    return res.json({ error: err.message });
   }
 };
 

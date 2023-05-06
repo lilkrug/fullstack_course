@@ -13,11 +13,26 @@ function Post() {
   let history = useHistory();
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/posts/byId/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/posts/byId/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
+      if(response.data.error!=undefined){
+        history.push("/login");
+      }
+      else{
       setPostObject(response.data);
+      }
     });
 
-    axios.get(`http://localhost:3001/comments/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/comments/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
       setComments(response.data);
     });
   }, []);

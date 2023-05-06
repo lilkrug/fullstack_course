@@ -21,7 +21,12 @@ const MatchForm = () => {
             axios.get("http://localhost:3001/matches", {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             }).then((response) => {
+                if(response.data.error!=undefined){
+                    history.push("/login");
+                  }
+                  else{
                 setMatchList(response.data);
+                  }
             });
         }
     }, []);

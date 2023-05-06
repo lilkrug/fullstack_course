@@ -11,11 +11,26 @@ function Profile() {
   const { authState } = useContext(AuthContext);
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/auth/basicinfo/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/auth/basicinfo/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
+      if(response.data.error!=undefined){
+        history.push("/login");
+      }
+      else{
       setUsername(response.data.username);
+      }
     });
 
-    axios.get(`http://localhost:3001/posts/byuserId/${id}`).then((response) => {
+    axios.get(`http://localhost:3001/posts/byuserId/${id}`,
+    {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
       setListOfPosts(response.data);
     });
   }, []);

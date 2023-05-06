@@ -10,7 +10,7 @@ router.get("/", validateToken, async (req, res) => {
     res.json(listOfResults);
 });
 
-router.get("/byTeamId/:id", async (req, res) => {
+router.get("/byTeamId/:id",validateToken, async (req, res) => {
     const id = req.params.id;
     const result = await Results.findOne(
         {
