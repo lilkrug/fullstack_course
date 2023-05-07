@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         });
         Teams.hasMany(models.Matches, {as: 'firstTeam', foreignKey: 'firstTeamId'});
         Teams.hasMany(models.Matches, {as: 'secondTeam', foreignKey: 'secondTeamId'});
+        Teams.belongsToMany(models.Posts, { through: models.PostsTeams });
     };
 
     return Teams;

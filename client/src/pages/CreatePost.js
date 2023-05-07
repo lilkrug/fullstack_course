@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -7,6 +7,9 @@ import { AuthContext } from "../helpers/AuthContext";
 
 function CreatePost() {
   const { authState } = useContext(AuthContext);
+  const [isTeamRelated, setIsTeamRelated] = useState(false);
+  const [selectedTeamId, setSelectedTeamId] = useState(null);
+  const [teams, setTeams] = useState([]);
 
   let history = useHistory();
   const initialValues = {
@@ -18,23 +21,37 @@ function CreatePost() {
     if (!localStorage.getItem("accessToken")) {
       history.push("/login");
     }
+    axios.get("http://localhost:3001/teams/teams", {
+      headers: { accessToken: localStorage.getItem("accessToken") },
+    }).then((response) => {
+      setTeams(response.data);
+    });
   }, []);
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("You must input a Title!"),
     postText: Yup.string().required(),
   });
 
-  const onSubmit = (data) => {
+  const handleTeamSelection = (event) => {
+    setSelectedTeamId(event.target.value);
+  };
+
+  const onSubmit = (values, { resetForm }) => {
+    const data = {
+      title: values.title,
+      postText: values.postText,
+      teamId: selectedTeamId, // передаем связанные команды
+    };
     axios
       .post("http://localhost:3001/posts", data, {
         headers: { accessToken: localStorage.getItem("accessToken") },
       })
       .then((response) => {
-        if(response.data.error!=undefined){
+        if (response.data.error != undefined) {
           history.push("/login");
         }
-        else{
-        history.push("/");
+        else {
+          history.push("/");
         }
       });
   };
@@ -63,6 +80,26 @@ function CreatePost() {
             name="postText"
             placeholder="(Ex. Post...)"
           />
+          <label>
+            <Field
+              type="checkbox"
+              name="isTeamRelated"
+              onClick={() => setIsTeamRelated(!isTeamRelated)}
+            />
+            Is related to team(s)?
+          </label>
+          {isTeamRelated && (
+            <div>
+              <label>Related team(s):</label>
+              <Field as="select" name="relatedTeams" onChange={handleTeamSelection}>
+                {teams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </Field>
+            </div>
+          )}
 
           <button type="submit"> Create Post</button>
         </Form>

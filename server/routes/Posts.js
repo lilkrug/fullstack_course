@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Posts, Likes } = require("../models");
+const { Posts, Likes, PostsTeams } = require("../models");
 
 const { validateToken } = require("../middlewares/AuthMiddleware");
 
@@ -10,13 +10,13 @@ router.get("/", validateToken, async (req, res) => {
   res.json({ listOfPosts: listOfPosts, likedPosts: likedPosts });
 });
 
-router.get("/byId/:id",validateToken, async (req, res) => {
+router.get("/byId/:id", validateToken, async (req, res) => {
   const id = req.params.id;
   const post = await Posts.findByPk(id);
   res.json(post);
 });
 
-router.get("/byuserId/:id",validateToken, async (req, res) => {
+router.get("/byuserId/:id", validateToken, async (req, res) => {
   const id = req.params.id;
   const listOfPosts = await Posts.findAll({
     where: { UserId: id },
@@ -27,11 +27,18 @@ router.get("/byuserId/:id",validateToken, async (req, res) => {
 
 router.post("/", validateToken, async (req, res) => {
   const post = req.body;
-  console.log(req)
   console.log(post)
   post.username = req.user.username;
   post.UserId = req.user.id;
-  await Posts.create(post);
+  const createdPost = await Posts.create(post);
+  if (req.body.teamId != null) {
+    const postTeam = {
+      PostId: createdPost.id,
+      TeamId: req.body.teamId
+    }
+
+    await PostsTeams.create(postTeam)
+  }
   res.json(post);
 });
 

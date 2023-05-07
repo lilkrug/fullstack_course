@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: false
     },
+    favoriteTeamId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    }
+    
   });
 
   Users.associate = (models) => {

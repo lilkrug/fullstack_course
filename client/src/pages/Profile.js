@@ -8,6 +8,9 @@ function Profile() {
   let history = useHistory();
   const [username, setUsername] = useState("");
   const [listOfPosts, setListOfPosts] = useState([]);
+  const [teamList, setTeamList] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [favoriteTeam, setFavoriteTeam] = useState(null);
   const { authState } = useContext(AuthContext);
 
   useEffect(() => {
@@ -17,15 +20,26 @@ function Profile() {
           accessToken: localStorage.getItem("accessToken"),
         },
       }).then((response) => {
-        console.log(response.data.error)
         if (response.data.error != undefined) {
           history.push("/login");
         }
         else {
           setUsername(response.data.username);
-          console.log('suka')
-          console.log(response.data.username)
-          console.log(response.data.username==null)
+        }
+      });
+
+    axios.get(`http://localhost:3001/teams/getfavoriteteam/${id}`,
+      {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
+        },
+      }).then((response) => {
+        console.log(response.data)
+        if (response.data.error != undefined) {
+          history.push("/login");
+        }
+        else {
+          setFavoriteTeam(response.data);
         }
       });
 
@@ -37,14 +51,45 @@ function Profile() {
       }).then((response) => {
         setListOfPosts(response.data);
       });
+
+    axios.get(`http://localhost:3001/teams/teams`, {
+      headers: {
+        accessToken: localStorage.getItem("accessToken"),
+      },
+    }).then((response) => {
+      setTeamList(response.data);
+    });
   }, []);
+
+  const handleTeamSelection = (e) => {
+    setSelectedTeam(e.target.value);
+  };
+
+  const handleFavoriteTeamSubmit = () => {
+    if (selectedTeam) {
+      axios.put(`http://localhost:3001/teams/setfavoriteteam`, {
+        favoriteTeamId: selectedTeam,
+        userId: authState.id
+      }, {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
+        },
+      }).then((response) => {
+        console.log(response);
+      });
+    }
+  };
 
   return (
     <div>
-      {username!=null ? (<div className="profilePageContainer">
+      {username != null ? (<div className="profilePageContainer">
         <div className="basicInfo">
           {" "}
           <h1> Username: {username} </h1>
+          {favoriteTeam != null && (
+            < h2 > Favorite Team: {favoriteTeam}</h2>
+          )
+          }
           {authState.username === username && (
             <button
               onClick={() => {
@@ -56,6 +101,21 @@ function Profile() {
             </button>
           )}
         </div>
+        {teamList.length != 0 && (
+          <div className="favoriteTeamForm">
+            <h2>Choose your favorite team:</h2>
+            <select onChange={handleTeamSelection}>
+              <option value="">--Select team--</option>
+              {teamList.map((team) => {
+                return (
+                  <option key={team.id} value={team.id}>{team.name}</option>
+                );
+              })}
+            </select>
+            <button onClick={handleFavoriteTeamSubmit}>Submit</button>
+          </div>
+        )
+        }
         <div className="listOfPosts">
           {listOfPosts.map((value, key) => {
             return (
@@ -81,12 +141,12 @@ function Profile() {
         </div>
       </div>
       )
-      :
-      (
-        <h2>There is no such user</h2>
-      )
+        :
+        (
+          <h2>There is no such user</h2>
+        )
       }
-    </div>
+    </div >
   );
 }
 
