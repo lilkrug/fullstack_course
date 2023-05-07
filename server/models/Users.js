@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     isAdmin: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue:false
+      defaultValue: false
     },
   });
 
@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
 
     Users.hasMany(models.Posts, {
       onDelete: "cascade",
+    });
+    Users.belongsTo(models.Teams, {
+      foreignKey: "favoriteTeamId"
     });
   };
 

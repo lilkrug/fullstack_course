@@ -41,7 +41,7 @@ router.post("/login", async (req, res) => {
       "importantsecret",
       { expiresIn: "30m" }
     );
-    res.json({ token: accessToken, username: username, id: user.id });
+    res.json({ token: accessToken, username: username, id: user.id, isAdmin: user.isAdmin });
     }
   });
   }

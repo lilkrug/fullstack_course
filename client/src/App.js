@@ -12,6 +12,7 @@ import CurrentTeam from "./pages/CurrentTeam";
 import CurrentPlayer from "./pages/CurrentPlayer";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
+import PageForAdmin from "./pages/PageForAdmin";
 import Profile from "./pages/Profile";
 import ChangePassword from "./pages/ChangePassword";
 
@@ -20,24 +21,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Teams from "./pages/Teams";
 import Chat from "./pages/Chat";
-
-// const AuthRoute = ({ component: Component, ...rest }) => {
-//   const isAuthenticated = localStorage.getItem("accessToken") != null;
-//   console.log(isAuthenticated)
-
-//   return (
-//     <Route
-//       {...rest}
-//       render={(props) =>
-//         isAuthenticated ? <Redirect to="/" /> : <Component {...props} />
-//       }
-//     />
-//   );
-// };
-
-
-// const RegistrationWithRouter = withRouter(Registration);
-// const LoginWithRouter = withRouter(Login);
 
 function App() {
   let isAuthenticated = localStorage.getItem("accessToken")!=null
@@ -71,15 +54,23 @@ function App() {
       />
     );
   };
-  const withAuth = (Component) => {
-    const AuthRoute = (props) => {
-      const isAdmin = localStorage.getItem('isAdmin');
-      if (!isAdmin) {
-        return <Redirect to="/" />;
-      }
-      return <Component {...props} />;
-    };
-    return AuthRoute;
+  
+  const AdminRoute = ({ component: Component, isAdmin, ...rest }) => {
+    const isAuthenticated = localStorage.getItem("accessToken") !== null;
+    isAdmin = localStorage.getItem("isAdmin")
+    console.log(localStorage.getItem("isAdmin"))
+    return (
+      <Route
+        {...rest}
+        render={(props) =>
+          isAuthenticated && authState.isAdmin ? (
+            <Component {...props} />
+          ) : (
+            <PageForAdmin />
+          )
+        }
+      />
+    );
   };
   
   
@@ -103,6 +94,7 @@ function App() {
     username: "",
     id: 0,
     status: false,
+    isAdmin:localStorage.getItem("isAdmin")
   });
   let history = useHistory();
 
@@ -139,6 +131,7 @@ function App() {
 
   const logout = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("isAdmin");
     setAuthState({ username: "", id: 0, status: false });
     window.location.replace("/");
   };
@@ -186,9 +179,9 @@ function App() {
             <PrivateRoute path="/team/:id" exact component={CurrentTeamWithRouter} />
             <PrivateRoute path="/player/:id" exact component={CurrentPlayerWithRouter} />
             <PrivateRoute path="/createpost" exact component={CreatePostWithRouter} />
-            <PrivateRoute path="/createteam" exact component={CreateTeamWithRouter} />
-            <PrivateRoute path="/creatematch" exact component={CreateMatchWithRouter} />
-            <PrivateRoute path="/updatematch" exact component={UpdateMatchWithRouter} />
+            <AdminRoute path="/createteam" exact component={CreateTeamWithRouter} />
+            <AdminRoute path="/creatematch" exact component={CreateMatchWithRouter} />
+            <AdminRoute path="/updatematch" exact component={UpdateMatchWithRouter} />
             <PrivateRoute path="/post/:id" exact component={PostWithRouter} />
             <PrivateRoute path="/profile/:id" exact component={ProfileWithRouter} />
             <PrivateRoute path="/changepassword" exact component={ChangePasswordWithRouter} />
