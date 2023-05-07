@@ -5,6 +5,7 @@ import CreatePost from "./pages/CreatePost";
 import CreateMatch from "./pages/CreateMatch";
 import CreateTeam from "./pages/CreateTeam";
 import UpdateMatch from "./pages/UpdateMatch";
+import MyLeague from "./pages/MyLeague";
 import Post from "./pages/Post";
 import Registration from "./pages/Registration";
 import CurrentTeam from "./pages/CurrentTeam";
@@ -86,6 +87,7 @@ function App() {
   const PostWithRouter = withRouter(Post); 
   const ProfileWithRouter = withRouter(Profile); 
   const ChangePasswordWithRouter = withRouter(ChangePassword);
+  const MyLeagueWithRouter = withRouter(MyLeague); 
 
   const [authState, setAuthState] = useState({
     username: "",
@@ -111,7 +113,6 @@ function App() {
             console.log(localStorage.getItem("accessToken"))
             isAuthenticated = false
             window.location.replace("/login");
-            //history.push("/login");
           }
           localStorage.removeItem("accessToken");
           setAuthState({ ...authState, status: false });
@@ -166,6 +167,7 @@ function App() {
             <PrivateRoute path="/" exact component={HomeWithRouter} />
             <PrivateRoute path="/chat" exact component={ChatWithRouter} />
             <PrivateRoute path="/teams" exact component={TeamsWithRouter} />
+            <PrivateRoute path="/league" exact component={MyLeagueWithRouter} />
             <PrivateRoute path="/team/:id" exact component={CurrentTeamWithRouter} />
             <PrivateRoute path="/player/:id" exact component={CurrentPlayerWithRouter} />
             <PrivateRoute path="/createpost" exact component={CreatePostWithRouter} />

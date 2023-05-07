@@ -10,8 +10,7 @@ function CreateTeam() {
 
   let history = useHistory();
   const initialValues = {
-    title: "",
-    postText: "",
+    name: ""
   };
 
   useEffect(() => {

@@ -44,8 +44,12 @@ const MyForm = () => {
       },{
         headers: { accessToken: localStorage.getItem("accessToken") },
       })
+      if(response.data=="Success"){
       history.push("/");
-
+      }
+      else{
+        alert(response.data)
+      }
       console.log(response.data); // Handle response data here
     } catch (error) {
       console.error(error); // Handle error here

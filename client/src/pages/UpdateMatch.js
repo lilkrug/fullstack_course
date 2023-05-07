@@ -18,7 +18,7 @@ const MatchForm = () => {
             console.log(localStorage.getItem("accessToken"))
             history.push("/login");
         } else {
-            axios.get("http://localhost:3001/matches", {
+            axios.get("http://localhost:3001/matches/withoutScore", {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             }).then((response) => {
                 if(response.data.error!=undefined){

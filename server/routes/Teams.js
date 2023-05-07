@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 const Teams = require("../models").Teams;
 const Players = require("../models").Players;
+const Results = require("../models").Results;
 const sharp = require('sharp');
 const { validateToken } = require("../middlewares/AuthMiddleware");
 
@@ -69,7 +70,13 @@ router.post("/", validateToken, async (req, res) => {
       }
     })
     if(foundedTeam==null){
-      await Teams.create(team);
+      const createdTeam = await Teams.create(team);
+      await Results.create({
+        scored_goals:0,
+        conceded_goals:0,
+        points:0,
+        team_id:createdTeam.id
+      })
       res.json({
         name: team.name
       });

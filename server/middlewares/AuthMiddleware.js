@@ -7,10 +7,11 @@ const validateToken =async (req, res, next) => {
   if (!accessToken) return res.json({ error: "User not logged in!" });
 
   try {
-    const validToken = verify(accessToken, "importantsecret");
+    const validToken = verify(accessToken, "importantsecret");//
     const user = await Users.findByPk(validToken.id);
     if (!user) return res.json({ error: "User not found!" });
     req.user = user;
+
     if (validToken) {
       return next();
     }

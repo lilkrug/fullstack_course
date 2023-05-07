@@ -4,9 +4,24 @@ const { Op } = require('sequelize');
 const { validateToken } = require("../middlewares/AuthMiddleware");
 const Teams = require("../models").Teams;
 const Matches = require("../models").Matches;
+const Results = require("../models").Results;
 
 router.get("/", validateToken, async (req, res) => {
     const listOfMatches = await Matches.findAll({
+        include: [
+            { model: Teams, as: "firstTeam" },
+            { model: Teams, as: "secondTeam" }
+        ]
+    });
+    res.json(listOfMatches);
+});
+
+router.get("/withoutScore", validateToken, async (req, res) => {
+    const listOfMatches = await Matches.findAll({
+        where: {
+            goals_first_team: null,
+            goals_second_team: null
+        },
         include: [
             { model: Teams, as: "firstTeam" },
             { model: Teams, as: "secondTeam" }
@@ -33,7 +48,7 @@ router.get("/today", async (req, res) => {
     const matches = await Matches.findAll({
         where: {
             dateTime: {
-                [Op.between]:[startOfToday, endOfToday]
+                [Op.between]: [startOfToday, endOfToday]
             }
         }
     })
@@ -45,26 +60,25 @@ router.post("/", validateToken, async (req, res) => {
     const match = req.body;
     console.log(match)
     if (match.dateTime != null && match.firstTeamId != null && match.secondTeamId != null) {
-        const isTeamsExisting = await Teams.findAll({
-            where: {
-                id: {
-                    [Op.in]: [match.firstTeamId, match.secondTeamId]
+        if (match.firstTeamId != match.secondTeamId) {
+            const isTeamsExisting = await Teams.findAll({
+                where: {
+                    id: {
+                        [Op.in]: [match.firstTeamId, match.secondTeamId]
+                    }
                 }
+            })
+            console.log(isTeamsExisting.length)
+            if (isTeamsExisting.length == 2) {
+                await Matches.create(match);
+                res.json("Success");
             }
-        })
-        console.log(isTeamsExisting.length)
-        if (isTeamsExisting.length == 2) {
-            await Matches.create(match);
-            res.json({
-                date: match.dateTime,
-                firstTeamId: match.firstTeamId,
-                secondTeamId: match.secondTeamId,
-                goals_first_team: match.goals_first_team,
-                goals_second_team: match.goals_second_team
-            });
+            else {
+                res.json("Team doesn't exist");
+            }
         }
         else {
-            res.json("Team doesn't exist");
+            res.json("You can't place the same team against yourself");
         }
     }
     else {
@@ -72,19 +86,19 @@ router.post("/", validateToken, async (req, res) => {
     }
 });
 
-function matchResult(goalsFirstTeam,goalsSecondTeam){
+function matchResult(goalsFirstTeam, goalsSecondTeam) {
     let pointsFirstTeam, pointsSecondTeam;
-    if(goalsFirstTeam>goalsSecondTeam){
-        pointsFirstTeam=3
-        pointsSecondTeam=0
+    if (goalsFirstTeam > goalsSecondTeam) {
+        pointsFirstTeam = 3
+        pointsSecondTeam = 0
     }
-    else if(goalsFirstTeam<goalsSecondTeam){
-        pointsFirstTeam=0
-        pointsSecondTeam=3
+    else if (goalsFirstTeam < goalsSecondTeam) {
+        pointsFirstTeam = 0
+        pointsSecondTeam = 3
     }
-    else{
-        pointsFirstTeam=1
-        pointsSecondTeam=1
+    else {
+        pointsFirstTeam = 1
+        pointsSecondTeam = 1
     }
     let result = {
         pointsFirstTeam: pointsFirstTeam,
@@ -96,7 +110,6 @@ function matchResult(goalsFirstTeam,goalsSecondTeam){
 router.put("/:matchId", validateToken, async (req, res) => {
     const matchId = req.params.matchId;
     const match = req.body;
-    console.log(match)
     if (matchId != null && match.goalsFirstTeam != null && match.goalsSecondTeam != null) {
         const isMatchExisting = await Matches.findOne({
             where: {
@@ -110,25 +123,34 @@ router.put("/:matchId", validateToken, async (req, res) => {
                     goals_second_team: match.goalsSecondTeam
                 },
                 { where: { id: matchId } })
-            let matchResult = matchResult(match.goalsFirstTeam,match.goalsSecondTeam)
+            let result = matchResult(match.goalsFirstTeam, match.goalsSecondTeam)
+            const teamResults = await Results.findAll({
+                where: {
+                    id: {
+                        [Op.in]: [isMatchExisting.firstTeamId, isMatchExisting.secondTeamId]
+                    }
+                }
+            })
+            const firstTeam = teamResults.find(team => team.id === isMatchExisting.firstTeamId);
+            const secondTeam = teamResults.find(team => team.id === isMatchExisting.secondTeamId);
             await Results.update(
                 {
-                    scored_goals: sequelize.literal(`scored_goals + ${match.goalsFirstTeam}`),
-                    conceded_goals: sequelize.literal(`conceded_goals + ${match.goalsSecondTeam}`),
-                    points: sequelize.literal(`points + ${matchResult.pointsFirstTeam}`)
+                    scored_goals: firstTeam.scored_goals+parseInt(match.goalsFirstTeam),
+                    conceded_goals: firstTeam.conceded_goals + parseInt(match.goalsSecondTeam),
+                    points: firstTeam.points + result.pointsFirstTeam
                 },
                 {
-                    where: {id: isMatchExisting.firstTeamId}
+                    where: { id: isMatchExisting.firstTeamId }
                 }
             )
             await Results.update(
                 {
-                    scored_goals: sequelize.literal(`scored_goals + ${match.goalsSecondTeam}`),
-                    conceded_goals: sequelize.literal(`conceded_goals + ${match.goalsFirstTeam}`),
-                    points: sequelize.literal(`points + ${matchResult.pointsSecondTeam}`)
+                    scored_goals: secondTeam.scored_goals + parseInt(match.goalsSecondTeam),
+                    conceded_goals: secondTeam.conceded_goals + parseInt(match.goalsFirstTeam),
+                    points: secondTeam.points + result.pointsSecondTeam
                 },
                 {
-                    where: {id: isMatchExisting.secondTeamId}
+                    where: { id: isMatchExisting.secondTeamId }
                 }
             )
             res.json("Match updated successfully");
