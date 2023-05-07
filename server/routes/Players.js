@@ -4,6 +4,7 @@ const { validateToken } = require("../middlewares/AuthMiddleware");
 const Players = require("../models").Players;
 const FieldPositions = require("../models").FieldPositions;
 const Teams = require("../models").Teams;
+const isAdmin  = require("../middlewares/isAdmin");
 
 router.get("/", validateToken, async (req, res) => {
   const listOfPlayers = await Players.findAll();
@@ -32,7 +33,7 @@ router.get("/byId/:id",validateToken, async (req, res) => {
   res.json(player);
 });
 
-router.post("/", validateToken, async (req, res) => {
+router.post("/", validateToken,isAdmin, async (req, res) => {
   const player = req.body;
   console.log(player)
   if(player.name!=null && player.teamId!=null && player.fieldPositionId!=null && player.fieldNumber!=null){
@@ -80,7 +81,7 @@ router.post("/", validateToken, async (req, res) => {
   }
 });
 
-router.delete("/:teamId", validateToken, async (req, res) => {
+router.delete("/:playerId", validateToken,isAdmin, async (req, res) => {
   const playerId = req.params.playerId;
   await Players.destroy({
     where: {

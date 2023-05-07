@@ -5,6 +5,7 @@ const { validateToken } = require("../middlewares/AuthMiddleware");
 const Teams = require("../models").Teams;
 const Matches = require("../models").Matches;
 const Results = require("../models").Results;
+const isAdmin  = require("../middlewares/isAdmin");
 
 router.get("/", validateToken, async (req, res) => {
     const listOfMatches = await Matches.findAll({
@@ -56,7 +57,7 @@ router.get("/today", async (req, res) => {
     res.json(matches);
 });
 
-router.post("/", validateToken, async (req, res) => {
+router.post("/", validateToken,isAdmin, async (req, res) => {
     const match = req.body;
     console.log(match)
     if (match.dateTime != null && match.firstTeamId != null && match.secondTeamId != null) {
@@ -107,7 +108,7 @@ function matchResult(goalsFirstTeam, goalsSecondTeam) {
     return result
 }
 
-router.put("/:matchId", validateToken, async (req, res) => {
+router.put("/:matchId", validateToken,isAdmin, async (req, res) => {
     const matchId = req.params.matchId;
     const match = req.body;
     if (matchId != null && match.goalsFirstTeam != null && match.goalsSecondTeam != null) {
@@ -164,7 +165,7 @@ router.put("/:matchId", validateToken, async (req, res) => {
     }
 });
 
-router.delete("/:matchId", validateToken, async (req, res) => {
+router.delete("/:matchId", validateToken,isAdmin, async (req, res) => {
     const matchId = req.params.matchId;
     await Matches.destroy({
         where: {

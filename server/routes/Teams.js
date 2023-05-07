@@ -6,6 +6,7 @@ const Players = require("../models").Players;
 const Results = require("../models").Results;
 const sharp = require('sharp');
 const { validateToken } = require("../middlewares/AuthMiddleware");
+const isAdmin  = require("../middlewares/isAdmin");
 
 router.get("/", validateToken, async (req, res) => {
   const listOfTeams = await Teams.findAll();
@@ -60,7 +61,7 @@ router.get("/byPlayerId/:id",validateToken, async (req, res) => {
   res.json(team);
 });
 
-router.post("/", validateToken, async (req, res) => {
+router.post("/", validateToken,isAdmin, async (req, res) => {
   const team = req.body;
   console.log(team)
   if(team.name!=null){
@@ -90,7 +91,7 @@ router.post("/", validateToken, async (req, res) => {
   }
 });
 
-router.delete("/:teamId", validateToken, async (req, res) => {
+router.delete("/:teamId", validateToken,isAdmin, async (req, res) => {
   const teamId = req.params.teamId;
   await Teams.destroy({
     where: {

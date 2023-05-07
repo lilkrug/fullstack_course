@@ -71,6 +71,16 @@ function App() {
       />
     );
   };
+  const withAuth = (Component) => {
+    const AuthRoute = (props) => {
+      const isAdmin = localStorage.getItem('isAdmin');
+      if (!isAdmin) {
+        return <Redirect to="/" />;
+      }
+      return <Component {...props} />;
+    };
+    return AuthRoute;
+  };
   
   
   const RegistrationWithRouter = withRouter(Registration);
@@ -121,6 +131,7 @@ function App() {
             username: response.data.username,
             id: response.data.id,
             status: true,
+            isAdmin: response.data.isAdmin
           });
         }
       });
@@ -147,12 +158,16 @@ function App() {
                 <>
                   <Link to="/"> Home Page</Link>
                   <Link to="/createpost"> Create A Post</Link>
-                  <Link to="/creatematch"> Create A Match</Link>
-                  <Link to="/createteam"> Create A Team</Link>
-                  <Link to="/updatematch"> Update A Match</Link>
+                  {authState.isAdmin && (
+                  <>
+                    <Link to="/creatematch"> Create A Match</Link>
+                    <Link to="/createteam"> Create A Team</Link>
+                    <Link to="/updatematch"> Update A Match</Link>
+                    </>
+                  )}
                   <Link to="/players"> Players</Link>
                   <Link to="/teams"> Teams</Link>
-                  <Link to="/leaguetable"> League table</Link>
+                  <Link to="/league"> League table</Link>
                 </>
               )}
             </div>

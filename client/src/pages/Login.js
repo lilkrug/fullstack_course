@@ -17,10 +17,12 @@ function Login() {
         alert(response.data.error);
       } else {
         localStorage.setItem("accessToken", response.data.token);
+        localStorage.setItem("isAdmin", response.data.isAdmin);
         setAuthState({
           username: response.data.username,
           id: response.data.id,
           status: true,
+          isAdmin: response.data.isAdmin
         });
         history.push("/");
       }
