@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { Posts, Likes, PostsTeams } = require("../models");
+const { Posts, Likes,  } = require("../models");
+const Teams = require("../models").Teams;
+const PostsTeams = require("../models").PostsTeams;
 
 const { validateToken } = require("../middlewares/AuthMiddleware");
 
@@ -23,6 +25,24 @@ router.get("/byuserId/:id", validateToken, async (req, res) => {
     include: [Likes],
   });
   res.json(listOfPosts);
+});
+
+router.get("/byteamId/:id", validateToken, async (req, res) => {
+  const id = req.params.id;
+  const posts = await Posts.findAll({
+    include: [
+      {
+        model: Teams,
+        attributes: [],
+        through: PostsTeams,
+        where: {
+          id: id
+        }
+      }
+    ]
+  });
+  console.log(posts);
+  res.json(posts);
 });
 
 router.post("/", validateToken, async (req, res) => {

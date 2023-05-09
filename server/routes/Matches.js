@@ -5,7 +5,7 @@ const { validateToken } = require("../middlewares/AuthMiddleware");
 const Teams = require("../models").Teams;
 const Matches = require("../models").Matches;
 const Results = require("../models").Results;
-const isAdmin  = require("../middlewares/isAdmin");
+const isAdmin = require("../middlewares/isAdmin");
 
 router.get("/", validateToken, async (req, res) => {
     const listOfMatches = await Matches.findAll({
@@ -35,7 +35,18 @@ router.get("/byId/:id", async (req, res) => {
     const id = req.params.id;
     const match = await Matches.findOne({
         where: { id: id },
-        include: [Teams]
+        include: [
+            {
+                model: Teams,
+                as: 'firstTeam',
+                attributes: ['name']
+            },
+            {
+                model: Teams,
+                as: 'secondTeam',
+                attributes: ['name']
+            }
+        ]
     })
     res.json(match);
 });
@@ -51,13 +62,38 @@ router.get("/today", async (req, res) => {
             dateTime: {
                 [Op.between]: [startOfToday, endOfToday]
             }
-        }
+        },
+        include: [
+            {
+                model: Teams,
+                as: 'firstTeam',
+                attributes: ['name']
+            },
+            {
+                model: Teams,
+                as: 'secondTeam',
+                attributes: ['name']
+            }
+        ]
     })
-    console.log(matches)
+
+    const formattedMatches = matches.map(match => {
+        const date = new Date(match.dateTime);
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      
+        return {
+          ...match,
+          dateTime: formattedTime
+        };
+      });
+
+    console.log(formattedMatches)
     res.json(matches);
 });
 
-router.post("/", validateToken,isAdmin, async (req, res) => {
+router.post("/", validateToken, isAdmin, async (req, res) => {
     const match = req.body;
     console.log(match)
     if (match.dateTime != null && match.firstTeamId != null && match.secondTeamId != null) {
@@ -108,7 +144,7 @@ function matchResult(goalsFirstTeam, goalsSecondTeam) {
     return result
 }
 
-router.put("/:matchId", validateToken,isAdmin, async (req, res) => {
+router.put("/:matchId", validateToken, isAdmin, async (req, res) => {
     const matchId = req.params.matchId;
     const match = req.body;
     if (matchId != null && match.goalsFirstTeam != null && match.goalsSecondTeam != null) {
@@ -136,7 +172,7 @@ router.put("/:matchId", validateToken,isAdmin, async (req, res) => {
             const secondTeam = teamResults.find(team => team.id === isMatchExisting.secondTeamId);
             await Results.update(
                 {
-                    scored_goals: firstTeam.scored_goals+parseInt(match.goalsFirstTeam),
+                    scored_goals: firstTeam.scored_goals + parseInt(match.goalsFirstTeam),
                     conceded_goals: firstTeam.conceded_goals + parseInt(match.goalsSecondTeam),
                     points: firstTeam.points + result.pointsFirstTeam
                 },
@@ -165,7 +201,7 @@ router.put("/:matchId", validateToken,isAdmin, async (req, res) => {
     }
 });
 
-router.delete("/:matchId", validateToken,isAdmin, async (req, res) => {
+router.delete("/:matchId", validateToken, isAdmin, async (req, res) => {
     const matchId = req.params.matchId;
     await Matches.destroy({
         where: {

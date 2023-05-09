@@ -53,9 +53,14 @@ router.get("/getfavoriteteam/:id", validateToken, async (req, res) => {
     include: { model: Teams }
   })
     .then((user) => {
-      console.log(user.Team.name)
-      const teamName = user.Team.name; // Название команды
-      res.json(teamName)
+      try {
+        console.log(user.Team.name)
+        const teamName = user.Team // Название команды
+        res.json(teamName)
+      }
+      catch{
+        res.json(null)
+      }
     })
 });
 

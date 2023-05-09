@@ -34,7 +34,12 @@ module.exports = (sequelize, DataTypes) => {
             }
           }
         }
-      }
+      },
+      // isHot: {
+      //   type: DataTypes.BOOLEAN,
+      //   allowNull: false,
+      //   default: false
+      // }
     },{
       timestamps: false
     });

@@ -10,7 +10,7 @@ import { AuthContext } from "../helpers/AuthContext";
 function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
-  const [tokenValid, setTokenValid] = useState(false);
+  const [matches, setMatches] = useState([]);
   const { authState } = useContext(AuthContext);
   let history = useHistory();
 
@@ -20,41 +20,39 @@ function Home() {
       console.log(localStorage.getItem("accessToken"))
       history.push("/login");
     } else {
-      // axios
-      //   .get("http://localhost:3001/auth/auth", {
-      //     headers: { accessToken: localStorage.getItem("accessToken") },
-      //   })
-      //   .then((response) => {
-      //     setTokenValid(response.data.error == undefined)
-      //     console.log('fsad')
-      //     console.log(response.data.error == undefined)
-      //     console.log(response.data.error)
-      //     console.log(tokenValid)
-      //   });
-      // if (tokenValid) {
-        axios
-          .get("http://localhost:3001/posts", {
-            headers: { accessToken: localStorage.getItem("accessToken") },
-          })
-          .then((response) => {
-            console.log(response.data)
-            if(response.data.error!=undefined){
-              localStorage.removeItem("accessToken")
-              history.push("/login");
-            }
-            else{
+      axios
+        .get("http://localhost:3001/posts", {
+          headers: { accessToken: localStorage.getItem("accessToken") },
+        })
+        .then((response) => {
+          console.log(response.data)
+          if (response.data.error != undefined) {
+            localStorage.removeItem("accessToken")
+            history.push("/login");
+          }
+          else {
             setListOfPosts(response.data.listOfPosts);
             setLikedPosts(
               response.data.likedPosts.map((like) => {
                 return like.PostId;
               })
             );
-            }
-          });
-      // }
-      // else{
-      //   history.push("/login");
-      // }
+          }
+        });
+        axios
+        .get("http://localhost:3001/matches/today", {
+          headers: { accessToken: localStorage.getItem("accessToken") },
+        })
+        .then((response) => {
+          console.log(response.data)
+          if (response.data.error != undefined) {
+            localStorage.removeItem("accessToken")
+            history.push("/login");
+          }
+          else {
+            setMatches(response.data);
+          }
+        });
     }
   }, []);
 
@@ -96,6 +94,24 @@ function Home() {
 
   return (
     <div>
+      <table>
+      <thead>
+        <tr>
+          <th>Дата</th>
+          <th>Команда 1</th>
+          <th>Команда 2</th>
+        </tr>
+      </thead>
+      <tbody>
+        {matches.map((match, index) => (
+          <tr key={index}>
+            <td>{new Date(match.dateTime).toLocaleTimeString()}</td>
+            <td>{match.firstTeam.name}</td>
+            <td>{match.secondTeam.name}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
       {listOfPosts.map((value, key) => {
         return (
           <div key={key} className="post">

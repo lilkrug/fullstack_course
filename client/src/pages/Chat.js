@@ -12,7 +12,7 @@ function Chat() {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-
+    
     socketRef.current = io(ENDPOINT, {
       transports: ['websocket'],
       auth: { token }

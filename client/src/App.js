@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import CreateMatch from "./pages/CreateMatch";
 import CreateTeam from "./pages/CreateTeam";
+import MatchPage from "./pages/MatchPage";
 import UpdateMatch from "./pages/UpdateMatch";
 import MyLeague from "./pages/MyLeague";
 import Post from "./pages/Post";
@@ -83,7 +84,8 @@ function App() {
   const CurrentPlayerWithRouter = withRouter(CurrentPlayer); 
   const CreatePostWithRouter = withRouter(CreatePost); 
   const CreateTeamWithRouter = withRouter(CreateTeam); 
-  const UpdateMatchWithRouter = withRouter(UpdateMatch); 
+  const UpdateMatchWithRouter = withRouter(UpdateMatch);
+  const MatchPageWithRouter = withRouter(MatchPage); 
   const CreateMatchWithRouter = withRouter(CreateMatch); 
   const PostWithRouter = withRouter(Post); 
   const ProfileWithRouter = withRouter(Profile); 
@@ -177,6 +179,7 @@ function App() {
             <PrivateRoute path="/teams" exact component={TeamsWithRouter} />
             <PrivateRoute path="/league" exact component={MyLeagueWithRouter} />
             <PrivateRoute path="/team/:id" exact component={CurrentTeamWithRouter} />
+            <PrivateRoute path="/match/:id" exact component={MatchPageWithRouter} />
             <PrivateRoute path="/player/:id" exact component={CurrentPlayerWithRouter} />
             <PrivateRoute path="/createpost" exact component={CreatePostWithRouter} />
             <AdminRoute path="/createteam" exact component={CreateTeamWithRouter} />
