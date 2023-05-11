@@ -6,6 +6,7 @@ const Teams = require("../models").Teams;
 const Matches = require("../models").Matches;
 const Results = require("../models").Results;
 const isAdmin = require("../middlewares/isAdmin");
+const { Message } = require("../models");
 
 router.get("/", validateToken, async (req, res) => {
     const listOfMatches = await Matches.findAll({
@@ -31,7 +32,7 @@ router.get("/withoutScore", validateToken, async (req, res) => {
     res.json(listOfMatches);
 });
 
-router.get("/byId/:id", async (req, res) => {
+router.get("/byId/:id",validateToken, async (req, res) => {
     const id = req.params.id;
     const match = await Matches.findOne({
         where: { id: id },
@@ -49,6 +50,20 @@ router.get("/byId/:id", async (req, res) => {
         ]
     })
     res.json(match);
+});
+
+router.post("/sethot/:id",validateToken,isAdmin, async (req, res) => {
+    const id = req.params.id;
+    await Matches.update({ 'isHot': false }, {
+        where: { isHot: true },
+    });
+    await Message.destroy({
+        where: {} // Условие для удаления всех записей, можно указать другие условия
+    });
+    await Matches.update({ 'isHot': true }, {
+        where: { id: id },
+    });
+    res.json('successfully placed hot');
 });
 
 router.get("/today", async (req, res) => {
@@ -82,12 +97,12 @@ router.get("/today", async (req, res) => {
         const hours = date.getHours();
         const minutes = date.getMinutes();
         const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-      
+
         return {
-          ...match,
-          dateTime: formattedTime
+            ...match,
+            dateTime: formattedTime
         };
-      });
+    });
 
     console.log(formattedMatches)
     res.json(matches);

@@ -15,6 +15,7 @@ function CreatePost() {
   const initialValues = {
     title: "",
     postText: "",
+    relatedTeams: 0
   };
 
   useEffect(() => {

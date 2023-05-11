@@ -104,7 +104,10 @@ function Home() {
       </thead>
       <tbody>
         {matches.map((match, index) => (
-          <tr key={index}>
+          <tr key={index}
+          onClick={() => {
+            window.location.href = `/match/${match.id}`;
+          }}>
             <td>{new Date(match.dateTime).toLocaleTimeString()}</td>
             <td>{match.firstTeam.name}</td>
             <td>{match.secondTeam.name}</td>

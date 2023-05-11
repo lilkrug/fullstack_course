@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext  } from 'react';
 import io from 'socket.io-client';
-import axios from 'axios';
+import { AuthContext } from "../helpers/AuthContext";
 
 const ENDPOINT = 'localhost:3001';
 
@@ -8,7 +8,7 @@ function Chat() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const socketRef = useRef();
-  
+  const { authState } = useContext(AuthContext);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -35,7 +35,7 @@ function Chat() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    socketRef.current.emit('newMessage', { text: message });
+    socketRef.current.emit('newMessage', { text: message,author:authState.username });
     setMessage('');
   };
 
@@ -43,7 +43,7 @@ function Chat() {
     <div>
       <div style={{ height: '500px', overflowY: 'scroll' }}>
         {messages.map((message, index) => (
-          <div key={index}>{message.text}</div>
+          <div key={index}>{message.author}:{message.text}</div>
         ))}
       </div>
       <form onSubmit={handleSubmit}>

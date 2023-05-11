@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import CreateMatch from "./pages/CreateMatch";
 import CreateTeam from "./pages/CreateTeam";
+import CreatePlayer from "./pages/CreatePlayer";
 import MatchPage from "./pages/MatchPage";
 import UpdateMatch from "./pages/UpdateMatch";
 import MyLeague from "./pages/MyLeague";
@@ -21,6 +22,7 @@ import { AuthContext } from "./helpers/AuthContext";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Teams from "./pages/Teams";
+import Players from "./pages/Players";
 import Chat from "./pages/Chat";
 
 function App() {
@@ -78,11 +80,13 @@ function App() {
   const RegistrationWithRouter = withRouter(Registration);
   const LoginWithRouter = withRouter(Login);  
   const ChatWithRouter = withRouter(Chat); 
-  const TeamsWithRouter = withRouter(Teams); 
+  const TeamsWithRouter = withRouter(Teams);
+  const PlayersWithRouter = withRouter(Players); 
   const HomeWithRouter = withRouter(Home); 
   const CurrentTeamWithRouter = withRouter(CurrentTeam); 
   const CurrentPlayerWithRouter = withRouter(CurrentPlayer); 
-  const CreatePostWithRouter = withRouter(CreatePost); 
+  const CreatePostWithRouter = withRouter(CreatePost);
+  const CreatePlayerWithRouter = withRouter(CreatePlayer); 
   const CreateTeamWithRouter = withRouter(CreateTeam); 
   const UpdateMatchWithRouter = withRouter(UpdateMatch);
   const MatchPageWithRouter = withRouter(MatchPage); 
@@ -157,6 +161,7 @@ function App() {
                   <>
                     <Link to="/creatematch"> Create A Match</Link>
                     <Link to="/createteam"> Create A Team</Link>
+                    <Link to="/createplayer"> Create A Player</Link>
                     <Link to="/updatematch"> Update A Match</Link>
                     </>
                   )}
@@ -177,11 +182,13 @@ function App() {
             <PrivateRoute path="/" exact component={HomeWithRouter} />
             <PrivateRoute path="/chat" exact component={ChatWithRouter} />
             <PrivateRoute path="/teams" exact component={TeamsWithRouter} />
+            <PrivateRoute path="/players" exact component={PlayersWithRouter} />
             <PrivateRoute path="/league" exact component={MyLeagueWithRouter} />
             <PrivateRoute path="/team/:id" exact component={CurrentTeamWithRouter} />
             <PrivateRoute path="/match/:id" exact component={MatchPageWithRouter} />
             <PrivateRoute path="/player/:id" exact component={CurrentPlayerWithRouter} />
             <PrivateRoute path="/createpost" exact component={CreatePostWithRouter} />
+            <AdminRoute path="/createplayer" exact component={CreatePlayerWithRouter} />
             <AdminRoute path="/createteam" exact component={CreateTeamWithRouter} />
             <AdminRoute path="/creatematch" exact component={CreateMatchWithRouter} />
             <AdminRoute path="/updatematch" exact component={UpdateMatchWithRouter} />

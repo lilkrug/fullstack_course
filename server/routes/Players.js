@@ -7,7 +7,14 @@ const Teams = require("../models").Teams;
 const isAdmin  = require("../middlewares/isAdmin");
 
 router.get("/", validateToken, async (req, res) => {
-  const listOfPlayers = await Players.findAll();
+  const listOfPlayers = await Players.findAll({
+    include: [
+      {
+        model: Teams, // Модель команды
+        as: 'team', // Псевдоним для связи
+      },
+    ]
+});
   res.json({ listOfPlayers: listOfPlayers});
 });
 
