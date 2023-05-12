@@ -21,61 +21,61 @@ function Post() {
 
   useEffect(() => {
     axios.get(`http://localhost:3001/posts/byId/${id}`,
-    {
-      headers: {
-        accessToken: localStorage.getItem("accessToken"),
-      },
-    }).then((response) => {
-      if(response.data.error!=undefined){
-        history.push("/login");
-      }
-      else{
-      setPostObject(response.data);
-      }
-    });
+      {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
+        },
+      }).then((response) => {
+        if (response.data.error != undefined) {
+          history.push("/login");
+        }
+        else {
+          setPostObject(response.data);
+        }
+      });
 
     axios.get(`http://localhost:3001/comments/${id}`,
-    {
-      headers: {
-        accessToken: localStorage.getItem("accessToken"),
-      },
-    }).then((response) => {
-      setComments(response.data);
-    });
+      {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
+        },
+      }).then((response) => {
+        setComments(response.data);
+      });
   }, []);
 
   const addComment = () => {
-    if(newComment.length!=0){
-    axios
-      .post(
-        "http://localhost:3001/comments",
-        {
-          commentBody: newComment,
-          PostId: id,
-        },
-        {
-          headers: {
-            accessToken: localStorage.getItem("accessToken"),
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data.error) {
-          history.push("/login");
-          console.log(response.data.error);
-        } else {
-          console.log(response)
-          const commentToAdd = {
-            id: response.data.id,
+    if (newComment.length != 0) {
+      axios
+        .post(
+          "http://localhost:3001/comments",
+          {
             commentBody: newComment,
-            username: response.data.username,
-          };
-          //setComments([...comments, commentToAdd]);
-          comments.push(commentToAdd)
-          setNewComment("");
-          console.log(comments)
-        }
-      });
+            PostId: id,
+          },
+          {
+            headers: {
+              accessToken: localStorage.getItem("accessToken"),
+            },
+          }
+        )
+        .then((response) => {
+          if (response.data.error) {
+            history.push("/login");
+            console.log(response.data.error);
+          } else {
+            console.log(response)
+            const commentToAdd = {
+              id: response.data.id,
+              commentBody: newComment,
+              username: response.data.username,
+            };
+            //setComments([...comments, commentToAdd]);
+            comments.push(commentToAdd)
+            setNewComment("");
+            console.log(comments)
+          }
+        });
     }
   };
 
@@ -101,6 +101,31 @@ function Post() {
       .then(() => {
         history.push("/");
       });
+  };
+
+  const handleSaveClick = async () => {
+    try {
+
+      const response = await axios.put(
+        "http://localhost:3001/posts/postText",
+        {
+          newText: editedText,
+          id: id,
+        },
+        {
+          headers: { accessToken: localStorage.getItem("accessToken") },
+        }
+      );
+
+      // Handle the response as needed
+      console.log(response.data);
+
+      setIsEditing(false); // Exit the editing mode
+      setPostObject({ ...postObject, postText: editedText });
+    } catch (error) {
+      // Handle any error that occurred during the PUT request
+      console.log(error);
+    }
   };
 
   const editPost = (option) => {
@@ -149,16 +174,25 @@ function Post() {
           >
             {postObject.title}
           </div>
-          <div
-            className="body"
-            onClick={() => {
-              if (authState.username === postObject.username) {
-                editPost("body");
-              }
-            }}
-          >
-            {postObject.postText}
-          </div>
+
+          {isEditing ? (
+            <div>
+              <textarea
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+                style={{ resize: "none", height: "100px" }}
+              />
+              <button onClick={handleSaveClick}>Save</button>
+            </div>
+          ) : (
+            <div
+              className="body"
+              onClick={handleEditClick}
+              style={{ maxHeight: "100px", overflowWrap: "break-word", overflow: "hidden" }}
+              >
+              {postObject.postText}
+            </div>
+          )}
           <div className="footer">
             {postObject.username}
             {authState.username === postObject.username | authState.isAdmin && (
@@ -184,8 +218,8 @@ function Post() {
             value={newComment}
             onChange={(event) => {
               console.log(event.target.value)
-              if(event.target.value!=null){
-              setNewComment(event.target.value);
+              if (event.target.value != null) {
+                setNewComment(event.target.value);
               }
             }}
           />
@@ -197,13 +231,13 @@ function Post() {
               <div key={key} className="comment">
                 {comment.commentBody}
                 <label> Username: {comment.username}</label>
-                {(authState.username === comment.username| authState.isAdmin) && comment.id!=undefined && (
+                {(authState.username === comment.username | authState.isAdmin) && comment.id != undefined && (
                   <button
                     onClick={() => {
                       deleteComment(comment.id);
                     }}
                   >
-                    Delete 
+                    Delete
                   </button>
                 )}
               </div>
