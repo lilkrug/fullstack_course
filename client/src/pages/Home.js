@@ -39,7 +39,7 @@ function Home() {
             );
           }
         });
-        axios
+      axios
         .get("http://localhost:3001/matches/today", {
           headers: { accessToken: localStorage.getItem("accessToken") },
         })
@@ -94,27 +94,29 @@ function Home() {
 
   return (
     <div>
-      <table>
-      <thead>
-        <tr>
-          <th>Дата</th>
-          <th>Команда 1</th>
-          <th>Команда 2</th>
-        </tr>
-      </thead>
-      <tbody>
-        {matches.map((match, index) => (
-          <tr key={index}
-          onClick={() => {
-            window.location.href = `/match/${match.id}`;
-          }}>
-            <td>{new Date(match.dateTime).toLocaleTimeString()}</td>
-            <td>{match.firstTeam.name}</td>
-            <td>{match.secondTeam.name}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+      {matches.length != 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Команда 1</th>
+              <th>Команда 2</th>
+            </tr>
+          </thead>
+          <tbody>
+            {matches.map((match, index) => (
+              <tr key={index}
+                onClick={() => {
+                  window.location.href = `/match/${match.id}`;
+                }}>
+                <td>{new Date(match.dateTime).toLocaleTimeString()}</td>
+                <td>{match.firstTeam.name}</td>
+                <td>{match.secondTeam.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>)
+      }
       {listOfPosts.map((value, key) => {
         return (
           <div key={key} className="post">

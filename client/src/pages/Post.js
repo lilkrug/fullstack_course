@@ -8,6 +8,13 @@ function Post() {
   const [postObject, setPostObject] = useState({});
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedText, setEditedText] = useState(postObject.postText);
+  const handleEditClick = () => {
+    if (authState.username === postObject.username) {
+      setIsEditing(true);
+    }
+  };
   const { authState } = useContext(AuthContext);
 
   let history = useHistory();

@@ -53,7 +53,8 @@ function CreatePlayer() {
     }, []);
     const validationSchema = Yup.object().shape({
         name: Yup.string().required("You must input a name!"),
-        fieldNumber: Yup.string().required("You must input a fieldNumber!")
+        teamId: Yup.number().required("Please select a team"),
+        fieldPositionId: Yup.number().required("Please select a field position"),
     });
 
     const onSubmit = (data) => {
@@ -74,49 +75,51 @@ function CreatePlayer() {
     };
 
     return (
-        <div className="createPostPage">
-            <Formik
-                initialValues={initialValues}
-                onSubmit={onSubmit}
-                validationSchema={validationSchema}
-            >
-                <Form className="formContainer">
-                    <label>Name: </label>
-                    <ErrorMessage name="name" component="span" />
-                    <Field
-                        autoComplete="off"
-                        id="inputCreatePost"
-                        name="name"
-                        placeholder="(Ex. Shulakov Andrey)"
-                    />
-                    <ErrorMessage name="fieldNumber" component="span" />
-                    <Field
-                        autoComplete="off"
-                        id="inputCreatePost"
-                        name="fieldNumber"
-                        placeholder="(Ex. 69)"
-                    />
-                    <Field as="select" name="teamId">
-                        <option value="">Select a team</option>
-                        {teams.map((team) => (
-                            <option key={team.id} value={team.id}>
-                                {team.name}
-                            </option>
-                        ))}
-                    </Field>
-                    <br/>
-                    
-                    <Field as="select" name="fieldPositionId">
-                        <option value="">Select a field position</option>
-                        {fieldPositions.map((fieldPosition) => (
-                            <option key={fieldPosition.id} value={fieldPosition.id}>
-                                {fieldPosition.name}
-                            </option>
-                        ))}
-                    </Field>
-                    <button type="submit"> Create Player</button>
-                </Form>
-            </Formik>
+        <div>{teams.length!=0?(
+            <div className="createPostPage">
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={onSubmit}
+                    validationSchema={validationSchema}
+                >
+                    <Form className="formContainer">
+                        <label>Name: </label>
+                        <ErrorMessage name="name" component="span" />
+                        <Field
+                            autoComplete="off"
+                            id="inputCreatePost"
+                            name="name"
+                            placeholder="(Ex. Shulakov Andrey)"
+                        />
+                        <ErrorMessage name="teamId" component="span" />
+                        <Field as="select" name="teamId">
+                            <option value="">Select a team</option>
+                            {teams.map((team) => (
+                                <option key={team.id} value={team.id}>
+                                    {team.name}
+                                </option>
+                            ))}
+                        </Field>
+                        <br />
+                        <ErrorMessage name="fieldPositionId" component="span" />
+                        <Field as="select" name="fieldPositionId">
+                            <option value="">Select a field position</option>
+                            {fieldPositions.map((fieldPosition) => (
+                                <option key={fieldPosition.id} value={fieldPosition.id}>
+                                    {fieldPosition.name}
+                                </option>
+                            ))}
+                        </Field>
+                        <button type="submit"> Create Player</button>
+                    </Form>
+                </Formik>
+            </div>
+        )
+    :
+    (
+        <h1>no teams</h1>
+    )
+    }
         </div>
     );
 }

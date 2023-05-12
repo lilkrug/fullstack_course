@@ -29,8 +29,8 @@ function CreatePost() {
     });
   }, []);
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required("You must input a Title!"),
-    postText: Yup.string().required(),
+    title: Yup.string().required("You must input a Title!").matches(/^\S+$/, "Whitespace is not allowed"),
+    postText: Yup.string().required("You must input a text!").matches(/^\S+$/, "Whitespace is not allowed"),
   });
 
   const handleTeamSelection = (event) => {
@@ -80,25 +80,31 @@ function CreatePost() {
             id="inputCreatePost"
             name="postText"
             placeholder="(Ex. Post...)"
+            style={{ width: "100%", height: "200px", resize: "none" }}
+            component="textarea"
           />
-          <label>
-            <Field
-              type="checkbox"
-              name="isTeamRelated"
-              onClick={() => setIsTeamRelated(!isTeamRelated)}
-            />
-            Is related to team(s)?
-          </label>
-          {isTeamRelated && (
+          {teams.length != 0 && (
             <div>
-              <label>Related team(s):</label>
-              <Field as="select" name="relatedTeams" onChange={handleTeamSelection}>
-                {teams.map((team) => (
-                  <option key={team.id} value={team.id}>
-                    {team.name}
-                  </option>
-                ))}
-              </Field>
+              <label>
+                <Field
+                  type="checkbox"
+                  name="isTeamRelated"
+                  onClick={() => setIsTeamRelated(!isTeamRelated)}
+                />
+                Is related to team(s)?
+              </label>
+              {isTeamRelated && (
+                <div>
+                  <label>Related team(s):</label>
+                  <Field as="select" name="relatedTeams" onChange={handleTeamSelection}>
+                    {teams.map((team) => (
+                      <option key={team.id} value={team.id}>
+                        {team.name}
+                      </option>
+                    ))}
+                  </Field>
+                </div>
+              )}
             </div>
           )}
 

@@ -1,10 +1,11 @@
 import "./App.css";
-import { BrowserRouter as Router,withRouter,  Redirect, useHistory, Route, Switch, Link } from "react-router-dom";
+import { BrowserRouter as Router, withRouter, Redirect, useHistory, Route, Switch, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import CreateMatch from "./pages/CreateMatch";
 import CreateTeam from "./pages/CreateTeam";
 import CreatePlayer from "./pages/CreatePlayer";
+import UpdatePlayer from "./pages/UpdatePlayer";
 import MatchPage from "./pages/MatchPage";
 import UpdateMatch from "./pages/UpdateMatch";
 import MyLeague from "./pages/MyLeague";
@@ -26,9 +27,9 @@ import Players from "./pages/Players";
 import Chat from "./pages/Chat";
 
 function App() {
-  let isAuthenticated = localStorage.getItem("accessToken")!=null
+  let isAuthenticated = localStorage.getItem("accessToken") != null
   const AuthRoute = ({ component: Component, ...rest }) => {
-    isAuthenticated = localStorage.getItem("accessToken")!=null
+    isAuthenticated = localStorage.getItem("accessToken") != null
     console.log('isauth')
     console.log(isAuthenticated)
     return (
@@ -41,23 +42,23 @@ function App() {
     );
   };
   const PrivateRoute = ({ component: Component, ...rest }) => {
-    isAuthenticated = localStorage.getItem("accessToken")!=null
+    isAuthenticated = localStorage.getItem("accessToken") != null
     console.log('statea auth')
     console.log(isAuthenticated)
-    if(!isAuthenticated){
+    if (!isAuthenticated) {
       setAuthState({ ...authState, status: false });
     }
-    
+
     return (
       <Route
         {...rest}
         render={(props) =>
-          isAuthenticated ?<Component {...props} /> :  <Redirect to="/login" />
+          isAuthenticated ? <Component {...props} /> : <Redirect to="/login" />
         }
       />
     );
   };
-  
+
   const AdminRoute = ({ component: Component, isAdmin, ...rest }) => {
     const isAuthenticated = localStorage.getItem("accessToken") !== null;
     isAdmin = localStorage.getItem("isAdmin")
@@ -75,32 +76,33 @@ function App() {
       />
     );
   };
-  
-  
+
+
   const RegistrationWithRouter = withRouter(Registration);
-  const LoginWithRouter = withRouter(Login);  
-  const ChatWithRouter = withRouter(Chat); 
+  const LoginWithRouter = withRouter(Login);
+  const ChatWithRouter = withRouter(Chat);
   const TeamsWithRouter = withRouter(Teams);
-  const PlayersWithRouter = withRouter(Players); 
-  const HomeWithRouter = withRouter(Home); 
-  const CurrentTeamWithRouter = withRouter(CurrentTeam); 
-  const CurrentPlayerWithRouter = withRouter(CurrentPlayer); 
+  const PlayersWithRouter = withRouter(Players);
+  const HomeWithRouter = withRouter(Home);
+  const CurrentTeamWithRouter = withRouter(CurrentTeam);
+  const CurrentPlayerWithRouter = withRouter(CurrentPlayer);
   const CreatePostWithRouter = withRouter(CreatePost);
-  const CreatePlayerWithRouter = withRouter(CreatePlayer); 
-  const CreateTeamWithRouter = withRouter(CreateTeam); 
+  const CreatePlayerWithRouter = withRouter(CreatePlayer);
+  const UpdatePlayerWithRouter = withRouter(UpdatePlayer);
+  const CreateTeamWithRouter = withRouter(CreateTeam);
   const UpdateMatchWithRouter = withRouter(UpdateMatch);
-  const MatchPageWithRouter = withRouter(MatchPage); 
-  const CreateMatchWithRouter = withRouter(CreateMatch); 
-  const PostWithRouter = withRouter(Post); 
-  const ProfileWithRouter = withRouter(Profile); 
+  const MatchPageWithRouter = withRouter(MatchPage);
+  const CreateMatchWithRouter = withRouter(CreateMatch);
+  const PostWithRouter = withRouter(Post);
+  const ProfileWithRouter = withRouter(Profile);
   const ChangePasswordWithRouter = withRouter(ChangePassword);
-  const MyLeagueWithRouter = withRouter(MyLeague); 
+  const MyLeagueWithRouter = withRouter(MyLeague);
 
   const [authState, setAuthState] = useState({
     username: "",
     id: 0,
     status: false,
-    isAdmin:localStorage.getItem("isAdmin")
+    isAdmin: localStorage.getItem("isAdmin")
   });
   let history = useHistory();
 
@@ -115,7 +117,7 @@ function App() {
         console.log(response.data)
         if (response.data.error) {
           isAuthenticated = false
-          if(response.data.error=='jwt expired'){
+          if (response.data.error == 'jwt expired') {
             localStorage.removeItem("accessToken");
             setAuthState({ ...authState, status: false });
             console.log(localStorage.getItem("accessToken"))
@@ -158,11 +160,12 @@ function App() {
                   <Link to="/"> Home Page</Link>
                   <Link to="/createpost"> Create A Post</Link>
                   {authState.isAdmin && (
-                  <>
-                    <Link to="/creatematch"> Create A Match</Link>
-                    <Link to="/createteam"> Create A Team</Link>
-                    <Link to="/createplayer"> Create A Player</Link>
-                    <Link to="/updatematch"> Update A Match</Link>
+                    <>
+                      <Link to="/creatematch"> Create A Match</Link>
+                      <Link to="/createteam"> Create A Team</Link>
+                      <Link to="/createplayer"> Create A Player</Link>
+                      <Link to="/updateplayer"> Update A Player</Link>
+                      <Link to="/updatematch"> Update A Match</Link>
                     </>
                   )}
                   <Link to="/players"> Players</Link>
@@ -172,7 +175,7 @@ function App() {
               )}
             </div>
             <div className="loggedInContainer">
-              <h1><a href={"/profile/"+authState.id}>{authState.username}</a> </h1>
+              <h1><a href={"/profile/" + authState.id}>{authState.username}</a> </h1>
               {authState.status && <button onClick={logout}> Logout</button>}
             </div>
           </div>
@@ -192,6 +195,7 @@ function App() {
             <AdminRoute path="/createteam" exact component={CreateTeamWithRouter} />
             <AdminRoute path="/creatematch" exact component={CreateMatchWithRouter} />
             <AdminRoute path="/updatematch" exact component={UpdateMatchWithRouter} />
+            <AdminRoute path="/updateplayer" exact component={UpdatePlayerWithRouter} />
             <PrivateRoute path="/post/:id" exact component={PostWithRouter} />
             <PrivateRoute path="/profile/:id" exact component={ProfileWithRouter} />
             <PrivateRoute path="/changepassword" exact component={ChangePasswordWithRouter} />

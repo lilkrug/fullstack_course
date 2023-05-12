@@ -78,6 +78,16 @@ router.post("/sethot/:id",validateToken, async (req, res) => {
     res.json('successfully placed hot');
 });
 
+router.post("/unsethot",validateToken, async (req, res) => {
+    await Matches.update({ 'isHot': false }, {
+        where: { isHot: true },
+    });
+    await Message.destroy({
+        where: {} // Условие для удаления всех записей, можно указать другие условия
+    });
+    res.json('successfully unset hot');
+});
+
 router.get("/today", async (req, res) => {
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);

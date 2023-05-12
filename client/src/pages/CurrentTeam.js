@@ -20,6 +20,8 @@ function Team() {
         accessToken: localStorage.getItem("accessToken"),
       },
     }).then((response) => {
+      console.log('response')
+      console.log(response.data)
       if(response.data.error!=undefined){
         history.push("/login");
       }
@@ -90,8 +92,6 @@ function Team() {
                 <tr>
                   <th>Field Position</th>
                   <th>Name</th>
-                  <th>Number</th>
-                  <th>Matches</th>
                   <th>Goals</th>
                   <th>Assists</th>
                 </tr>
@@ -103,8 +103,6 @@ function Team() {
                     <td onClick={() => {
           history.push(`/player/${player.id}`);
         }}>{player.name}</td>
-                    <td>{player.fieldNumber}</td>
-                    <td>{player.matches}</td>
                     <td>{player.goals}</td>
                     <td>{player.assists}</td>
                   </tr>

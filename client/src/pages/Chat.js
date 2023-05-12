@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext  } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import io from 'socket.io-client';
 import { AuthContext } from "../helpers/AuthContext";
 
@@ -12,7 +12,7 @@ function Chat() {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    
+
     socketRef.current = io(ENDPOINT, {
       transports: ['websocket'],
       auth: { token }
@@ -35,8 +35,13 @@ function Chat() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    socketRef.current.emit('newMessage', { text: message,author:authState.username });
-    setMessage('');
+    if (message.trim() !== '') {
+      socketRef.current.emit('newMessage', { text: message, author: authState.username });
+      setMessage('');
+    } else {
+      alert('u cant input 0')
+      setMessage('');
+    }
   };
 
   return (
@@ -51,7 +56,10 @@ function Chat() {
           type="text"
           placeholder="Type your message"
           value={message}
-          onChange={(event) => setMessage(event.target.value)}
+          onChange={(event) => {
+            const inputValue = event.target.value;
+              setMessage(inputValue);
+          }}
         />
         <button type="submit">Send</button>
       </form>

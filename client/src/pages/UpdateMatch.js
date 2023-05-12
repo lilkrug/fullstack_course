@@ -11,6 +11,7 @@ const MatchForm = () => {
     const [matchId, setMatchId] = useState({});
     const [goalsFirstTeam, setGoalsFirstTeam] = useState("");
     const [goalsSecondTeam, setGoalsSecondTeam] = useState("");
+    
     let history = useHistory();
 
     useEffect(() => {
@@ -21,12 +22,12 @@ const MatchForm = () => {
             axios.get("http://localhost:3001/matches/withoutScore", {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             }).then((response) => {
-                if(response.data.error!=undefined){
+                if (response.data.error != undefined) {
                     history.push("/login");
-                  }
-                  else{
-                setMatchList(response.data);
-                  }
+                }
+                else {
+                    setMatchList(response.data);
+                }
             });
         }
     }, []);
@@ -37,13 +38,13 @@ const MatchForm = () => {
     };
 
     const validationSchema = Yup.object().shape({
-        matchId: Yup.number().required(),
-        goalsFirstTeam: Yup.number().required(),
-        goalsSecondTeam: Yup.number().required(),
-        numberOfPassesFirstTeam: Yup.number().required(),
-        numberOfPassesSecondTeam: Yup.number().required(),
-        numberOfCornersFirstTeam: Yup.number().required(),
-        numberOfCornersSecondTeam: Yup.number().required(),
+        matchId: Yup.number().integer().required(),
+        goalsFirstTeam: Yup.number().min(0).required(),
+        goalsSecondTeam: Yup.number().min(0).required(),
+        numberOfPassesFirstTeam: Yup.number().integer().required(),
+        numberOfPassesSecondTeam: Yup.number().integer().required(),
+        numberOfCornersFirstTeam: Yup.number().min(0).required(),
+        numberOfCornersSecondTeam: Yup.number().min(0).required(),
     });
 
     const onSubmit = (data) => {
@@ -59,70 +60,78 @@ const MatchForm = () => {
     };
 
     return (
-        <Formik
-            initialValues={initialValues}
-            onSubmit={onSubmit}
-            validationSchema={validationSchema}
-        >
-            <Form className="formContainer">
-                <label>Match: </label>
-                <ErrorMessage name="matchId" component="span"/>
-                <Field as="select" name="matchId" >
-                    <option value="">Select a match</option>
-                    {matchList.map((match) => (
-                        <option key={match.id} value={match.id} >
-                            {match.firstTeamId}-{match.secondTeamId} {match.dateTime}
-                        </option>
-                    ))}
-                </Field>
-                <label>Goals first team: </label>
-                <ErrorMessage name="goalsFirstTeam" component="span" />
-                <Field
-                    autoComplete="off"
-                    id="inputCreatePost"
-                    name="goalsFirstTeam"
-                    placeholder="(Ex. first goal...)"
-                />
-                <label>Goals second team: </label>
-                <ErrorMessage name="goalsSecondTeam" component="span" />
-                <Field
-                    autoComplete="off"
-                    id="inputCreatePost"
-                    name="goalsSecondTeam"
-                    placeholder="(Ex. second goal...)"
-                />
-                <ErrorMessage name="numberOfPassesFirstTeam" component="span" />
-                <Field
-                    autoComplete="off"
-                    id="inputCreatePost"
-                    name="numberOfPassesFirstTeam"
-                    placeholder="(Ex. second goal...)"
-                />
-                <ErrorMessage name="numberOfPassesSecondTeam" component="span" />
-                <Field
-                    autoComplete="off"
-                    id="inputCreatePost"
-                    name="numberOfPassesSecondTeam"
-                    placeholder="(Ex. second goal...)"
-                />
-                <ErrorMessage name="numberOfCornersFirstTeam" component="span" />
-                <Field
-                    autoComplete="off"
-                    id="inputCreatePost"
-                    name="numberOfCornersFirstTeam"
-                    placeholder="(Ex. second goal...)"
-                />
-                <ErrorMessage name="numberOfCornersSecondTeam" component="span" />
-                <Field
-                    autoComplete="off"
-                    id="inputCreatePost"
-                    name="numberOfCornersSecondTeam"
-                    placeholder="(Ex. second goal...)"
-                />
+        <div>
+            {matchList.length > 0 ? (
+                <Formik
+                    initialValues={initialValues}
+                    onSubmit={onSubmit}
+                    validationSchema={validationSchema}
+                >
+                    <Form className="formContainer">
+                        <label>Match: </label>
+                        <ErrorMessage name="matchId" component="span" />
+                        <Field as="select" name="matchId" >
+                            <option value="">Select a match</option>
+                            {matchList.map((match) => (
+                                <option key={match.id} value={match.id} >
+                                    {match.firstTeamId}-{match.secondTeamId} {match.dateTime}
+                                </option>
+                            ))}
+                        </Field>
+                        <label>Goals first team: </label>
+                        <ErrorMessage name="goalsFirstTeam" component="span" />
+                        <Field
+                            autoComplete="off"
+                            id="inputCreatePost"
+                            name="goalsFirstTeam"
+                            placeholder="(Ex. first goal...)"
+                        />
+                        <label>Goals second team: </label>
+                        <ErrorMessage name="goalsSecondTeam" component="span" />
+                        <Field
+                            autoComplete="off"
+                            id="inputCreatePost"
+                            name="goalsSecondTeam"
+                            placeholder="(Ex. second goal...)"
+                        />
+                        <ErrorMessage name="numberOfPassesFirstTeam" component="span" />
+                        <Field
+                            autoComplete="off"
+                            id="inputCreatePost"
+                            name="numberOfPassesFirstTeam"
+                            placeholder="(Ex. second goal...)"
+                        />
+                        <ErrorMessage name="numberOfPassesSecondTeam" component="span" />
+                        <Field
+                            autoComplete="off"
+                            id="inputCreatePost"
+                            name="numberOfPassesSecondTeam"
+                            placeholder="(Ex. second goal...)"
+                        />
+                        <ErrorMessage name="numberOfCornersFirstTeam" component="span" />
+                        <Field
+                            autoComplete="off"
+                            id="inputCreatePost"
+                            name="numberOfCornersFirstTeam"
+                            placeholder="(Ex. second goal...)"
+                        />
+                        <ErrorMessage name="numberOfCornersSecondTeam" component="span" />
+                        <Field
+                            autoComplete="off"
+                            id="inputCreatePost"
+                            name="numberOfCornersSecondTeam"
+                            placeholder="(Ex. second goal...)"
+                        />
 
-                <button type="submit"> Update match</button>
-            </Form>
-        </Formik>
+                        <button type="submit"> Update match</button>
+                    </Form>
+                </Formik>
+            ) :
+                (
+                    <h2>no matches</h2>
+                )
+            }
+        </div>
     );
 };
 

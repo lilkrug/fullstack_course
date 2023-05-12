@@ -45,10 +45,6 @@ function Player() {
             <div className="player-info-value">{player.assists}</div>
           </div>
           <div className="player-info-row">
-            <div className="player-info-label">Матчи:</div>
-            <div className="player-info-value">{player.matches}</div>
-          </div>
-          <div className="player-info-row">
             <div className="player-info-label">Позиция:</div>
             <div className="player-info-value">{fieldPosition.name}</div>
           </div>
