@@ -13,27 +13,21 @@ function MatchPage() {
   const [error, setError] = useState(null);
   const matchId = 123; // здесь нужно указать id матча, данные о котором нужно получить
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     console.log(localStorage.getItem("accessToken"))
-    axios.post(`http://localhost:3001/matches/sethot/${id}`,
-          {
-            headers: {
-              accessToken: localStorage.getItem("accessToken"),
-            },
-          }).then((response) => {console.log(response.data)})
-    // axios.put(`http://localhost:3001/matches/sethot/${id}`, {
-    //   headers: {
-    //     accessToken: localStorage.getItem("accessToken")
-    //   },
-    // })
-    //   .then(() => {
-    //     // Запрос успешно выполнен
-    //     console.log('Match updated successfully.');
-    //   })
-    //   .catch((error) => {
-    //     // Обработка ошибки
-    //     console.error('Error updating match:', error);
-    //   });
+    axios
+      .post(`http://localhost:3001/matches/sethot/${id}`,{}, {
+        headers: { accessToken: localStorage.getItem("accessToken") },
+      })
+      .then((response) => {
+        console.log(response)
+        if(response.data.error!=undefined){
+          history.push("/login");
+        }
+        else{
+          history.push("/");
+        }
+      });
   };
 
   useEffect(() => {
@@ -53,7 +47,6 @@ function MatchPage() {
             }
             else {
               console.log(response.data)
-              console.log(response.data.firstTeam.name)
               setMatchData(response.data);
             }
           })
@@ -71,7 +64,7 @@ function MatchPage() {
   } else {
     return (
       <div>
-        {authState.isAdmin && (
+        {authState.isAdmin && matchData.isHot==null|matchData.isHot==false&&(
           <>
             <button onClick={handleUpdate}>
               Сделать обсуждаемым

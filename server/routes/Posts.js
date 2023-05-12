@@ -28,7 +28,9 @@ router.get("/byuserId/:id", validateToken, async (req, res) => {
 });
 
 router.get("/byteamId/:id", validateToken, async (req, res) => {
+  console.log(req.params)
   const id = req.params.id;
+  console.log(id)
   const posts = await Posts.findAll({
     include: [
       {

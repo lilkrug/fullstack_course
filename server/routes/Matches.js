@@ -18,6 +18,16 @@ router.get("/", validateToken, async (req, res) => {
     res.json(listOfMatches);
 });
 
+router.post("/s", validateToken, async (req, res) => {
+    const listOfMatches = await Matches.findAll({
+        include: [
+            { model: Teams, as: "firstTeam" },
+            { model: Teams, as: "secondTeam" }
+        ]
+    });
+    res.json(listOfMatches);
+});
+
 router.get("/withoutScore", validateToken, async (req, res) => {
     const listOfMatches = await Matches.findAll({
         where: {
@@ -52,8 +62,10 @@ router.get("/byId/:id",validateToken, async (req, res) => {
     res.json(match);
 });
 
-router.post("/sethot/:id",validateToken,isAdmin, async (req, res) => {
+router.post("/sethot/:id",validateToken, async (req, res) => {
+    console.log(req)
     const id = req.params.id;
+    console.log(id)
     await Matches.update({ 'isHot': false }, {
         where: { isHot: true },
     });
@@ -172,7 +184,11 @@ router.put("/:matchId", validateToken, isAdmin, async (req, res) => {
             await Matches.update(
                 {
                     goals_first_team: match.goalsFirstTeam,
-                    goals_second_team: match.goalsSecondTeam
+                    goals_second_team: match.goalsSecondTeam,
+                    numberOfPassesFirstTeam:match.numberOfPassesFirstTeam,
+                    numberOfPassesSecondTeam:match.numberOfPassesSecondTeam,
+                    numberOfCornersFirstTeam:match.numberOfCornersFirstTeam,
+                    numberOfCornersSecondTeam:match.numberOfCornersSecondTeam
                 },
                 { where: { id: matchId } })
             let result = matchResult(match.goalsFirstTeam, match.goalsSecondTeam)

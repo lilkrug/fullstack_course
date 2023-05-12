@@ -20,6 +20,7 @@ function Profile() {
           accessToken: localStorage.getItem("accessToken"),
         },
       }).then((response) => {
+        console.log(response.data)
         if (response.data.error != undefined) {
           history.push("/login");
         }
@@ -45,16 +46,16 @@ function Profile() {
         }
       });
 
-    axios.get(`http://localhost:3001/posts/byteamId/${authState.id}`,
-      {
-        headers: {
-          accessToken: localStorage.getItem("accessToken"),
-        },
-      }).then((response) => {
-        console.log('baza')
-        console.log(authState)
-        console.log(response.data)
-      });
+    // axios.get(`http://localhost:3001/posts/byteamId/${favoriteTeam}`,
+    //   {
+    //     headers: {
+    //       accessToken: localStorage.getItem("accessToken"),
+    //     },
+    //   }).then((response) => {
+    //     console.log('baza')
+    //     console.log(authState)
+    //     console.log(response.data)
+    //   });
 
     axios.get(`http://localhost:3001/posts/byuserId/${id}`,
       {
@@ -70,6 +71,7 @@ function Profile() {
         accessToken: localStorage.getItem("accessToken"),
       },
     }).then((response) => {
+      console.log(response.data)
       setTeamList(response.data);
     });
   }, []);
@@ -89,6 +91,7 @@ function Profile() {
         },
       }).then((response) => {
         console.log(response);
+        window.location.reload();
       });
     }
   };
@@ -129,28 +132,8 @@ function Profile() {
           </div>
         )
         }
-        <div>
-          {listOfPosts.map((value, key) => {
-            return (
-              <div key={key} className="post">
-                <div className="title"> {value.title} </div>
-                <div
-                  className="body"
-                  onClick={() => {
-                    history.push(`/post/${value.id}`);
-                  }}
-                >
-                  {value.postText}
-                </div>
-                <div className="footer">
-                  <div className="username">{value.username}</div>
-                  <div className="buttons">
-                    <label> {value.Likes.length}</label>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <h1>Posts</h1>
+        <div className="posts-container">
           {listOfPosts.map((value, key) => {
             return (
               <div key={key} className="post">

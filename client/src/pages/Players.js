@@ -67,7 +67,7 @@ function Players(props) {
                 </td>
                 <td>{item.goals}</td>
                 <td>{item.assists}</td>
-                <td>{item.team}</td>
+                <td>{item.Team.name}</td>
                 <td>{item.FieldPosition.name}</td>
               </tr>
             ))}

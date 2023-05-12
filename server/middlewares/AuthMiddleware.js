@@ -3,7 +3,7 @@ const { Users } = require("../models");
 
 const validateToken =async (req, res, next) => {
   const accessToken = req.header("accessToken");
-
+  console.log(accessToken)
   if (!accessToken) return res.json({ error: "User not logged in!" });
 
   try {

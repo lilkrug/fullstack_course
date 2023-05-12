@@ -30,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       Players.belongsTo(models.FieldPositions, {
         foreignKey: 'fieldPositionId'
       });
+      Players.belongsTo(models.Teams, {
+        foreignKey: 'teamId'
+      });
     };
 
     return Players;

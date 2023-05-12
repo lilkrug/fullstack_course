@@ -418,3 +418,11 @@ tr:hover {
   font-weight: bold;
   color: #004080;
 }
+
+
+/* ПОСТ */
+.posts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Adjust this property to change the horizontal alignment */
+}

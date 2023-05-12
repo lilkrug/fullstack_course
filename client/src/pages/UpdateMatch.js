@@ -40,6 +40,10 @@ const MatchForm = () => {
         matchId: Yup.number().required(),
         goalsFirstTeam: Yup.number().required(),
         goalsSecondTeam: Yup.number().required(),
+        numberOfPassesFirstTeam: Yup.number().required(),
+        numberOfPassesSecondTeam: Yup.number().required(),
+        numberOfCornersFirstTeam: Yup.number().required(),
+        numberOfCornersSecondTeam: Yup.number().required(),
     });
 
     const onSubmit = (data) => {
@@ -85,6 +89,34 @@ const MatchForm = () => {
                     autoComplete="off"
                     id="inputCreatePost"
                     name="goalsSecondTeam"
+                    placeholder="(Ex. second goal...)"
+                />
+                <ErrorMessage name="numberOfPassesFirstTeam" component="span" />
+                <Field
+                    autoComplete="off"
+                    id="inputCreatePost"
+                    name="numberOfPassesFirstTeam"
+                    placeholder="(Ex. second goal...)"
+                />
+                <ErrorMessage name="numberOfPassesSecondTeam" component="span" />
+                <Field
+                    autoComplete="off"
+                    id="inputCreatePost"
+                    name="numberOfPassesSecondTeam"
+                    placeholder="(Ex. second goal...)"
+                />
+                <ErrorMessage name="numberOfCornersFirstTeam" component="span" />
+                <Field
+                    autoComplete="off"
+                    id="inputCreatePost"
+                    name="numberOfCornersFirstTeam"
+                    placeholder="(Ex. second goal...)"
+                />
+                <ErrorMessage name="numberOfCornersSecondTeam" component="span" />
+                <Field
+                    autoComplete="off"
+                    id="inputCreatePost"
+                    name="numberOfCornersSecondTeam"
                     placeholder="(Ex. second goal...)"
                 />
 

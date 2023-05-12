@@ -13,6 +13,22 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true
       },
+      numberOfPassesFirstTeam: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
+      numberOfPassesSecondTeam: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
+      numberOfCornersFirstTeam: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
+      numberOfCornersSecondTeam: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
       firstTeamId: {
         type: DataTypes.INTEGER,
         allowNull: false,
