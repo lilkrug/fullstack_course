@@ -25,52 +25,58 @@ function Teams(props) {
         })
         .then((response) => {
           console.log('responsedataerror')
-          console.log(response.data.error!=undefined)
-          if(response.data.error!=undefined){
+          console.log(response.data.error != undefined)
+          if (response.data.error != undefined) {
             history.push("/login");
           }
-          else{
-          setListOfTeams(response.data.listOfTeams);
-          setImage(response.data.image);
+          else {
+            setListOfTeams(response.data.listOfTeams);
+            setImage(response.data.image);
           }
         });
     }
   }, []);
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Search by team name..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <table>
-        <tbody>
-          {listOfTeams.filter((team) => {
-    const regex = new RegExp(`^${searchTerm}`, "i");
-    return regex.test(team.name);
-  })
-            .map((item) => (
-              <tr
-                key={item.id}
-                onClick={() => {
-                  history.push(`/team/${item.id}`);
-                }}
-              >
-                <td>
-                  <img
-                    src={`data:image/jpeg;base64,${image}`}
-                    alt="Image"
-                  ></img>
-                  <h1>{item.name}</h1>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    </div>
-  );
+    <div>{listOfTeams.length > 0 ? (
+      <div>
+        <input
+          type="text"
+          placeholder="Search by team name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <table>
+          <tbody>
+            {listOfTeams.filter((team) => {
+              const regex = new RegExp(`^${searchTerm}`, "i");
+              return regex.test(team.name);
+            })
+              .map((item) => (
+                <tr
+                  key={item.id}
+                  onClick={() => {
+                    history.push(`/team/${item.id}`);
+                  }}
+                >
+                  <td>
+                    <img
+                      src={`data:image/jpeg;base64,${image}`}
+                      alt="Image"
+                    ></img>
+                    <h1>{item.name}</h1>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    ):
+    (
+      <h1>no teams</h1>
+    )}
+      </div>
+    );
 }
 
-export default Teams;
+      export default Teams;

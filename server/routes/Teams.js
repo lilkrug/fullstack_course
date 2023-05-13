@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const fs = require('fs');
+const { Op } = require('sequelize');
 const Teams = require("../models").Teams;
 const Players = require("../models").Players;
+const Matches = require("../models").Matches;
 const Results = require("../models").Results;
 const Users = require("../models").Users;
 const sharp = require('sharp');
@@ -122,11 +124,42 @@ router.post("/", validateToken, isAdmin, async (req, res) => {
 
 router.delete("/:teamId", validateToken, isAdmin, async (req, res) => {
   const teamId = req.params.teamId;
-  await Teams.destroy({
-    where: {
-      id: teamId,
-    },
+  Teams.findOne({
+    where: { id: teamId },
+    include: [Players]
+  }).then(team => {
+    if (team) {
+      Players.destroy({
+        where: {
+          teamId: teamId,
+        },
+      })
+      Results.destroy({
+        where: {
+          team_id: teamId,
+        },
+      })
+      Matches.destroy({
+        where: {
+          [Op.or]: [
+            { firstTeamId: teamId },
+            { secondTeamId: teamId }
+          ]
+        },
+      })
+      Teams.destroy({
+        where: {
+          id: teamId,
+        },
+      })
+    }
   });
+  // await Teams.destroy({
+  //   where: {
+  //     id: teamId,
+  //   },
+  //   include: [Players], 
+  // });
 
   res.json("DELETED SUCCESSFULLY");
 });

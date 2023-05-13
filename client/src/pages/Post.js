@@ -12,6 +12,7 @@ function Post() {
   const [editedText, setEditedText] = useState(postObject.postText);
   const handleEditClick = () => {
     if (authState.username === postObject.username) {
+      setEditedText(postObject.postText)
       setIsEditing(true);
     }
   };
@@ -178,18 +179,20 @@ function Post() {
           {isEditing ? (
             <div>
               <textarea
+                className="body"
                 value={editedText}
-                onChange={(e) => setEditedText(e.target.value)}
-                style={{ resize: "none", height: "100px" }}
+                onChange={(e) => setEditedText(e.target.value.slice(0, 300))}
+                style={{ resize: "none", whiteSpace: "pre-wrap", width: "99%" }}
+                rows={5}
               />
-              <button onClick={handleSaveClick}>Save</button>
+              <button onClick={handleSaveClick} disabled={!editedText.trim()}>Save</button>
             </div>
           ) : (
             <div
               className="body"
               onClick={handleEditClick}
-              style={{ maxHeight: "100px", overflowWrap: "break-word", overflow: "hidden" }}
-              >
+              style={{ resize: "none", whiteSpace: "pre-wrap" }}
+            >
               {postObject.postText}
             </div>
           )}

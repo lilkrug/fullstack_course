@@ -184,6 +184,7 @@ function matchResult(goalsFirstTeam, goalsSecondTeam) {
 router.put("/:matchId", validateToken, isAdmin, async (req, res) => {
     const matchId = req.params.matchId;
     const match = req.body;
+    console.log(match)
     if (matchId != null && match.goalsFirstTeam != null && match.goalsSecondTeam != null) {
         const isMatchExisting = await Matches.findOne({
             where: {
@@ -210,6 +211,8 @@ router.put("/:matchId", validateToken, isAdmin, async (req, res) => {
                 }
             })
             const firstTeam = teamResults.find(team => team.id === isMatchExisting.firstTeamId);
+            console.log('TEAM1')
+            console.log(firstTeam)
             const secondTeam = teamResults.find(team => team.id === isMatchExisting.secondTeamId);
             await Results.update(
                 {

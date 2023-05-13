@@ -32,47 +32,53 @@ function Players(props) {
   }, []);
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Search by player name..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Goals</th>
-            <th>Assists</th>
-            <th>Team</th>
-            <th>Position</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listOfPlayers
-            .filter((player) => {
-              const regex = new RegExp(`^${searchTerm}`, "i");
-              return regex.test(player.name);
-            })
-            .map((item) => (
-              <tr
-                key={item.id}
-                onClick={() => {
-                  history.push(`/player/${item.id}`);
-                }}
-              >
-                <td>
-                  <h1>{item.name}</h1>
-                </td>
-                <td>{item.goals}</td>
-                <td>{item.assists}</td>
-                <td>{item.Team.name}</td>
-                <td>{item.FieldPosition.name}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+    <div>{listOfPlayers.length > 0 ? (
+      <div>
+        <input
+          type="text"
+          placeholder="Search by player name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Goals</th>
+              <th>Assists</th>
+              <th>Team</th>
+              <th>Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listOfPlayers
+              .filter((player) => {
+                const regex = new RegExp(`^${searchTerm}`, "i");
+                return regex.test(player.name);
+              })
+              .map((item) => (
+                <tr
+                  key={item.id}
+                  onClick={() => {
+                    history.push(`/player/${item.id}`);
+                  }}
+                >
+                  <td>
+                    <h1>{item.name}</h1>
+                  </td>
+                  <td>{item.goals}</td>
+                  <td>{item.assists}</td>
+                  <td>{item.Team.name}</td>
+                  <td>{item.FieldPosition.name}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    ):
+    (
+      <h1>no players</h1>
+    )}
     </div>
   );
 }
