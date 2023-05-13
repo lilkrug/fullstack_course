@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
-
+import Swal from "sweetalert2";
 function MyLeague() {
   const [tableData, setTableData] = useState([]);
 
@@ -9,26 +9,34 @@ function MyLeague() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get("http://localhost:3001/results", {
-        headers: { accessToken: localStorage.getItem("accessToken") },
-      });
+      try {
+        const result = await axios.get("http://localhost:3001/results", {
+          headers: { accessToken: localStorage.getItem("accessToken") },
+        });
 
-      // Обрабатываем данные для отображения турнирной таблицы
-      const processedData = result.data.map((teamData) => ({
-        ...teamData,
-        goal_difference: teamData.scored_goals - teamData.conceded_goals // Вычисляем разницу забитых и пропущенных голов
-      })).sort((a, b) => {
-        // Сортируем данные по убыванию поинтов, а при равенстве по разнице голов, а при дальнейшем равенстве по забитым голам
-        if (b.points !== a.points) {
-          return b.points - a.points;
-        } else if (b.goal_difference !== a.goal_difference) {
-          return b.goal_difference - a.goal_difference;
+        // Обрабатываем данные для отображения турнирной таблицы
+        const processedData = result.data.map((teamData) => ({
+          ...teamData,
+          goal_difference: teamData.scored_goals - teamData.conceded_goals // Вычисляем разницу забитых и пропущенных голов
+        })).sort((a, b) => {
+          // Сортируем данные по убыванию поинтов, а при равенстве по разнице голов, а при дальнейшем равенстве по забитым голам
+          if (b.points !== a.points) {
+            return b.points - a.points;
+          } else if (b.goal_difference !== a.goal_difference) {
+            return b.goal_difference - a.goal_difference;
+          } else {
+            return b.scored_goals - a.scored_goals;
+          }
+        });
+        console.log(processedData)
+        setTableData(processedData);
+      } catch (error) {
+        if (error.response) {
+          Swal.fire('Error', error.response.data.error, 'error');
         } else {
-          return b.scored_goals - a.scored_goals;
+          Swal.fire('Error', 'Internal server error', 'error');
         }
-      });
-      console.log(processedData)
-      setTableData(processedData);
+      }
     };
 
     fetchData();

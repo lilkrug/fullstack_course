@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
+import Swal from "sweetalert2";
 
 function CreateTeam() {
   const { authState } = useContext(AuthContext);
@@ -26,13 +27,26 @@ function CreateTeam() {
     axios
       .post("http://localhost:3001/teams", data, {
         headers: { accessToken: localStorage.getItem("accessToken") },
-      })
-      .then((response) => {
-        if(response.data.error!=undefined){
-          history.push("/login");
-        }
-        else{
-        history.push("/");
+      }).
+    then((response) => {
+      history.push("/");
+    })
+      .catch((error) => {
+        if (error.response) {
+          const errorMessage = error.response.data.error;
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+            confirmButtonColor: '#3085d6',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Unexpected error occurred',
+            text: error.message,
+            confirmButtonColor: '#3085d6',
+          });
         }
       });
   };

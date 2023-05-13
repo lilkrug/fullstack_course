@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function ChangePassword() {
   const [oldPassword, setOldPassword] = useState("");
@@ -8,25 +9,37 @@ function ChangePassword() {
   let history = useHistory();
 
   const changePassword = () => {
-    axios
-      .put(
-        "http://localhost:3001/auth/changepassword",
-        {
-          oldPassword: oldPassword,
-          newPassword: newPassword,
+    axios.put(
+      "http://localhost:3001/auth/changepassword",
+      {
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      },
+      {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
         },
-        {
-          headers: {
-            accessToken: localStorage.getItem("accessToken"),
-          },
-        }
-      )
+      }
+    )
       .then((response) => {
-        if (response.data.error) {
-          alert(response.data.error);
-        }
-        else{
-          history.push('/')
+        history.push("/");
+      })
+      .catch((error) => {
+        if (error.response) {
+          const errorMessage = error.response.data.error;
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+            confirmButtonColor: '#3085d6',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Unexpected error occurred',
+            text: error.message,
+            confirmButtonColor: '#3085d6',
+          });
         }
       });
   };

@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
+import Swal from "sweetalert2";
 
 function CreatePost() {
   const { authState } = useContext(AuthContext);
@@ -38,13 +39,13 @@ function CreatePost() {
   };
 
   const onSubmit = (values, { resetForm }) => {
-    if(teams.length!=0){
+    if (teams.length != 0) {
       setSelectedTeamId(teams[0].id)
     }
     const data = {
       title: values.title,
       postText: values.postText,
-      teamId: isTeamRelated? selectedTeamId:null, // передаем связанные команды
+      teamId: isTeamRelated ? selectedTeamId : null, // передаем связанные команды
     };
     console.log(values)
     axios
@@ -52,12 +53,28 @@ function CreatePost() {
         headers: { accessToken: localStorage.getItem("accessToken") },
       })
       .then((response) => {
-        if (response.data.error != undefined) {
-          history.push("/login");
+        if (response.data.error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: response.data.error,
+          });
+        } else {
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Post created successfully",
+          }).then(() => {
+            history.push("/");
+          });
         }
-        else {
-          history.push("/");
-        }
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Internal server error",
+        });
       });
   };
 
