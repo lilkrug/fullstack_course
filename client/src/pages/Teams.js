@@ -60,10 +60,6 @@ function Teams(props) {
                   }}
                 >
                   <td>
-                    <img
-                      src={`data:image/jpeg;base64,${image}`}
-                      alt="Image"
-                    ></img>
                     <h1>{item.name}</h1>
                   </td>
                 </tr>

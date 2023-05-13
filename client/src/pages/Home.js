@@ -5,8 +5,6 @@ import { Link, useHistory } from "react-router-dom";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import { AuthContext } from "../helpers/AuthContext";
 
-
-
 function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
@@ -98,7 +96,7 @@ function Home() {
         <table>
           <thead>
             <tr>
-              <th>Дата</th>
+              <th>Время</th>
               <th>Команда 1</th>
               <th>Команда 2</th>
             </tr>

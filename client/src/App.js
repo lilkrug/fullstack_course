@@ -8,10 +8,12 @@ import CreatePlayer from "./pages/CreatePlayer";
 import UpdatePlayer from "./pages/UpdatePlayer";
 import MatchPage from "./pages/MatchPage";
 import UpdateMatch from "./pages/UpdateMatch";
+import FavoriteTeamNews from "./pages/FavoriteTeamNews";
 import MyLeague from "./pages/MyLeague";
 import Post from "./pages/Post";
 import Registration from "./pages/Registration";
 import CurrentTeam from "./pages/CurrentTeam";
+import CurrentMatch from "./pages/CurrentMatch";
 import CurrentPlayer from "./pages/CurrentPlayer";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
@@ -86,11 +88,13 @@ function App() {
   const HomeWithRouter = withRouter(Home);
   const CurrentTeamWithRouter = withRouter(CurrentTeam);
   const CurrentPlayerWithRouter = withRouter(CurrentPlayer);
+  const CurrentMatchWithRouter = withRouter(CurrentMatch);
   const CreatePostWithRouter = withRouter(CreatePost);
   const CreatePlayerWithRouter = withRouter(CreatePlayer);
   const UpdatePlayerWithRouter = withRouter(UpdatePlayer);
   const CreateTeamWithRouter = withRouter(CreateTeam);
   const UpdateMatchWithRouter = withRouter(UpdateMatch);
+  const FavoriteTeamNewsWithRouter = withRouter(FavoriteTeamNews);
   const MatchPageWithRouter = withRouter(MatchPage);
   const CreateMatchWithRouter = withRouter(CreateMatch);
   const PostWithRouter = withRouter(Post);
@@ -187,8 +191,10 @@ function App() {
             <PrivateRoute path="/teams" exact component={TeamsWithRouter} />
             <PrivateRoute path="/players" exact component={PlayersWithRouter} />
             <PrivateRoute path="/league" exact component={MyLeagueWithRouter} />
+            <PrivateRoute path="/postsByTeam/:id" exact component={FavoriteTeamNewsWithRouter} />
             <PrivateRoute path="/team/:id" exact component={CurrentTeamWithRouter} />
             <PrivateRoute path="/match/:id" exact component={MatchPageWithRouter} />
+            <PrivateRoute path="/matchinfo/:id" exact component={CurrentMatchWithRouter} />
             <PrivateRoute path="/player/:id" exact component={CurrentPlayerWithRouter} />
             <PrivateRoute path="/createpost" exact component={CreatePostWithRouter} />
             <AdminRoute path="/createplayer" exact component={CreatePlayerWithRouter} />

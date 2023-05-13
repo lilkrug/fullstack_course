@@ -15,7 +15,6 @@ function CreatePost() {
   const initialValues = {
     title: "",
     postText: "",
-    relatedTeams: 0
   };
 
   useEffect(() => {
@@ -34,15 +33,20 @@ function CreatePost() {
   });
 
   const handleTeamSelection = (event) => {
+    console.log(event.target.value)
     setSelectedTeamId(event.target.value);
   };
 
   const onSubmit = (values, { resetForm }) => {
+    if(teams.length!=0){
+      setSelectedTeamId(teams[0].id)
+    }
     const data = {
       title: values.title,
       postText: values.postText,
-      teamId: selectedTeamId, // передаем связанные команды
+      teamId: isTeamRelated? selectedTeamId:null, // передаем связанные команды
     };
+    console.log(values)
     axios
       .post("http://localhost:3001/posts", data, {
         headers: { accessToken: localStorage.getItem("accessToken") },
@@ -97,11 +101,19 @@ function CreatePost() {
                 <div>
                   <label>Related team(s):</label>
                   <Field as="select" name="relatedTeams" onChange={handleTeamSelection}>
-                    {teams.map((team) => (
-                      <option key={team.id} value={team.id}>
-                        {team.name}
-                      </option>
-                    ))}
+                    {teams.length === 1 && (
+                      <option value={teams[0].id}>{teams[0].name}</option>
+                    )}
+                    {teams.length > 1 && (
+                      <>
+                        <option value="">Select a team</option>
+                        {teams.map((team) => (
+                          <option key={team.id} value={team.id}>
+                            {team.name}
+                          </option>
+                        ))}
+                      </>
+                    )}
                   </Field>
                 </div>
               )}

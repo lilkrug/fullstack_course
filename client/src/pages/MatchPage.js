@@ -81,7 +81,7 @@ function MatchPage() {
   } else {
     return (
       <div>
-        {authState.isAdmin && matchData.isHot==null|matchData.isHot==false&&(
+        {authState.isAdmin && matchData.isHot==null||matchData.isHot==false&&(
           <>
             <button onClick={setHot}>
               Сделать обсуждаемым

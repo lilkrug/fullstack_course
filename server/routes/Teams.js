@@ -35,11 +35,11 @@ router.get("/teams", validateToken, async (req, res) => {
 router.get("/byId/:id", validateToken, async (req, res) => {
   const id = req.params.id;
   const team = await Teams.findByPk(id);
+  console.log(team)
   res.json(team);
 });
 
 router.put("/setfavoriteteam", validateToken, async (req, res) => {
-  const favoriteTeamId = req.body.favoriteTeamId;
   const userId = req.body.userId;
   const favTeam = Users.update(
     { favoriteTeamId: req.body.favoriteTeamId },
@@ -57,6 +57,7 @@ router.get("/getfavoriteteam/:id", validateToken, async (req, res) => {
     .then((user) => {
       try {
         console.log(user.Team.name)
+        console.log('okss')
         const teamName = user.Team // Название команды
         res.json(teamName)
       }

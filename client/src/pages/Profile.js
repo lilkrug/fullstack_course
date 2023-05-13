@@ -8,6 +8,7 @@ function Profile() {
   let history = useHistory();
   const [username, setUsername] = useState("");
   const [listOfPosts, setListOfPosts] = useState([]);
+  const [ListOfPostsFavorite, setListOfPostsFavorite] = useState([]);
   const [teamList, setTeamList] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [favoriteTeam, setFavoriteTeam] = useState(null);
@@ -41,21 +42,11 @@ function Profile() {
             history.push("/login");
           }
           else {
+            console.log(response.data)
             setFavoriteTeam(response.data);
           }
         }
       });
-
-    // axios.get(`http://localhost:3001/posts/byteamId/${favoriteTeam}`,
-    //   {
-    //     headers: {
-    //       accessToken: localStorage.getItem("accessToken"),
-    //     },
-    //   }).then((response) => {
-    //     console.log('baza')
-    //     console.log(authState)
-    //     console.log(response.data)
-    //   });
 
     axios.get(`http://localhost:3001/posts/byuserId/${id}`,
       {
@@ -106,6 +97,17 @@ function Profile() {
             < h2 > Favorite Team: {favoriteTeam.name}</h2>
           )
           }
+          {favoriteTeam != null && (
+            <button
+              onClick={() => {
+                history.push(`/postsByTeam/${favoriteTeam.id}`);
+              }}
+            >
+              {" "}
+              Check favorite team news
+            </button>
+          )
+          }
           {authState.username === username && (
             <button
               onClick={() => {
@@ -115,6 +117,7 @@ function Profile() {
               {" "}
               Change My Password
             </button>
+
           )}
         </div>
         {teamList.length != 0 && (
@@ -132,36 +135,40 @@ function Profile() {
           </div>
         )
         }
-        {listOfPosts.length != 0 && (
-          <div>
-            <h1>Posts</h1>
-            <div className="posts-container">
-              {listOfPosts.map((value, key) => {
-                return (
-                  <div key={key} className="post">
-                    <div className="title"> {value.title} </div>
-                    <div
-                      className="body"
-                      onClick={() => {
-                        history.push(`/post/${value.id}`);
-                      }}
-                    >
-                      {value.postText}
-                    </div>
-                    <div className="footer">
-                      <div className="username">{value.username}</div>
-                      <div className="buttons">
-                        <label> {value.Likes.length}</label>
+        <div className="grid-container">
+          {listOfPosts.length != 0 && (
+            <div>
+              <div className="section-header">
+                <h1>Your Posts</h1>
+              </div>
+              <div className="posts-container">
+                {listOfPosts.map((value, key) => {
+                  return (
+                    <div key={key} className="post">
+                      <div className="title"> {value.title} </div>
+                      <div
+                        className="body"
+                        onClick={() => {
+                          history.push(`/post/${value.id}`);
+                        }}
+                      >
+                        {value.postText}
+                      </div>
+                      <div className="footer">
+                        <div className="username">{value.username}</div>
+                        <div className="buttons">
+                          <label> {value.Likes.length}</label>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-      )
+        )
         :
         (
           <h2>There is no such user</h2>

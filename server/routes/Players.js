@@ -30,7 +30,7 @@ router.get("/byId/:id", validateToken, async (req, res) => {
   //const player = await Players.findByPk(id);
   const player = await Players.findOne({
     where: { id: id },
-    include: [FieldPositions]
+    include: [FieldPositions,Teams]
   })
   res.json(player);
 });
@@ -49,7 +49,7 @@ router.put("/:playerId", validateToken, isAdmin, async (req, res) => {
       await Players.update(
         {
           goals: isPlayerExisting.goals + parseInt(player.goals),
-          conceded_goals: isPlayerExisting.assists + parseInt(player.assists),
+          assists: isPlayerExisting.assists + parseInt(player.assists),
         },
         {
           where: { id: isPlayerExisting.id }

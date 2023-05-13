@@ -8,12 +8,12 @@ function Post() {
   const [postObject, setPostObject] = useState({});
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingText, setIsEditingText] = useState(false);
   const [editedText, setEditedText] = useState(postObject.postText);
   const handleEditClick = () => {
     if (authState.username === postObject.username) {
       setEditedText(postObject.postText)
-      setIsEditing(true);
+      setIsEditingText(true);
     }
   };
   const { authState } = useContext(AuthContext);
@@ -121,7 +121,7 @@ function Post() {
       // Handle the response as needed
       console.log(response.data);
 
-      setIsEditing(false); // Exit the editing mode
+      setIsEditingText(false); // Exit the editing mode
       setPostObject({ ...postObject, postText: editedText });
     } catch (error) {
       // Handle any error that occurred during the PUT request
@@ -165,18 +165,20 @@ function Post() {
     <div className="postPage">
       <div className="leftSide">
         <div className="post" id="individual">
-          <div
-            className="title"
-            onClick={() => {
-              if (authState.username === postObject.username) {
-                editPost("title");
-              }
-            }}
-          >
-            {postObject.title}
+          <div>
+            <div
+              className="title"
+              onClick={() => {
+                if (authState.username === postObject.username) {
+                  editPost("title");
+                }
+              }}
+            >
+              {postObject.title}
+            </div>
           </div>
 
-          {isEditing ? (
+          {isEditingText ? (
             <div>
               <textarea
                 className="body"

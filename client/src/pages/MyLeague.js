@@ -51,7 +51,7 @@ function MyLeague() {
           <tbody>
             {tableData.map((teamData, index) => (
               <tr key={teamData.id} onClick={() => {
-                history.push(`/team/${teamData.id}`);
+                history.push(`/team/${teamData.team_id}`);
               }}>
                 <td>{index + 1}</td>
                 <td>{teamData.Team.name}</td>

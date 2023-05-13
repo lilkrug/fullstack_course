@@ -40,6 +40,9 @@ router.get("/byteamId/:id", validateToken, async (req, res) => {
         where: {
           id: id
         }
+      },
+      {
+        model: Likes
       }
     ]
   });

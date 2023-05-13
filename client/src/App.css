@@ -13,6 +13,7 @@ body {
 
 .post {
   width: 400px;
+  flex: 0 0 calc(50% - 5px);
   max-height: 40px;
   min-height: 358px;
   border-radius: 10px;
@@ -38,8 +39,38 @@ body {
   height: 50px; /* Set a fixed height for the title */
 }
 
+.section-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.profilePageContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.basicInfo,
+.favoriteTeamForm,
+.section-header,
+.posts-container {
+  margin-bottom: 20px;
+}
+
+.posts-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Две колонки с одинаковой шириной */
+  gap: 20px; /* Расстояние между колонками и элементами */
+}
+
 .post .body {
-  height: 238px;
+  height: 198px;
   display: grid;
   place-content: start;
   white-space: pre-wrap;
@@ -50,6 +81,7 @@ body {
 .post .footer {
   border-top: 1px solid lightgray;
   display: flex;
+  margin-top: auto;
   align-items: center;
   padding-left: 15px;
   background-color: dodgerblue;
@@ -433,6 +465,7 @@ tr:hover {
 .posts-container {
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
   justify-content: center;
   /* Adjust this property to change the horizontal alignment */
 }

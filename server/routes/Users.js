@@ -70,7 +70,7 @@ router.put("/changepassword", validateToken, async (req, res) => {
 
   bcrypt.compare(oldPassword, user.password).then(async (match) => {
     if (!match) res.json({ error: "Wrong Password Entered!" });
-
+    else{
     bcrypt.hash(newPassword, 10).then((hash) => {
       Users.update(
         { password: hash },
@@ -78,6 +78,7 @@ router.put("/changepassword", validateToken, async (req, res) => {
       );
       res.json("SUCCESS");
     });
+    }
   });
 });
 

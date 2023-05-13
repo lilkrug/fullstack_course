@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 
 function ChangePassword() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  let history = useHistory();
 
   const changePassword = () => {
     axios
@@ -23,6 +25,9 @@ function ChangePassword() {
         if (response.data.error) {
           alert(response.data.error);
         }
+        else{
+          history.push('/')
+        }
       });
   };
 
@@ -30,14 +35,14 @@ function ChangePassword() {
     <div>
       <h1>Change Your Password</h1>
       <input
-        type="text"
+        type="password"
         placeholder="Old Password..."
         onChange={(event) => {
           setOldPassword(event.target.value);
         }}
       />
       <input
-        type="text"
+        type="password"
         placeholder="New Password..."
         onChange={(event) => {
           setNewPassword(event.target.value);

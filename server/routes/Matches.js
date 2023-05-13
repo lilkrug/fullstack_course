@@ -184,7 +184,6 @@ function matchResult(goalsFirstTeam, goalsSecondTeam) {
 router.put("/:matchId", validateToken, isAdmin, async (req, res) => {
     const matchId = req.params.matchId;
     const match = req.body;
-    console.log(match)
     if (matchId != null && match.goalsFirstTeam != null && match.goalsSecondTeam != null) {
         const isMatchExisting = await Matches.findOne({
             where: {
@@ -205,15 +204,13 @@ router.put("/:matchId", validateToken, isAdmin, async (req, res) => {
             let result = matchResult(match.goalsFirstTeam, match.goalsSecondTeam)
             const teamResults = await Results.findAll({
                 where: {
-                    id: {
+                    team_id: {
                         [Op.in]: [isMatchExisting.firstTeamId, isMatchExisting.secondTeamId]
                     }
                 }
             })
-            const firstTeam = teamResults.find(team => team.id === isMatchExisting.firstTeamId);
-            console.log('TEAM1')
-            console.log(firstTeam)
-            const secondTeam = teamResults.find(team => team.id === isMatchExisting.secondTeamId);
+            const firstTeam = teamResults.find(team => team.team_id === isMatchExisting.firstTeamId);
+            const secondTeam = teamResults.find(team => team.team_id === isMatchExisting.secondTeamId);
             await Results.update(
                 {
                     scored_goals: firstTeam.scored_goals + parseInt(match.goalsFirstTeam),
@@ -221,7 +218,7 @@ router.put("/:matchId", validateToken, isAdmin, async (req, res) => {
                     points: firstTeam.points + result.pointsFirstTeam
                 },
                 {
-                    where: { id: isMatchExisting.firstTeamId }
+                    where: { team_id: isMatchExisting.firstTeamId }
                 }
             )
             await Results.update(
@@ -231,7 +228,7 @@ router.put("/:matchId", validateToken, isAdmin, async (req, res) => {
                     points: secondTeam.points + result.pointsSecondTeam
                 },
                 {
-                    where: { id: isMatchExisting.secondTeamId }
+                    where: { team_id: isMatchExisting.secondTeamId }
                 }
             )
             res.json("Match updated successfully");
