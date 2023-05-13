@@ -36,7 +36,7 @@ function Match() {
 
     return (
         <div>
-            {match ? (
+            {match.goals_first_team!=null ? (
                 <div>
                     <h2>Match Information</h2>
                     <h1>{firstTeam.name} {secondTeam.name}</h1>
@@ -50,7 +50,7 @@ function Match() {
             )
                 :
                 (
-                    <h1>Данного футболиста не существует</h1>
+                    <h1>Результат данного матча неизвестен</h1>
                 )
             }
         </div>

@@ -7,7 +7,7 @@ import { AuthContext } from "../helpers/AuthContext";
 
 
 
-function Home() {
+function FavoriteTeamNews() {
     let { id } = useParams();
     const [listOfPosts, setListOfPosts] = useState([]);
     const { authState } = useContext(AuthContext);
@@ -106,4 +106,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default FavoriteTeamNews;

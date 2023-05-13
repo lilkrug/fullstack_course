@@ -7,6 +7,7 @@ import CreateTeam from "./pages/CreateTeam";
 import CreatePlayer from "./pages/CreatePlayer";
 import UpdatePlayer from "./pages/UpdatePlayer";
 import MatchPage from "./pages/MatchPage";
+import Matches from "./pages/Matches";
 import UpdateMatch from "./pages/UpdateMatch";
 import FavoriteTeamNews from "./pages/FavoriteTeamNews";
 import MyLeague from "./pages/MyLeague";
@@ -83,6 +84,7 @@ function App() {
   const RegistrationWithRouter = withRouter(Registration);
   const LoginWithRouter = withRouter(Login);
   const ChatWithRouter = withRouter(Chat);
+  const MatchesWithRouter = withRouter(Matches);
   const TeamsWithRouter = withRouter(Teams);
   const PlayersWithRouter = withRouter(Players);
   const HomeWithRouter = withRouter(Home);
@@ -173,6 +175,7 @@ function App() {
                     </>
                   )}
                   <Link to="/players"> Players</Link>
+                  <Link to="/matches"> Matches</Link>
                   <Link to="/teams"> Teams</Link>
                   <Link to="/league"> League table</Link>
                 </>
@@ -191,6 +194,7 @@ function App() {
             <PrivateRoute path="/teams" exact component={TeamsWithRouter} />
             <PrivateRoute path="/players" exact component={PlayersWithRouter} />
             <PrivateRoute path="/league" exact component={MyLeagueWithRouter} />
+            <PrivateRoute path="/matches" exact component={MatchesWithRouter} />
             <PrivateRoute path="/postsByTeam/:id" exact component={FavoriteTeamNewsWithRouter} />
             <PrivateRoute path="/team/:id" exact component={CurrentTeamWithRouter} />
             <PrivateRoute path="/match/:id" exact component={MatchPageWithRouter} />

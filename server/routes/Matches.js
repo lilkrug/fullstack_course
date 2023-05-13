@@ -66,7 +66,7 @@ router.post("/sethot/:id",validateToken, async (req, res) => {
     console.log(req)
     const id = req.params.id;
     console.log(id)
-    await Matches.update({ 'isHot': false }, {
+    await Matches.update({ 'isHot': null }, {
         where: { isHot: true },
     });
     await Message.destroy({
