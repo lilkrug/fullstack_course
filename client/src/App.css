@@ -39,6 +39,11 @@ body {
   height: 50px; /* Set a fixed height for the title */
 }
 
+.custom-confirm-button {
+  background-color: #3085d6;
+  color: #fff;
+}
+
 .section-header {
   display: flex;
   justify-content: center;

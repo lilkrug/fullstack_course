@@ -5,49 +5,52 @@ const bcrypt = require("bcrypt");
 const { validateToken } = require("../middlewares/AuthMiddleware");
 const { sign } = require("jsonwebtoken");
 
+// Создание пользователя
 router.post("/", async (req, res) => {
   const { username, password } = req.body;
-  bcrypt.hash(password, 10).then(async (hash) => {
-    const foundedUser = await Users.findOne({
-      where: {
-        username: username
-      }
-    })
-    if(foundedUser==null){
+  try {
+    const foundUser = await Users.findOne({ where: { username } });
+    if (foundUser) {
+      res.status(409).json({error: "User is already created" });
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10);
       await Users.create({
-        username: username,
-        password: hash,
+        username,
+        password: hashedPassword,
       });
-      res.json("SUCCESS");
+      res.json("Created user");
     }
-    else{
-      res.json("User is already created");
-    }
-  });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
+// Авторизация пользователя
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  console.log(req.body)
-  if(username!=undefined){
-  const user = await Users.findOne({ where: { username: username } });
-  if (!user) res.json({ error: "User Doesn't Exist" });
-  else{
-  bcrypt.compare(password, user.password).then(async (match) => {
-    if (!match){ res.json({ error: "Wrong Username And Password Combination" });}
-    else{
-    const accessToken = sign(
-      { username: user.username, id: user.id },
-      "importantsecret",
-      { expiresIn: "30m" }
-    );
-    res.json({ token: accessToken, username: username, id: user.id, isAdmin: user.isAdmin });
+  if (!username) {
+    res.status(400).json({ error: "Username is required" });
+    return;
+  }
+  try {
+    const user = await Users.findOne({ where: { username } });
+    if (!user) {
+      res.status(404).json({ error: "User doesn't exist" });
+    } else {
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        res.status(401).json({ error: "Wrong Username and Password combination" });
+      } else {
+        const accessToken = sign(
+          { username: user.username, id: user.id },
+          "importantsecret",
+          { expiresIn: "30m" }
+        );
+        res.json({ token: accessToken, username: username, id: user.id, isAdmin: user.isAdmin });
+      }
     }
-  });
-  }
-  }
-  else{
-    res.json({error: "username is null"})
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -55,31 +58,42 @@ router.get("/auth", validateToken, (req, res) => {
   res.json(req.user);
 });
 
-router.get("/basicinfo/:id",validateToken, async (req, res) => {
+// Получение информации о пользователе
+router.get("/basicinfo/:id", validateToken, async (req, res) => {
   const id = req.params.id;
-
-  const basicInfo = await Users.findByPk(id, {
-    attributes: { exclude: ["password"] },
-  });
-  res.json(basicInfo)
+  try {
+    const basicInfo = await Users.findByPk(id, {
+      attributes: { exclude: ["password"] },
+    });
+    res.json(basicInfo);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
+// Изменение пароля пользователя
 router.put("/changepassword", validateToken, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
-  const user = await Users.findOne({ where: { username: req.user.username } });
-
-  bcrypt.compare(oldPassword, user.password).then(async (match) => {
-    if (!match) res.json({ error: "Wrong Password Entered!" });
-    else{
-    bcrypt.hash(newPassword, 10).then((hash) => {
-      Users.update(
-        { password: hash },
+  try {
+    const user = await Users.findOne({ where: { username: req.user.username } });
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    const match = await bcrypt.compare(oldPassword, user.password);
+    if (!match) {
+      res.status(401).json({ error: "Wrong Password Entered!" });
+    } else {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await Users.update(
+        { password: hashedPassword },
         { where: { username: req.user.username } }
       );
-      res.json("SUCCESS");
-    });
+      res.json("Successfully changed password");
     }
-  });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;

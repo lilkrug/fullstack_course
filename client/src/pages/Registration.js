@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Registration() {
   let history = useHistory();
@@ -18,15 +19,28 @@ function Registration() {
   });
 
   const onSubmit = (data) => {
-    axios.post("http://localhost:3001/auth", data).then((response) => {
-      console.log(data);
-      if(response.data=='SUCCESS'){
-        history.push('/login')
-      }
-      else{
-        alert(response.data)
-      }
-    });
+    axios.post("http://localhost:3001/auth", data)
+      .then((response) => {
+        // Обработка успешного ответа
+        console.log("Registration successful");
+        history.push('/login');
+      })
+      .catch(error => {
+        if (error.response && error.response.status === 409) {
+          Swal.fire({
+            icon: 'error',
+            title: 'User is already created',
+            confirmButtonColor: '#3085d6',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Unexpected error occurred',
+            text: error.message,
+            confirmButtonColor: '#3085d6',
+          });
+        }
+      });
   };
 
   return (
@@ -40,7 +54,7 @@ function Registration() {
           <label>Username: </label>
           <ErrorMessage name="username" component="span" />
           <Field
-            autocomplete="off"
+            autoComplete="off"
             id="inputCreatePost"
             name="username"
             placeholder="(Ex. John123...)"
@@ -49,14 +63,14 @@ function Registration() {
           <label>Password: </label>
           <ErrorMessage name="password" component="span" />
           <Field
-            autocomplete="off"
+            autoComplete="off"
             type="password"
             id="inputCreatePost"
             name="password"
             placeholder="Your Password..."
           />
 
-          <button type="submit"> Register</button>
+          <button type="submit">Register</button>
         </Form>
       </Formik>
     </div>

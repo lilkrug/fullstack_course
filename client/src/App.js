@@ -1,4 +1,5 @@
 import "./App.css";
+import Swal from "sweetalert2";
 import { BrowserRouter as Router, withRouter, Redirect, useHistory, Route, Switch, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";

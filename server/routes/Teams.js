@@ -12,157 +12,177 @@ const { validateToken } = require("../middlewares/AuthMiddleware");
 const isAdmin = require("../middlewares/isAdmin");
 
 router.get("/", validateToken, async (req, res) => {
-  const listOfTeams = await Teams.findAll();
-  // const imagePaths = listOfTeams.map(team => team.imagePath);
-  // const imagePaths1 = listOfTeams.forEach(obj=>{
-  //   const imagePath = obj.imagePath
-  //   const image = fs.readFileSync(imagePath)
-  //   sharp(image).resize({ width: 100 }).toBuffer()
-  // })
-  // const resizedImages = await sharp(image).resize({ width: 100 }).toBuffer();
-  const image = fs.readFileSync('./images/smile.jpg')
-  const resizedImage = await sharp(image).resize({ width: 100 }).toBuffer();
-
-  const base64Img = Buffer.from(resizedImage).toString('base64')
-  res.json({ listOfTeams: listOfTeams, image: base64Img });
+  try {
+    const listOfTeams = await Teams.findAll();
+    res.json({ listOfTeams: listOfTeams });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("/teams", validateToken, async (req, res) => {
-  const listOfTeams = await Teams.findAll();
-  res.json(listOfTeams);
+  try {
+    const listOfTeams = await Teams.findAll();
+    res.json(listOfTeams);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("/byId/:id", validateToken, async (req, res) => {
-  const id = req.params.id;
-  const team = await Teams.findByPk(id);
-  console.log(team)
-  res.json(team);
+  try {
+    const id = req.params.id;
+    const team = await Teams.findByPk(id);
+    if (!team) {
+      res.status(404).json({ error: "Team not found" });
+    } else {
+      res.json(team);
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.put("/setfavoriteteam", validateToken, async (req, res) => {
-  const userId = req.body.userId;
-  const favTeam = Users.update(
-    { favoriteTeamId: req.body.favoriteTeamId },
-    { where: { id: userId } }
-  )
-  res.json(favTeam)
+  try {
+    const userId = req.body.userId;
+    await Users.update(
+      { favoriteTeamId: req.body.favoriteTeamId },
+      { where: { id: userId } }
+    );
+    res.json({ message: "Favorite team updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("/getfavoriteteam/:id", validateToken, async (req, res) => {
-  const userId = req.params.id;
-  Users.findOne({
-    where: { id: userId },
-    include: { model: Teams }
-  })
-    .then((user) => {
-      try {
-        console.log(user.Team.name)
-        console.log('okss')
-        const teamName = user.Team // Название команды
-        res.json(teamName)
-      }
-      catch{
-        res.json(null)
-      }
-    })
+  try {
+    const userId = req.params.id;
+    const user = await Users.findOne({
+      where: { id: userId },
+      include: { model: Teams }
+    });
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+    } else {
+      const teamName = user.Team ? user.Team.name : null; // Название команды
+      res.json(teamName);
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("/bestScorerByTeamId/:id", validateToken, async (req, res) => {
-  const id = req.params.id;
-  const bestScorer = await Players.findOne({
-    where: { teamId: id },
-    order: [['goals', 'DESC']]
-  });
-  res.json(bestScorer);
+  try {
+    const id = req.params.id;
+    const bestScorer = await Players.findOne({
+      where: { teamId: id },
+      order: [['goals', 'DESC']]
+    });
+    res.json(bestScorer);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("/bestAssistantByTeamId/:id", validateToken, async (req, res) => {
-  const id = req.params.id;
-  const bestScorer = await Players.findOne({
-    where: { teamId: id },
-    order: [['assists', 'DESC']]
-  });
-  res.json(bestScorer);
+  try {
+    const id = req.params.id;
+    const bestAssistant = await Players.findOne({
+      where: { teamId: id },
+      order: [['assists', 'DESC']]
+    });
+    res.json(bestAssistant);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.get("/byPlayerId/:id", validateToken, async (req, res) => {
-  const id = req.params.id;
-  const team = await Teams.findOne({
-    where: { PlayerId: id },
-  });
-  res.json(team);
+  try {
+    const id = req.params.id;
+    const team = await Teams.findOne({
+      where: { PlayerId: id },
+    });
+    res.json(team);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
+
 router.post("/", validateToken, isAdmin, async (req, res) => {
-  const team = req.body;
-  console.log(team)
-  if (team.name != null) {
-    const foundedTeam = await Teams.findOne({
-      where: {
-        name: team.name
-      }
-    })
-    if (foundedTeam == null) {
-      const createdTeam = await Teams.create(team);
-      await Results.create({
-        scored_goals: 0,
-        conceded_goals: 0,
-        points: 0,
-        team_id: createdTeam.id
-      })
-      res.json({
-        name: team.name
+  try {
+    const team = req.body;
+    if (team.name != null) {
+      const foundedTeam = await Teams.findOne({
+        where: {
+          name: team.name
+        }
       });
+      if (foundedTeam == null) {
+        const createdTeam = await Teams.create(team);
+        await Results.create({
+          scored_goals: 0,
+          conceded_goals: 0,
+          points: 0,
+          team_id: createdTeam.id
+        });
+        res.json({
+          name: team.name
+        });
+      } else {
+        res.status(409).json({ error: "Team is already created" });
+      }
+    } else {
+      res.status(400).json({ error: "Missed params" });
     }
-    else {
-      res.json("Team is already created");
-    }
-  }
-  else {
-    res.json("Missed params");
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 router.delete("/:teamId", validateToken, isAdmin, async (req, res) => {
-  const teamId = req.params.teamId;
-  Teams.findOne({
-    where: { id: teamId },
-    include: [Players]
-  }).then(team => {
-    if (team) {
-      Players.destroy({
-        where: {
-          teamId: teamId,
-        },
-      })
-      Results.destroy({
-        where: {
-          team_id: teamId,
-        },
-      })
-      Matches.destroy({
-        where: {
-          [Op.or]: [
-            { firstTeamId: teamId },
-            { secondTeamId: teamId }
-          ]
-        },
-      })
-      Teams.destroy({
-        where: {
-          id: teamId,
-        },
-      })
+  try {
+    const teamId = req.params.teamId;
+    const team = await Teams.findOne({
+      where: { id: teamId },
+      include: [Players]
+    });
+    if (!team) {
+      res.status(404).json({ error: "Team not found" });
+      return;
     }
-  });
-  // await Teams.destroy({
-  //   where: {
-  //     id: teamId,
-  //   },
-  //   include: [Players], 
-  // });
+    await Players.destroy({
+      where: {
+        teamId: teamId,
+      },
+    });
+    await Results.destroy({
+      where: {
+        team_id: teamId,
+      },
+    });
+    await Matches.destroy({
+      where: {
+        [Op.or]: [
+          { firstTeamId: teamId },
+          { secondTeamId: teamId }
+        ]
+      },
+    });
+    await Teams.destroy({
+      where: {
+        id: teamId,
+      },
+    });
 
-  res.json("DELETED SUCCESSFULLY");
+    res.json("DELETED SUCCESSFULLY");
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;
