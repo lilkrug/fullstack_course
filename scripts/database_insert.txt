@@ -1,5 +1,0 @@
-INSERT INTO fieldpositions (name) VALUES
-    ('Вратарь'),
-    ('Защитник'),
-    ('Полузащитник'),
-    ('Нападающий');

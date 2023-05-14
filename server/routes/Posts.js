@@ -12,6 +12,7 @@ router.get("/", validateToken, async (req, res) => {
     const likedPosts = await Likes.findAll({ where: { UserId: req.user.id } });
     res.json({ listOfPosts, likedPosts });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -68,32 +69,46 @@ router.get("/byteamId/:id", validateToken, async (req, res) => {
 });
 
 router.post("/", validateToken, async (req, res) => {
-  const post = req.body;
-  console.log(post)
-  post.username = req.user.username;
-  post.UserId = req.user.id;
-  const createdPost = await Posts.create(post);
-  if (req.body.teamId != null) {
-    const postTeam = {
-      PostId: createdPost.id,
-      TeamId: req.body.teamId
+  try {
+    const post = req.body;
+    console.log(post);
+    post.username = req.user.username;
+    post.UserId = req.user.id;
+    const createdPost = await Posts.create(post);
+    if (req.body.teamId != null) {
+      const postTeam = {
+        PostId: createdPost.id,
+        TeamId: req.body.teamId
+      };
+
+      await PostsTeams.create(postTeam);
     }
-
-    await PostsTeams.create(postTeam)
+    res.status(201).json(createdPost);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
-  res.json(post);
 });
 
-router.put("/title", validateToken, async (req, res) => {
-  const { newTitle, id } = req.body;
-  await Posts.update({ title: newTitle }, { where: { id: id } });
-  res.json(newTitle);
+router.put("/:id/title", validateToken, async (req, res) => {
+  try {
+    const { newTitle } = req.body;
+    const postId = req.params.id;
+    await Posts.update({ title: newTitle }, { where: { id: postId } });
+    res.json(newTitle);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
-router.put("/postText", validateToken, async (req, res) => {
-  const { newText, id } = req.body;
-  await Posts.update({ postText: newText }, { where: { id: id } });
-  res.json(newText);
+router.put("/:id/postText", validateToken, async (req, res) => {
+  try {
+    const { newText } = req.body;
+    const postId = req.params.id;
+    await Posts.update({ postText: newText }, { where: { id: postId } });
+    res.json(newText);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.delete("/:postId", validateToken, async (req, res) => {

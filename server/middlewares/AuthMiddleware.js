@@ -3,18 +3,25 @@ const { Users } = require("../models");
 
 const validateToken = async (req, res, next) => {
   const accessToken = req.header("accessToken");
-  console.log(accessToken);
-  if (!accessToken) return res.status(401).json({ error: "User not logged in!" });
+  if (!accessToken) {
+    return res.status(401).json({ error: "User not logged in!" });
+  }
 
   try {
-    const validToken = verify(accessToken, "importantsecret");
-    const user = await Users.findByPk(validToken.id);
-    if (!user) return res.status(404).json({ error: "User not found!" });
+    const decodedToken = verify(accessToken, "importantsecret");
+    const user = await Users.findByPk(decodedToken.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found!" });
+    }
     req.user = user;
 
-    if (validToken) {
-      return next();
+    // Check if token has expired
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    if (decodedToken.exp < currentTimestamp) {
+      return res.status(401).json({ error: "Token has expired" });
     }
+
+    return next();
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

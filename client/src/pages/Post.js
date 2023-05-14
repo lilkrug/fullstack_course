@@ -2,6 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../helpers/AuthContext";
+import swal from "sweetalert2";
+import Swal from "sweetalert2";
+
 
 function Post() {
   let { id } = useParams();
@@ -46,6 +49,14 @@ function Post() {
   }, []);
 
   const addComment = () => {
+    if (newComment.trim() === "") {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Comment cannot be empty",
+      });
+      return;
+    }
     if (newComment.length != 0) {
       axios
         .post(
@@ -63,18 +74,14 @@ function Post() {
         .then((response) => {
           if (response.data.error) {
             history.push("/login");
-            console.log(response.data.error);
           } else {
-            console.log(response)
             const commentToAdd = {
               id: response.data.id,
               commentBody: newComment,
               username: response.data.username,
             };
-            //setComments([...comments, commentToAdd]);
             comments.push(commentToAdd)
             setNewComment("");
-            console.log(comments)
           }
         });
     }
@@ -106,58 +113,93 @@ function Post() {
 
   const handleSaveClick = async () => {
     try {
-
       const response = await axios.put(
-        "http://localhost:3001/posts/postText",
+        `http://localhost:3001/posts/${id}/postText`,
         {
           newText: editedText,
-          id: id,
         },
         {
           headers: { accessToken: localStorage.getItem("accessToken") },
         }
       );
-
-      // Handle the response as needed
-      console.log(response.data);
 
       setIsEditingText(false); // Exit the editing mode
       setPostObject({ ...postObject, postText: editedText });
     } catch (error) {
-      // Handle any error that occurred during the PUT request
-      console.log(error);
+      if (error.response) {
+        const errorMessage = error.response.data.error;
+        swal("Error", errorMessage, "error");
+      } else {
+        swal("Error", "An error occurred while updating the post text.", "error");
+      }
     }
   };
 
-  const editPost = (option) => {
-    if (option === "title") {
-      let newTitle = prompt("Enter New Title:");
-      axios.put(
-        "http://localhost:3001/posts/title",
+  const handleCommentChange = (event) => {
+    const value = event.target.value.trim(); // Remove leading and trailing whitespace
+    if (value === "") {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Empty values are not allowed",
+      });
+      return;
+    }
+    setNewComment(value);
+  };
+
+  const handleTextChange = (e) => {
+    const newText = e.target.value;
+    if (newText.length > 300) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Text should not exceed 300 characters",
+      });
+      return;
+    }
+    if (newText.length < 10) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Text should be at least 10 characters long",
+      });
+      return;
+    }
+    setEditedText(newText);
+  };
+
+  const editPost = async (option) => {
+    const newTitle = prompt("Enter New Title:");
+  
+    if (newTitle.trim() === "") {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Title cannot be empty",
+      });
+      return;
+    }
+  
+    try {
+      const response = await axios.put(
+        `http://localhost:3001/posts/${id}/title`,
         {
           newTitle: newTitle,
-          id: id,
         },
         {
           headers: { accessToken: localStorage.getItem("accessToken") },
         }
       );
-
+  
       setPostObject({ ...postObject, title: newTitle });
-    } else {
-      let newPostText = prompt("Enter New Text:");
-      axios.put(
-        "http://localhost:3001/posts/postText",
-        {
-          newText: newPostText,
-          id: id,
-        },
-        {
-          headers: { accessToken: localStorage.getItem("accessToken") },
-        }
-      );
-
-      setPostObject({ ...postObject, postText: newPostText });
+    } catch (error) {
+      if (error.response) {
+        const errorMessage = error.response.data.error;
+        Swal.fire("Error", errorMessage, "error");
+      } else {
+        Swal.fire("Error", "An error occurred while updating the post title.", "error");
+      }
     }
   };
 
@@ -170,7 +212,7 @@ function Post() {
               className="title"
               onClick={() => {
                 if (authState.username === postObject.username) {
-                  editPost("title");
+                  editPost();
                 }
               }}
             >
@@ -183,7 +225,7 @@ function Post() {
               <textarea
                 className="body"
                 value={editedText}
-                onChange={(e) => setEditedText(e.target.value.slice(0, 300))}
+                onChange={handleTextChange}
                 style={{ resize: "none", whiteSpace: "pre-wrap", width: "99%" }}
                 rows={5}
               />
@@ -221,12 +263,7 @@ function Post() {
             autoComplete="off"
             required
             value={newComment}
-            onChange={(event) => {
-              console.log(event.target.value)
-              if (event.target.value != null) {
-                setNewComment(event.target.value);
-              }
-            }}
+            onChange={handleCommentChange}
           />
           <button onClick={addComment}> Add Comment</button>
         </div>

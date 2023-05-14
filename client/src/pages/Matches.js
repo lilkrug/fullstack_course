@@ -48,7 +48,7 @@ function Matches() {
             {matches.map((match, index) => (
               <tr key={index}
                 onClick={() => {
-                  window.location.href = `/matchinfo/${match.id}`;
+                    history.push(`/matchinfo/${match.id}`);
                 }}>
                 <td>{new Date(match.dateTime).toLocaleTimeString()}</td>
                 <td>{match.firstTeam.name}</td>

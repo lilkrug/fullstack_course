@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
 
-function MyForm () {
+function MyForm() {
   const [dateTime, setDateTime] = useState('');
   const [teams, setTeams] = useState([]);
   const [firstTeamId, setFirstTeamId] = useState('');
@@ -36,6 +37,16 @@ function MyForm () {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (firstTeamId === secondTeamId) {
+      Swal.fire({
+        icon: 'error',
+        title: "Error",
+        text: "You can't select the same team for both sides",
+        confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:3001/matches', {
         dateTime,
@@ -43,22 +54,39 @@ function MyForm () {
         secondTeamId,
       }, {
         headers: { accessToken: localStorage.getItem("accessToken") },
-      })
-      if (response.data == "Success") {
-        history.push("/");
-      }
-      else {
-        alert(response.data)
-      }
+      });
+
       console.log(response.data); // Handle response data here
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Match created successfully',
+        confirmButtonColor: '#3085d6',
+      });
     } catch (error) {
       console.error(error); // Handle error here
+      if (error.response) {
+        const errorMessage = error.response.data.error || "Unexpected error occurred";
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: errorMessage,
+          confirmButtonColor: '#3085d6',
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: "Unexpected error occurred",
+          confirmButtonColor: '#3085d6',
+        });
+      }
     }
   };
 
   return (
     <div>
-    {teams.length>=2 ? (
+      {teams.length >= 2 ? (
         <div>
           <form onSubmit={handleSubmit}>
             <div>
@@ -87,11 +115,11 @@ function MyForm () {
           </form>
         </div>
       )
-      :
-      (
-        <h2>Недостаточный список команд</h2>
-      )
-    }
+        :
+        (
+          <h2>Недостаточный список команд</h2>
+        )
+      }
     </div>
   );
 };

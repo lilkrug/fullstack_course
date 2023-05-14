@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import { AuthContext } from "../helpers/AuthContext";
+import Swal from "sweetalert2";
 
 function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
@@ -13,22 +14,43 @@ function Home() {
   let history = useHistory();
 
   useEffect(() => {
-    console.log(localStorage.getItem("accessToken"))
     if (!localStorage.getItem("accessToken")) {
-      console.log(localStorage.getItem("accessToken"))
-      history.push("/login");
+      Swal.fire({
+        icon: 'error',
+        title: 'Unauthorized',
+        text: 'User not logged in!',
+        confirmButtonColor: '#3085d6',
+      }).then(() => {
+        localStorage.removeItem("accessToken");
+        history.push("/login");
+      });
     } else {
       axios
         .get("http://localhost:3001/posts", {
           headers: { accessToken: localStorage.getItem("accessToken") },
         })
         .then((response) => {
-          console.log(response.data)
-          if (response.data.error != undefined) {
-            localStorage.removeItem("accessToken")
-            history.push("/login");
-          }
-          else {
+          if (response.status === 401) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Unauthorized',
+              text: 'Token has expired',
+              confirmButtonColor: '#3085d6',
+            }).then(() => {
+              localStorage.removeItem("accessToken");
+              history.push("/login");
+            });
+          } else if (response.data.error != undefined) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: response.data.error,
+              confirmButtonColor: '#3085d6',
+            }).then(() => {
+              localStorage.removeItem("accessToken");
+              history.push("/login");
+            });
+          } else {
             setListOfPosts(response.data.listOfPosts);
             setLikedPosts(
               response.data.likedPosts.map((like) => {
@@ -36,23 +58,62 @@ function Home() {
               })
             );
           }
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Unexpected error occurred',
+            text: error.message,
+            confirmButtonColor: '#3085d6',
+          }).then(() => {
+            localStorage.removeItem("accessToken");
+            history.push("/login");
+          });
         });
-      axios
+  
+        axios
         .get("http://localhost:3001/matches/today", {
           headers: { accessToken: localStorage.getItem("accessToken") },
         })
         .then((response) => {
-          console.log(response.data)
-          if (response.data.error != undefined) {
-            localStorage.removeItem("accessToken")
-            history.push("/login");
-          }
-          else {
+          if (response.status === 401) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Unauthorized',
+              text: 'Token has expired',
+              confirmButtonColor: '#3085d6',
+            }).then(() => {
+              localStorage.removeItem("accessToken");
+              history.push("/login");
+            });
+          } else if (response.data.error !== undefined) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: response.data.error,
+              confirmButtonColor: '#3085d6',
+            }).then(() => {
+              localStorage.removeItem("accessToken");
+              history.push("/login");
+            });
+          } else {
             setMatches(response.data);
           }
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Unexpected error occurred',
+            text: error.message,
+            confirmButtonColor: '#3085d6',
+          }).then(() => {
+            localStorage.removeItem("accessToken");
+            history.push("/login");
+          });
         });
-    }
+     }
   }, []);
+  
 
   const likeAPost = (postId) => {
     axios
@@ -105,7 +166,7 @@ function Home() {
             {matches.map((match, index) => (
               <tr key={index}
                 onClick={() => {
-                  window.location.href = `/match/${match.id}`;
+                  history.push(`/match/${match.id}`);
                 }}>
                 <td>{new Date(match.dateTime).toLocaleTimeString()}</td>
                 <td>{match.firstTeam.name}</td>

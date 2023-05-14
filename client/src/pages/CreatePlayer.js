@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
+import Swal from "sweetalert2";
 
 function CreatePlayer() {
     const { authState } = useContext(AuthContext);
@@ -59,23 +60,48 @@ function CreatePlayer() {
 
     const onSubmit = (data) => {
         console.log(data)
-        axios
-            .post("http://localhost:3001/players", data, {
-                headers: { accessToken: localStorage.getItem("accessToken") },
+        axios.post("http://localhost:3001/players/", data, {
+            headers: { accessToken: localStorage.getItem("accessToken") },
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "Player created successfully",
+                      }).then(() => {
+                        history.push("/");
+                      });
+                }
             })
-            .then((response) => {
-                console.log(response)
-                if (response.data.error != undefined) {
-                    history.push("/login");
+            .catch(error => {
+                let errorMessage = 'An unexpected error occurred';
+                if (error.response) {
+                    if (error.response.status === 400) {
+                        errorMessage = 'Missing parameters';
+                    } else if (error.response.status === 404) {
+                        if (error.response.data.error === "Position doesn't exist") {
+                            errorMessage = "Position doesn't exist";
+                        } else if (error.response.data.error === "Team doesn't exist") {
+                            errorMessage = "Team doesn't exist";
+                        }
+                    } else if (error.response.status === 409) {
+                        errorMessage = 'Player already exists';
+                    } else if (error.response.status === 500) {
+                        errorMessage = 'Internal server error';
+                    }
                 }
-                else {
-                    history.push("/");
-                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage,
+                    confirmButtonColor: '#3085d6',
+                });
             });
     };
 
     return (
-        <div>{teams.length!=0?(
+        <div>{teams.length != 0 ? (
             <div className="createPostPage">
                 <Formik
                     initialValues={initialValues}
@@ -115,11 +141,11 @@ function CreatePlayer() {
                 </Formik>
             </div>
         )
-    :
-    (
-        <h1>no teams</h1>
-    )
-    }
+            :
+            (
+                <h1>no teams</h1>
+            )
+        }
         </div>
     );
 }

@@ -15,21 +15,21 @@ function Team() {
     try {
       // Perform the delete request using Axios
       await axios.delete(`http://localhost:3001/teams/${id}`,
-      {
-        headers: {
-          accessToken: localStorage.getItem("accessToken"),
-        },
-      }).then((response) => {
-        console.log('response')
-        console.log(response.data)
-        if (response.data.error != undefined) {
-          history.push("/login");
-        }
-        else {
-          history.push("/");
-        }
-      });
-  
+        {
+          headers: {
+            accessToken: localStorage.getItem("accessToken"),
+          },
+        }).then((response) => {
+          console.log('response')
+          console.log(response.data)
+          if (response.data.error != undefined) {
+            history.push("/login");
+          }
+          else {
+            history.push("/");
+          }
+        });
+
       // Perform any additional actions after successful deletion
       // For example, you can update the state or show a success message
     } catch (error) {
@@ -48,10 +48,7 @@ function Team() {
           accessToken: localStorage.getItem("accessToken"),
         },
       }).then((response) => {
-        console.log('response')
-        console.log(response.data)
-        console.log('dasdas')
-          setTeamObject(response.data);
+        setTeamObject(response.data);
       });
 
     axios.get(`http://localhost:3001/players/byTeamId/${id}`,
@@ -89,9 +86,9 @@ function Team() {
 
   return (
     <div>
-      {authState.isAdmin == true && teamObject!=null &&(
-            <button onClick={handleDeleteClick}>Удалить команду</button>
-          )}
+      {authState.isAdmin == true && teamObject != null && (
+        <button onClick={handleDeleteClick}>Удалить команду</button>
+      )}
       {players.length != 0 ? (
         <div>
           <div className="team-page">
@@ -143,7 +140,7 @@ function Team() {
       )
         :
         (
-          teamObject!=null ? (
+          teamObject != null ? (
             <h1>Команда не сформирована</h1>
           ) : (
             <h1>Данной команды не существует</h1>
