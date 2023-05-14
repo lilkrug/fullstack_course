@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Users } = require("../models");
 const bcrypt = require("bcrypt");
+const isAdmin = require("../middlewares/isAdmin");
 const { validateToken } = require("../middlewares/AuthMiddleware");
 const { sign } = require("jsonwebtoken");
 
@@ -19,6 +20,33 @@ router.post("/", async (req, res) => {
         password: hashedPassword,
       });
       res.json("Created user");
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Retrieve all users
+router.get("/", validateToken, async (req, res) => {
+  try {
+    const users = await Users.findAll();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Delete a user
+router.delete("/:id", validateToken,isAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await Users.findByPk(id);
+    console.log(user)
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+    } else {
+      await user.destroy();
+      res.json({ message: "User deleted successfully" });
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

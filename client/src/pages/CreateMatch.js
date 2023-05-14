@@ -63,6 +63,7 @@ function MyForm() {
         text: 'Match created successfully',
         confirmButtonColor: '#3085d6',
       });
+      history.push('/')
     } catch (error) {
       console.error(error); // Handle error here
       if (error.response) {

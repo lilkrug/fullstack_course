@@ -14,9 +14,6 @@ module.exports = (sequelize, DataTypes) => {
           onDelete: "cascade",
           foreignKey: 'teamId'
         });
-        Teams.hasOne(models.Images, {
-          onDelete: "cascade",
-        });
         Teams.hasMany(models.Matches, {as: 'firstTeam', foreignKey: 'firstTeamId'});
         Teams.hasMany(models.Matches, {as: 'secondTeam', foreignKey: 'secondTeamId'});
         Teams.belongsToMany(models.Posts, { through: models.PostsTeams });

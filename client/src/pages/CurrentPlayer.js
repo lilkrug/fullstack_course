@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../helpers/AuthContext";
+import swal from "sweetalert2";
 
 function Player() {
   let { id } = useParams();
@@ -48,17 +49,20 @@ function Player() {
           accessToken: localStorage.getItem("accessToken"),
         },
       }).then((response) => {
-        if (response.data.error != undefined) {
-          history.push("/login");
-        }
-        else {
-          console.log(response.data)
+        console.log(response.status)
+        if (response.data.error) {
+          swal.fire({
+            icon: "error",
+            title: "Error",
+            text: response.data.error,
+          });
+        } else {
           setPlayer(response.data);
-          if (response.data != null) {
-            setFieldPosition(response.data.FieldPosition)
-            setTeam(response.data.Team)
-          }
+          setFieldPosition(response.data.FieldPosition)
+          setTeam(response.data.Team)
         }
+      }).catch((error) => {
+        setPlayer(null);
       });
   }, []);
 

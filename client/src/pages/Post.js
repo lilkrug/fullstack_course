@@ -57,7 +57,7 @@ function Post() {
       });
       return;
     }
-    if (newComment.length != 0) {
+    if (newComment.length != 0 && newComment.length <= 50) {
       axios
         .post(
           "http://localhost:3001/comments",
@@ -84,6 +84,13 @@ function Post() {
             setNewComment("");
           }
         });
+    }
+    else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Comment should not exceed 50 characters',
+      });
     }
   };
 
@@ -145,7 +152,9 @@ function Post() {
       });
       return;
     }
-    setNewComment(value);
+    if (value.length <= 50) {
+      setNewComment(value);
+    }
   };
 
   const handleTextChange = (e) => {

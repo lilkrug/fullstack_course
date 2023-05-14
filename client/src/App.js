@@ -6,10 +6,16 @@ import CreatePost from "./pages/CreatePost";
 import CreateMatch from "./pages/CreateMatch";
 import CreateTeam from "./pages/CreateTeam";
 import CreatePlayer from "./pages/CreatePlayer";
+import DropdownMenu from "./pages/DropdownMenu";
 import UpdatePlayer from "./pages/UpdatePlayer";
 import MatchPage from "./pages/MatchPage";
 import Matches from "./pages/Matches";
 import UpdateMatch from "./pages/UpdateMatch";
+import TeamsTable from "./pages/TeamsTable";
+import PlayersTable from "./pages/PlayersTable";
+import MatchesTable from "./pages/MatchesTable";
+import UsersTable from "./pages/UsersTable";
+import ResultsTable from "./pages/ResultsTable";
 import FavoriteTeamNews from "./pages/FavoriteTeamNews";
 import MyLeague from "./pages/MyLeague";
 import Post from "./pages/Post";
@@ -96,10 +102,15 @@ function App() {
   const CreatePlayerWithRouter = withRouter(CreatePlayer);
   const UpdatePlayerWithRouter = withRouter(UpdatePlayer);
   const CreateTeamWithRouter = withRouter(CreateTeam);
+  const UsersTableWithRouter = withRouter(UsersTable);
   const UpdateMatchWithRouter = withRouter(UpdateMatch);
+  const PlayersTableWithRouter = withRouter(PlayersTable);
+  const MatchesTableWithRouter = withRouter(MatchesTable);
   const FavoriteTeamNewsWithRouter = withRouter(FavoriteTeamNews);
   const MatchPageWithRouter = withRouter(MatchPage);
   const CreateMatchWithRouter = withRouter(CreateMatch);
+  const TeamsTableWithRouter = withRouter(TeamsTable);
+  const ResultsTableWithRouter = withRouter(ResultsTable);
   const PostWithRouter = withRouter(Post);
   const ProfileWithRouter = withRouter(Profile);
   const ChangePasswordWithRouter = withRouter(ChangePassword);
@@ -173,6 +184,10 @@ function App() {
                       <Link to="/createplayer"> Create A Player</Link>
                       <Link to="/updateplayer"> Update A Player</Link>
                       <Link to="/updatematch"> Update A Match</Link>
+                      <Link to="/updatematch"> Results table</Link>
+                      <Link to="/updatematch"> Players table</Link>
+                      <Link to="/updatematch"> Matches table</Link>
+                      <Link to="/updatematch"> Users table</Link>
                     </>
                   )}
                   <Link to="/players"> Players</Link>
@@ -206,6 +221,11 @@ function App() {
             <AdminRoute path="/createteam" exact component={CreateTeamWithRouter} />
             <AdminRoute path="/creatematch" exact component={CreateMatchWithRouter} />
             <AdminRoute path="/updatematch" exact component={UpdateMatchWithRouter} />
+            <AdminRoute path="/teamstable" exact component={TeamsTableWithRouter} />
+            <AdminRoute path="/playerstable" exact component={PlayersTableWithRouter} />
+            <AdminRoute path="/matchestable" exact component={MatchesTableWithRouter} />
+            <AdminRoute path="/userstable" exact component={UsersTableWithRouter} />
+            <AdminRoute path="/resultstable" exact component={ResultsTableWithRouter} />
             <AdminRoute path="/updateplayer" exact component={UpdatePlayerWithRouter} />
             <PrivateRoute path="/post/:id" exact component={PostWithRouter} />
             <PrivateRoute path="/profile/:id" exact component={ProfileWithRouter} />

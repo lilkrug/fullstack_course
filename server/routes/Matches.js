@@ -22,6 +22,21 @@ router.get("/", validateToken, async (req, res) => {
     }
 });
 
+router.delete("/:id", validateToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+      const match = await Matches.findByPk(id);
+      if (!match) {
+        res.status(404).json({ error: "Match not found" });
+      } else {
+        await match.destroy();
+        res.json({ message: "Match deleted successfully" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
 
 router.get("/withoutScore", validateToken, async (req, res) => {
     try {

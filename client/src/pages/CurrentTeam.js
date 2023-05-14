@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../helpers/AuthContext";
+import swal from "sweetalert2";
 
 function Team() {
   let { id } = useParams();
@@ -29,13 +30,8 @@ function Team() {
             history.push("/");
           }
         });
-
-      // Perform any additional actions after successful deletion
-      // For example, you can update the state or show a success message
     } catch (error) {
-      // Handle errors if the request fails
       console.error(error);
-      // Perform any necessary error handling or show an error message
     }
   };
 
@@ -48,7 +44,19 @@ function Team() {
           accessToken: localStorage.getItem("accessToken"),
         },
       }).then((response) => {
-        setTeamObject(response.data);
+        console.log(response.status)
+        if (response.data.error) {
+          swal.fire({
+            icon: "error",
+            title: "Error",
+            text: response.data.error,
+          });
+        } else {
+          setTeamObject(response.data);
+        }
+      })
+      .catch((error) => {
+        setTeamObject(null);
       });
 
     axios.get(`http://localhost:3001/players/byTeamId/${id}`,

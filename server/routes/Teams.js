@@ -144,6 +144,38 @@ router.post("/", validateToken, isAdmin, async (req, res) => {
   }
 });
 
+router.put("/:id", validateToken, isAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ error: "Missing params" });
+    }
+
+    const team = await Teams.findByPk(id);
+
+    if (!team) {
+      return res.status(404).json({ error: "Team not found" });
+    }
+
+    const existingTeam = await Teams.findOne({
+      where: { name },
+    });
+
+    if (existingTeam && existingTeam.id !== team.id) {
+      return res.status(409).json({ error: "Team name is already taken" });
+    }
+
+    team.name = name;
+    await team.save();
+
+    res.json({ name: team.name });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.delete("/:teamId", validateToken, isAdmin, async (req, res) => {
   try {
     const teamId = req.params.teamId;
@@ -179,7 +211,7 @@ router.delete("/:teamId", validateToken, isAdmin, async (req, res) => {
       },
     });
 
-    res.json("DELETED SUCCESSFULLY");
+    res.json("Deleted successfully");
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }

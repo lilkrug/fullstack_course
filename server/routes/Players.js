@@ -81,6 +81,75 @@ router.put("/:playerId", validateToken, isAdmin, async (req, res) => {
   }
 });
 
+router.put("/edit/:id", validateToken, isAdmin, async (req, res) => {
+  const { id } = req.params;
+  const updatedPlayer = req.body;
+
+  if (
+    updatedPlayer.name == null ||
+    updatedPlayer.teamId == null ||
+    updatedPlayer.fieldPositionId == null ||
+    updatedPlayer.goals < 0 ||
+    updatedPlayer.assists < 0
+  ) {
+    return res.status(400).json({ error: "Invalid parameters" });
+  }
+
+  try {
+    const player = await Players.findByPk(id);
+
+    if (!player) {
+      return res.status(404).json({ error: "Player not found" });
+    }
+
+    const existingPlayer = await Players.findOne({
+      where: { name: updatedPlayer.name },
+    });
+
+    if (existingPlayer && existingPlayer.id !== player.id) {
+      return res.status(409).json({ error: "Player name is already taken" });
+    }
+
+    const isTeamExisting = await Teams.findOne({
+      where: {
+        id: updatedPlayer.teamId,
+      },
+    });
+
+    if (!isTeamExisting) {
+      return res.status(404).json({ error: "Team doesn't exist" });
+    }
+
+    const isPositionExisting = await FieldPositions.findOne({
+      where: {
+        id: updatedPlayer.fieldPositionId,
+      },
+    });
+
+    if (!isPositionExisting) {
+      return res.status(404).json({ error: "Position doesn't exist" });
+    }
+
+    player.name = updatedPlayer.name;
+    player.teamId = updatedPlayer.teamId;
+    player.fieldPositionId = updatedPlayer.fieldPositionId;
+    player.goals = updatedPlayer.goals;
+    player.assists = updatedPlayer.assists;
+
+    await player.save();
+
+    res.json({
+      name: player.name,
+      teamId: player.teamId,
+      fieldPosition: player.fieldPositionId,
+      goals: player.goals,
+      assists: player.assists,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Create player
 router.post("/", validateToken, isAdmin, async (req, res) => {
   const player = req.body;
