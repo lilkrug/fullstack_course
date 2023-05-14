@@ -385,6 +385,29 @@ a.my-class {
 }
 
 table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,td {
+  padding: 8px;
+  border: 1px solid #3085d6;
+}
+
+th {
+  background-color: #3085d6;
+  color: #fff;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+  background-color: #cce0ff;
+}
+
+/* table {
   border-collapse: collapse;
   width: 100%;
   max-width: 800px;
@@ -408,7 +431,7 @@ tr:nth-child(even) {
 
 tr:hover {
   background-color: #ddd;
-}
+} */
 
 
 /* PLAYER PAGE */

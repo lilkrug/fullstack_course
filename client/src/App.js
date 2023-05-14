@@ -184,10 +184,11 @@ function App() {
                       <Link to="/createplayer"> Create A Player</Link>
                       <Link to="/updateplayer"> Update A Player</Link>
                       <Link to="/updatematch"> Update A Match</Link>
-                      <Link to="/updatematch"> Results table</Link>
-                      <Link to="/updatematch"> Players table</Link>
-                      <Link to="/updatematch"> Matches table</Link>
-                      <Link to="/updatematch"> Users table</Link>
+                      <Link to="/resultstable"> Results table</Link>
+                      <Link to="/playerstable"> Players table</Link>
+                      <Link to="/matchestable"> Matches table</Link>
+                      <Link to="/teamstable"> Teams table</Link>
+                      <Link to="/userstable"> Users table</Link>
                     </>
                   )}
                   <Link to="/players"> Players</Link>

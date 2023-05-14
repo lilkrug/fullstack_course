@@ -29,8 +29,12 @@ function CreatePost() {
     });
   }, []);
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required("You must input a Title!").matches(/^\S+$/, "Whitespace is not allowed"),
-    postText: Yup.string().required("You must input a text!").matches(/^\S+$/, "Whitespace is not allowed"),
+    title: Yup.string()
+      .required("Вы должны ввести заголовок!")
+      .min(5, "Минимум 5 символов"),
+    postText: Yup.string()
+      .required("Вы должны ввести текст!")
+      .min(5, "Минимум 5 символов"),
   });
 
   const handleTeamSelection = (event) => {
