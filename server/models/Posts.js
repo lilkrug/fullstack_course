@@ -5,13 +5,15 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     postText: {
-      type: DataTypes.STRING(1000),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+  },{
+    timestamps: false
   });
 
   Posts.associate = (models) => {
@@ -22,8 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     Posts.hasMany(models.Likes, {
       onDelete: "cascade",
     });
-
-    Posts.belongsToMany(models.Teams, { through: models.PostsTeams, onDelete: 'CASCADE' });
   };
   return Posts;
 };

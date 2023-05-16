@@ -13,10 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
-    },
-    favoriteTeamId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
     }
     
   });
@@ -28,9 +24,6 @@ module.exports = (sequelize, DataTypes) => {
 
     Users.hasMany(models.Posts, {
       onDelete: "cascade",
-    });
-    Users.belongsTo(models.Teams, {
-      foreignKey: "favoriteTeamId"
     });
   };
 
