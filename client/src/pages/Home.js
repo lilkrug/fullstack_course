@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 function Home() {
   const [listOfPosts, setListOfPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
-  const [matches, setMatches] = useState([]);
   const { authState } = useContext(AuthContext);
   let history = useHistory();
 
@@ -25,92 +24,51 @@ function Home() {
         history.push("/login");
       });
     } else {
-      axios
-        .get("http://localhost:3001/posts", {
-          headers: { accessToken: localStorage.getItem("accessToken") },
-        })
-        .then((response) => {
-          if (response.status === 401) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Unauthorized',
-              text: 'Token has expired',
-              confirmButtonColor: '#3085d6',
-            }).then(() => {
-              localStorage.removeItem("accessToken");
-              history.push("/login");
-            });
-          } else if (response.data.error != undefined) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: response.data.error,
-              confirmButtonColor: '#3085d6',
-            }).then(() => {
-              localStorage.removeItem("accessToken");
-              history.push("/login");
-            });
-          } else {
-            setListOfPosts(response.data.listOfPosts);
-            setLikedPosts(
-              response.data.likedPosts.map((like) => {
-                return like.PostId;
-              })
-            );
-          }
-        })
-        .catch((error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Unexpected error occurred',
-            text: error.message,
-            confirmButtonColor: '#3085d6',
-          }).then(() => {
-            localStorage.removeItem("accessToken");
-            history.push("/login");
-          });
-        });
-  
-        axios
-        .get("http://localhost:3001/matches/today", {
-          headers: { accessToken: localStorage.getItem("accessToken") },
-        })
-        .then((response) => {
-          if (response.status === 401) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Unauthorized',
-              text: 'Token has expired',
-              confirmButtonColor: '#3085d6',
-            }).then(() => {
-              localStorage.removeItem("accessToken");
-              history.push("/login");
-            });
-          } else if (response.data.error !== undefined) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: response.data.error,
-              confirmButtonColor: '#3085d6',
-            }).then(() => {
-              localStorage.removeItem("accessToken");
-              history.push("/login");
-            });
-          } else {
-            setMatches(response.data);
-          }
-        })
-        .catch((error) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Unexpected error occurred',
-            text: error.message,
-            confirmButtonColor: '#3085d6',
-          }).then(() => {
-            localStorage.removeItem("accessToken");
-            history.push("/login");
-          });
-        });
+      // axios
+      //   .get("http://localhost:3001/posts", {
+      //     headers: { accessToken: localStorage.getItem("accessToken") },
+      //   })
+      //   .then((response) => {
+      //     if (response.status === 401) {
+      //       Swal.fire({
+      //         icon: 'error',
+      //         title: 'Unauthorized',
+      //         text: 'Token has expired',
+      //         confirmButtonColor: '#3085d6',
+      //       }).then(() => {
+      //         localStorage.removeItem("accessToken");
+      //         history.push("/login");
+      //       });
+      //     } else if (response.data.error != undefined) {
+      //       Swal.fire({
+      //         icon: 'error',
+      //         title: 'Error',
+      //         text: response.data.error,
+      //         confirmButtonColor: '#3085d6',
+      //       }).then(() => {
+      //         localStorage.removeItem("accessToken");
+      //         history.push("/login");
+      //       });
+      //     } else {
+      //       setListOfPosts(response.data.listOfPosts);
+      //       setLikedPosts(
+      //         response.data.likedPosts.map((like) => {
+      //           return like.PostId;
+      //         })
+      //       );
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     Swal.fire({
+      //       icon: 'error',
+      //       title: 'Unexpected error occurred',
+      //       text: error.message,
+      //       confirmButtonColor: '#3085d6',
+      //     }).then(() => {
+      //       localStorage.removeItem("accessToken");
+      //       history.push("/login");
+      //     });
+      //   });
      }
   }, []);
   
@@ -153,29 +111,6 @@ function Home() {
 
   return (
     <div>
-      {matches.length != 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Время</th>
-              <th>Команда 1</th>
-              <th>Команда 2</th>
-            </tr>
-          </thead>
-          <tbody>
-            {matches.map((match, index) => (
-              <tr key={index}
-                onClick={() => {
-                  history.push(`/match/${match.id}`);
-                }}>
-                <td>{new Date(match.dateTime).toLocaleTimeString()}</td>
-                <td>{match.firstTeam.name}</td>
-                <td>{match.secondTeam.name}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>)
-      }
       {listOfPosts.map((value, key) => {
         return (
           <div key={key} className="post">

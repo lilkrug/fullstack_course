@@ -5,11 +5,7 @@ module.exports = (sequelize, DataTypes) => {
           primaryKey: true,
           autoIncrement: true
         },
-        booking_date: {
-          type: DataTypes.DATE,
-          allowNull: false
-        },
-        count_of_people: {
+        countOfPeople: {
             type: DataTypes.INTEGER,
             allowNull: false
         }
@@ -19,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     
       Bookings.associate = (models) => {
         Bookings.belongsTo(models.Users, {
-            onDelete: "cascade",
+            onDelete: "cascade", foreignKey: 'userId'
           });
         Bookings.belongsTo(models.Tours, {
-            onDelete: "cascade",
+            onDelete: "cascade", foreignKey: 'tourId'
           });
       };
 

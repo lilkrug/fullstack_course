@@ -17,11 +17,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false
         },
-        start_date: {
+        startDate: {
             type: DataTypes.DATE,
             allowNull: false
         },
-        end_date: {
+        endDate: {
             type: DataTypes.DATE,
             allowNull: false
         }
@@ -30,11 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       });
 
     Tours.associate = (models) => {
-        Tours.hasMany(models.Bookings, {
+        Tours.belongsTo(models.Hotels, {
             onDelete: "cascade",
-        });
-        Tours.hasMany(models.Hotels, {
-            onDelete: "cascade",
+            foreignKey: 'hotelId'
         });
     };
 

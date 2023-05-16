@@ -3,26 +3,11 @@ import Swal from "sweetalert2";
 import { BrowserRouter as Router, withRouter, Redirect, useHistory, Route, Switch, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
-import CreateMatch from "./pages/CreateMatch";
-import CreateTeam from "./pages/CreateTeam";
-import CreatePlayer from "./pages/CreatePlayer";
-import DropdownMenu from "./pages/DropdownMenu";
-import UpdatePlayer from "./pages/UpdatePlayer";
-import MatchPage from "./pages/MatchPage";
-import Matches from "./pages/Matches";
-import UpdateMatch from "./pages/UpdateMatch";
-import TeamsTable from "./pages/TeamsTable";
-import PlayersTable from "./pages/PlayersTable";
-import MatchesTable from "./pages/MatchesTable";
+import AddCity from "./pages/AddCity";
+import AddHotel from "./pages/AddHotel";
 import UsersTable from "./pages/UsersTable";
-import ResultsTable from "./pages/ResultsTable";
-import FavoriteTeamNews from "./pages/FavoriteTeamNews";
-import MyLeague from "./pages/MyLeague";
 import Post from "./pages/Post";
 import Registration from "./pages/Registration";
-import CurrentTeam from "./pages/CurrentTeam";
-import CurrentMatch from "./pages/CurrentMatch";
-import CurrentPlayer from "./pages/CurrentPlayer";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 import PageForAdmin from "./pages/PageForAdmin";
@@ -32,8 +17,6 @@ import ChangePassword from "./pages/ChangePassword";
 import { AuthContext } from "./helpers/AuthContext";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Teams from "./pages/Teams";
-import Players from "./pages/Players";
 import Chat from "./pages/Chat";
 
 function App() {
@@ -91,30 +74,14 @@ function App() {
   const RegistrationWithRouter = withRouter(Registration);
   const LoginWithRouter = withRouter(Login);
   const ChatWithRouter = withRouter(Chat);
-  const MatchesWithRouter = withRouter(Matches);
-  const TeamsWithRouter = withRouter(Teams);
-  const PlayersWithRouter = withRouter(Players);
   const HomeWithRouter = withRouter(Home);
-  const CurrentTeamWithRouter = withRouter(CurrentTeam);
-  const CurrentPlayerWithRouter = withRouter(CurrentPlayer);
-  const CurrentMatchWithRouter = withRouter(CurrentMatch);
   const CreatePostWithRouter = withRouter(CreatePost);
-  const CreatePlayerWithRouter = withRouter(CreatePlayer);
-  const UpdatePlayerWithRouter = withRouter(UpdatePlayer);
-  const CreateTeamWithRouter = withRouter(CreateTeam);
+  const AddCityWithRouter = withRouter(AddCity);
+  const AddHotelWithRouter = withRouter(AddHotel);
   const UsersTableWithRouter = withRouter(UsersTable);
-  const UpdateMatchWithRouter = withRouter(UpdateMatch);
-  const PlayersTableWithRouter = withRouter(PlayersTable);
-  const MatchesTableWithRouter = withRouter(MatchesTable);
-  const FavoriteTeamNewsWithRouter = withRouter(FavoriteTeamNews);
-  const MatchPageWithRouter = withRouter(MatchPage);
-  const CreateMatchWithRouter = withRouter(CreateMatch);
-  const TeamsTableWithRouter = withRouter(TeamsTable);
-  const ResultsTableWithRouter = withRouter(ResultsTable);
   const PostWithRouter = withRouter(Post);
   const ProfileWithRouter = withRouter(Profile);
   const ChangePasswordWithRouter = withRouter(ChangePassword);
-  const MyLeagueWithRouter = withRouter(MyLeague);
 
   const [authState, setAuthState] = useState({
     username: "",
@@ -179,22 +146,11 @@ function App() {
                   <Link to="/createpost"> Create A Post</Link>
                   {authState.isAdmin && (
                     <>
-                      <Link to="/creatematch"> Create A Match</Link>
-                      <Link to="/createteam"> Create A Team</Link>
-                      <Link to="/createplayer"> Create A Player</Link>
-                      <Link to="/updateplayer"> Update A Player</Link>
-                      <Link to="/updatematch"> Update A Match</Link>
-                      <Link to="/resultstable"> Results table</Link>
-                      <Link to="/playerstable"> Players table</Link>
-                      <Link to="/matchestable"> Matches table</Link>
-                      <Link to="/teamstable"> Teams table</Link>
                       <Link to="/userstable"> Users table</Link>
+                      <Link to="/addcity"> Add a Tour City</Link>
+                      <Link to="/addhotel"> Add a Hotel</Link>
                     </>
                   )}
-                  <Link to="/players"> Players</Link>
-                  <Link to="/matches"> Matches</Link>
-                  <Link to="/teams"> Teams</Link>
-                  <Link to="/league"> League table</Link>
                 </>
               )}
             </div>
@@ -208,26 +164,10 @@ function App() {
             <AuthRoute path="/login" exact component={LoginWithRouter} />
             <PrivateRoute path="/" exact component={HomeWithRouter} />
             <PrivateRoute path="/chat" exact component={ChatWithRouter} />
-            <PrivateRoute path="/teams" exact component={TeamsWithRouter} />
-            <PrivateRoute path="/players" exact component={PlayersWithRouter} />
-            <PrivateRoute path="/league" exact component={MyLeagueWithRouter} />
-            <PrivateRoute path="/matches" exact component={MatchesWithRouter} />
-            <PrivateRoute path="/postsByTeam/:id" exact component={FavoriteTeamNewsWithRouter} />
-            <PrivateRoute path="/team/:id" exact component={CurrentTeamWithRouter} />
-            <PrivateRoute path="/match/:id" exact component={MatchPageWithRouter} />
-            <PrivateRoute path="/matchinfo/:id" exact component={CurrentMatchWithRouter} />
-            <PrivateRoute path="/player/:id" exact component={CurrentPlayerWithRouter} />
             <PrivateRoute path="/createpost" exact component={CreatePostWithRouter} />
-            <AdminRoute path="/createplayer" exact component={CreatePlayerWithRouter} />
-            <AdminRoute path="/createteam" exact component={CreateTeamWithRouter} />
-            <AdminRoute path="/creatematch" exact component={CreateMatchWithRouter} />
-            <AdminRoute path="/updatematch" exact component={UpdateMatchWithRouter} />
-            <AdminRoute path="/teamstable" exact component={TeamsTableWithRouter} />
-            <AdminRoute path="/playerstable" exact component={PlayersTableWithRouter} />
-            <AdminRoute path="/matchestable" exact component={MatchesTableWithRouter} />
             <AdminRoute path="/userstable" exact component={UsersTableWithRouter} />
-            <AdminRoute path="/resultstable" exact component={ResultsTableWithRouter} />
-            <AdminRoute path="/updateplayer" exact component={UpdatePlayerWithRouter} />
+            <AdminRoute path="/addcity" exact component={AddCityWithRouter} />
+            <AdminRoute path="/addhotel" exact component={AddHotelWithRouter} />
             <PrivateRoute path="/post/:id" exact component={PostWithRouter} />
             <PrivateRoute path="/profile/:id" exact component={ProfileWithRouter} />
             <PrivateRoute path="/changepassword" exact component={ChangePasswordWithRouter} />

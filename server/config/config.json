@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "2003Andrey",
-    "database": "TutorialDB",
+    "database": "toursdb",
     "host": "localhost",
     "dialect": "mysql"
   },

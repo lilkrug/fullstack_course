@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
-import Swal from "sweetalert2";
 
 function CreatePost() {
   const { authState } = useContext(AuthContext);
@@ -16,69 +15,35 @@ function CreatePost() {
   const initialValues = {
     title: "",
     postText: "",
+    relatedTeams: 0
   };
 
   useEffect(() => {
     if (!localStorage.getItem("accessToken")) {
       history.push("/login");
     }
-    axios.get("http://localhost:3001/teams/teams", {
-      headers: { accessToken: localStorage.getItem("accessToken") },
-    }).then((response) => {
-      setTeams(response.data);
-    });
   }, []);
   const validationSchema = Yup.object().shape({
-    title: Yup.string()
-      .required("Вы должны ввести заголовок!")
-      .min(5, "Минимум 5 символов"),
-    postText: Yup.string()
-      .required("Вы должны ввести текст!")
-      .min(5, "Минимум 5 символов"),
+    title: Yup.string().required("You must input a Title!"),
+    postText: Yup.string().required(),
   });
 
-  const handleTeamSelection = (event) => {
-    console.log(event.target.value)
-    setSelectedTeamId(event.target.value);
-  };
-
   const onSubmit = (values, { resetForm }) => {
-    if (teams.length != 0) {
-      setSelectedTeamId(teams[0].id)
-    }
     const data = {
       title: values.title,
       postText: values.postText,
-      teamId: isTeamRelated ? selectedTeamId : null, // передаем связанные команды
     };
-    console.log(values)
     axios
       .post("http://localhost:3001/posts", data, {
         headers: { accessToken: localStorage.getItem("accessToken") },
       })
       .then((response) => {
-        if (response.data.error) {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: response.data.error,
-          });
-        } else {
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "Post created successfully",
-          }).then(() => {
-            history.push("/");
-          });
+        if (response.data.error != undefined) {
+          history.push("/login");
         }
-      })
-      .catch((error) => {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Internal server error",
-        });
+        else {
+          history.push("/");
+        }
       });
   };
 
@@ -105,41 +70,7 @@ function CreatePost() {
             id="inputCreatePost"
             name="postText"
             placeholder="(Ex. Post...)"
-            style={{ width: "100%", height: "200px", resize: "none" }}
-            component="textarea"
           />
-          {teams.length != 0 && (
-            <div>
-              <label>
-                <Field
-                  type="checkbox"
-                  name="isTeamRelated"
-                  onClick={() => setIsTeamRelated(!isTeamRelated)}
-                />
-                Is related to team(s)?
-              </label>
-              {isTeamRelated && (
-                <div>
-                  <label>Related team(s):</label>
-                  <Field as="select" name="relatedTeams" onChange={handleTeamSelection}>
-                    {teams.length === 1 && (
-                      <option value={teams[0].id}>{teams[0].name}</option>
-                    )}
-                    {teams.length > 1 && (
-                      <>
-                        <option value="">Select a team</option>
-                        {teams.map((team) => (
-                          <option key={team.id} value={team.id}>
-                            {team.name}
-                          </option>
-                        ))}
-                      </>
-                    )}
-                  </Field>
-                </div>
-              )}
-            </div>
-          )}
 
           <button type="submit"> Create Post</button>
         </Form>

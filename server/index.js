@@ -31,18 +31,13 @@ const usersController = require("./controllers/Users");
 app.use("/auth", usersController);
 const likesController = require("./controllers/Likes");
 app.use("/likes", likesController);
-const teamsController = require("./controllers/Teams");
-app.use("/teams", teamsController);
-const playersController = require("./controllers/Players");
-app.use("/players", playersController);
-const fieldPositionsController = require("./controllers/FieldPositions");
-app.use("/fieldPositions", fieldPositionsController);
-const matchesController = require("./controllers/Matches");
-app.use("/matches", matchesController);
 const messageController = require("./controllers/Messages");
 app.use("/messages", messageController);
-const resultsController = require("./controllers/Results");
-app.use("/results", resultsController);
+const citiesController = require("./controllers/Cities");
+app.use("/cities", citiesController);
+const hotelsController = require("./controllers/Hotels");
+app.use("/hotels", hotelsController);
+
 
 db.sequelize.sync().then(() => {
   http.listen(3001, () => {

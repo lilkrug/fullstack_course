@@ -1,80 +1,117 @@
 const express = require("express");
 const router = express.Router();
-const { Posts, Likes,  } = require("../models");
 const Hotels = require("../models").Hotels;
 const Teams = require("../models").Teams;
-const PostsTeams = require("../models").PostsTeams;
+const Cities = require("../models").Cities;
+const isAdmin = require("../middlewares/isAdmin");
 
 const { validateToken } = require("../middlewares/AuthMiddleware");
 
 router.get("/", validateToken, async (req, res) => {
-  const listOfPosts = await Posts.findAll({ include: [Likes] });
-  const likedPosts = await Likes.findAll({ where: { UserId: req.user.id } });
-  res.json({ listOfPosts: listOfPosts, likedPosts: likedPosts });
-});
-
-router.get("/byId/:id", validateToken, async (req, res) => {
-  const id = req.params.id;
-  const post = await Posts.findByPk(id);
-  res.json(post);
-});
-
-router.get("/byuserId/:id", validateToken, async (req, res) => {
-  const id = req.params.id;
-  const listOfPosts = await Posts.findAll({
-    where: { UserId: id },
-    include: [Likes],
-  });
-  res.json(listOfPosts);
-});
-
-router.get("/byteamId/:id", validateToken, async (req, res) => {
-  const id = req.params.id;
-  const posts = await Posts.findAll({
-    include: [
-      {
-        model: Teams,
-        attributes: [],
-        through: PostsTeams,
-        where: {
-          id: id
-        }
-      }
-    ]
-  });
-  console.log(posts);
-  res.json(posts);
+  try {
+    const listOfHotels = await Hotels.findAll({ include: [Cities] });
+    res.json({ listOfHotels: listOfHotels });
+  }
+  catch(error){
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 router.post("/", validateToken, async (req, res) => {
   const hotel = req.body;
   console.log(hotel)
-  const createdPost = await Hotels.create(hotel);
-
-  res.json(hotel);
+  if (hotel.name != null && hotel.CityId != null && hotel.star_rating != null) {
+    try {
+      const foundedCity = await Cities.findOne({
+        where: {
+          id: hotel.CityId,
+        },
+      });
+      if (foundedCity != null) {
+        await Hotels.create(hotel)
+        res.json(hotel)
+      }
+      else {
+        res.status(404).json({ error: "City doesn't exist" });
+      }
+    }
+    catch (error) {
+      console.log(error)
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+  else {
+    res.status(400).json({ error: "Missing parameters" });
+  }
 });
 
-router.put("/title", validateToken, async (req, res) => {
-  const { newTitle, id } = req.body;
-  await Posts.update({ title: newTitle }, { where: { id: id } });
-  res.json(newTitle);
-});
+router.put("/edit/:id", validateToken, isAdmin, async (req, res) => {
+  const { id } = req.params;
+  const updatedPlayer = req.body;
 
-router.put("/postText", validateToken, async (req, res) => {
-  const { newText, id } = req.body;
-  await Posts.update({ postText: newText }, { where: { id: id } });
-  res.json(newText);
-});
+  if (
+    updatedPlayer.name == null ||
+    updatedPlayer.teamId == null ||
+    updatedPlayer.fieldPositionId == null ||
+    updatedPlayer.goals < 0 ||
+    updatedPlayer.assists < 0
+  ) {
+    return res.status(400).json({ error: "Invalid parameters" });
+  }
 
-router.delete("/:postId", validateToken, async (req, res) => {
-  const postId = req.params.postId;
-  await Posts.destroy({
-    where: {
-      id: postId,
-    },
-  });
+  try {
+    const player = await Players.findByPk(id);
 
-  res.json("DELETED SUCCESSFULLY");
+    if (!player) {
+      return res.status(404).json({ error: "Player not found" });
+    }
+
+    const existingPlayer = await Players.findOne({
+      where: { name: updatedPlayer.name },
+    });
+
+    if (existingPlayer && existingPlayer.id !== player.id) {
+      return res.status(409).json({ error: "Player name is already taken" });
+    }
+
+    const isTeamExisting = await Teams.findOne({
+      where: {
+        id: updatedPlayer.teamId,
+      },
+    });
+
+    if (!isTeamExisting) {
+      return res.status(404).json({ error: "Team doesn't exist" });
+    }
+
+    const isPositionExisting = await FieldPositions.findOne({
+      where: {
+        id: updatedPlayer.fieldPositionId,
+      },
+    });
+
+    if (!isPositionExisting) {
+      return res.status(404).json({ error: "Position doesn't exist" });
+    }
+
+    player.name = updatedPlayer.name;
+    player.teamId = updatedPlayer.teamId;
+    player.fieldPositionId = updatedPlayer.fieldPositionId;
+    player.goals = updatedPlayer.goals;
+    player.assists = updatedPlayer.assists;
+
+    await player.save();
+
+    res.json({
+      name: player.name,
+      teamId: player.teamId,
+      fieldPosition: player.fieldPositionId,
+      goals: player.goals,
+      assists: player.assists,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;
