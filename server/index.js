@@ -23,14 +23,8 @@ app.post('/messages',validateToken,async (req, res) => {
   res.status(200).send();
 });
 
-const postController = require("./controllers/Posts");
-app.use("/posts", postController);
-const commentsController = require("./controllers/Comments");
-app.use("/comments", commentsController);
 const usersController = require("./controllers/Users");
 app.use("/auth", usersController);
-const likesController = require("./controllers/Likes");
-app.use("/likes", likesController);
 const messageController = require("./controllers/Messages");
 app.use("/messages", messageController);
 const citiesController = require("./controllers/Cities");

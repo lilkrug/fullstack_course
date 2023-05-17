@@ -101,16 +101,24 @@ function App() {
       .then((response) => {
         console.log(response.data)
         if (response.data.error) {
-          isAuthenticated = false
-          if (response.data.error == 'jwt expired') {
-            localStorage.removeItem("accessToken");
-            setAuthState({ ...authState, status: false });
-            console.log(localStorage.getItem("accessToken"))
-            isAuthenticated = false
-            window.location.replace("/login");
-          }
           localStorage.removeItem("accessToken");
           setAuthState({ ...authState, status: false });
+  
+          if (response.data.error == 'jwt expired') {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Session expired!',
+              text: 'Please log in again',
+            }).then(() => {
+              window.location.replace("/login");
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: response.data.error,
+            });
+          }
         } else {
           setAuthState({
             username: response.data.username,
@@ -119,6 +127,14 @@ function App() {
             isAdmin: response.data.isAdmin
           });
         }
+      }).catch((error) => {
+        localStorage.removeItem("accessToken");
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message,
+        });
       });
   }, []);
 

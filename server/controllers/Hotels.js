@@ -12,7 +12,7 @@ router.get("/", validateToken, async (req, res) => {
     const listOfHotels = await Hotels.findAll({ include: [Cities] });
     res.json({ listOfHotels: listOfHotels });
   }
-  catch(error){
+  catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -20,19 +20,29 @@ router.get("/", validateToken, async (req, res) => {
 router.post("/", validateToken, async (req, res) => {
   const hotel = req.body;
   console.log(hotel)
-  if (hotel.name != null && hotel.CityId != null && hotel.star_rating != null) {
+  if (hotel.name != null && hotel.cityId != null && hotel.starRating != null) {
     try {
-      const foundedCity = await Cities.findOne({
+      const foundedHotel = await Hotels.findOne({
         where: {
-          id: hotel.CityId,
+          name: hotel.name,
         },
       });
-      if (foundedCity != null) {
-        await Hotels.create(hotel)
-        res.json(hotel)
+      if (foundedHotel == null) {
+        const foundedCity = await Cities.findOne({
+          where: {
+            id: hotel.cityId,
+          },
+        });
+        if (foundedCity != null) {
+          await Hotels.create(hotel)
+          res.json(hotel)
+        }
+        else {
+          res.status(404).json({ error: "City doesn't exist" });
+        }
       }
       else {
-        res.status(404).json({ error: "City doesn't exist" });
+        res.status(409).json({ error: "Hotel already exists" });
       }
     }
     catch (error) {
@@ -47,12 +57,12 @@ router.post("/", validateToken, async (req, res) => {
 
 router.put("/edit/:id", validateToken, isAdmin, async (req, res) => {
   const { id } = req.params;
-  const updatedPlayer = req.body;
+  const updatedHotel = req.body;
 
   if (
-    updatedPlayer.name == null ||
-    updatedPlayer.teamId == null ||
-    updatedPlayer.fieldPositionId == null ||
+    updatedHotel.name == null ||
+    updatedHotel.teamId == null ||
+    updatedHotel.fieldPositionId == null ||
     updatedPlayer.goals < 0 ||
     updatedPlayer.assists < 0
   ) {

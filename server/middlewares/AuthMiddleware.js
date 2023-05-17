@@ -23,6 +23,7 @@ const validateToken = async (req, res, next) => {
 
     return next();
   } catch (err) {
+    console.log(err)
     return res.status(500).json({ error: err.message });
   }
 };
