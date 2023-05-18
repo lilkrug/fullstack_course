@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
   try {
     const foundUser = await Users.findOne({ where: { username } });
     if (foundUser) {
-      res.status(409).json({error: "User is already created" });
+      res.status(409).json({ error: "User is already created" });
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
       await Users.create({
@@ -40,7 +40,7 @@ router.get("/", validateToken, async (req, res) => {
 router.get("/bookings", validateToken, async (req, res) => {
   try {
     const users = await Users.findAll({
-      attributes: ['id', 'username'], 
+      attributes: ['id', 'username'],
     });
     res.json(users);
   } catch (error) {
@@ -50,7 +50,7 @@ router.get("/bookings", validateToken, async (req, res) => {
 });
 
 // Delete a user
-router.delete("/:id", validateToken,isAdmin, async (req, res) => {
+router.delete("/:id", validateToken, isAdmin, async (req, res) => {
   const { id } = req.params;
   try {
     const user = await Users.findByPk(id);
@@ -96,7 +96,12 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/auth", validateToken, (req, res) => {
-  res.json(req.user);
+  try {
+    res.json(req.user);
+  }
+  catch(error){
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 // Получение информации о пользователе
