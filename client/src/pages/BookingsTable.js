@@ -28,7 +28,7 @@ const BookingsTable = () => {
     const fetchData = async () => {
         try {
             axios
-                .get("http://localhost:3001/bookings", {
+                .get("https://course-project-75u9.onrender.com/bookings", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -42,7 +42,7 @@ const BookingsTable = () => {
                     }
                 });
             axios
-                .get("http://localhost:3001/tours", {
+                .get("https://course-project-75u9.onrender.com/tours", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -54,7 +54,7 @@ const BookingsTable = () => {
                     }
                 });
             axios
-                .get("http://localhost:3001/auth/bookings", {
+                .get("https://course-project-75u9.onrender.com/auth/bookings", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -94,7 +94,7 @@ const BookingsTable = () => {
             return;
         }
         try {
-            await axios.put(`http://localhost:3001/bookings/edit/${id}`, updatedValues, {
+            await axios.put(`https://course-project-75u9.onrender.com/bookings/edit/${id}`, updatedValues, {
                 headers: { accessToken: localStorage.getItem("accessToken") }
             });
             Swal.fire({
@@ -143,7 +143,7 @@ const BookingsTable = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:3001/bookings/${id}`, {
+            const response = await axios.delete(`https://course-project-75u9.onrender.com/bookings/${id}`, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             });
 

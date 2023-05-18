@@ -25,7 +25,7 @@ const UsersTable = () => {
     const fetchData = async () => {
         try {
             axios
-                .get("http://localhost:3001/auth/", {
+                .get("https://course-project-75u9.onrender.com/auth/", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -60,7 +60,7 @@ const UsersTable = () => {
             return;
         }
         try {
-            await axios.put(`http://localhost:3001/auth/${id}`, updatedValues, {
+            await axios.put(`https://course-project-75u9.onrender.com/auth/${id}`, updatedValues, {
                 headers: { accessToken: localStorage.getItem("accessToken") }
             });
             Swal.fire({
@@ -94,7 +94,7 @@ const UsersTable = () => {
 
     const handleDelete = async (id) => {
         try {
-          const response = await axios.delete(`http://localhost:3001/auth/${id}`, {
+          const response = await axios.delete(`https://course-project-75u9.onrender.com/auth/${id}`, {
             headers: { accessToken: localStorage.getItem("accessToken") },
           });
       

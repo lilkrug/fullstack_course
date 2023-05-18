@@ -28,7 +28,7 @@ function AddHotel() {
     const onSubmit = (data) => {
         console.log(data);
         axios
-            .post("http://localhost:3001/hotels", data, {
+            .post("https://course-project-75u9.onrender.com/hotels", data, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             })
             .then((response) => {

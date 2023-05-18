@@ -24,7 +24,7 @@ function Home() {
       });
     } else {
       axios
-        .get("http://localhost:3001/tours", {
+        .get("https://course-project-75u9.onrender.com/tours", {
           headers: { accessToken: localStorage.getItem("accessToken") },
         })
         .then((response) => {

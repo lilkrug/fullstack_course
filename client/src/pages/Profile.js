@@ -23,7 +23,7 @@ function Profile() {
 
   const fetchData = async () => {
     try {
-      axios.get(`http://localhost:3001/auth/basicinfo/${id}`, {
+      axios.get(`https://course-project-75u9.onrender.com/auth/basicinfo/${id}`, {
         headers: {
           accessToken: localStorage.getItem("accessToken"),
         },
@@ -38,7 +38,7 @@ function Profile() {
         .catch((error) => {
           console.error(error);
         });
-      axios.get(`http://localhost:3001/bookings/byUserId/${id}`, {
+      axios.get(`https://course-project-75u9.onrender.com/bookings/byUserId/${id}`, {
         headers: {
           accessToken: localStorage.getItem("accessToken"),
         },
@@ -61,7 +61,7 @@ function Profile() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:3001/bookings/${id}`, {
+      const response = await axios.delete(`https://course-project-75u9.onrender.com/bookings/${id}`, {
         headers: { accessToken: localStorage.getItem("accessToken") },
       });
 

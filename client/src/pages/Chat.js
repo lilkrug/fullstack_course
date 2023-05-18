@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import io from 'socket.io-client';
 import { AuthContext } from "../helpers/AuthContext";
 
-const ENDPOINT = 'localhost:3001';
+const ENDPOINT = 'https://course-project-75u9.onrender.com';
 
 function Chat() {
   const [message, setMessage] = useState('');
