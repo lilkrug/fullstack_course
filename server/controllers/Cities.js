@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Cities = require("../models").Cities;
+const Hotels = require("../models").Hotels;
+const Tours = require("../models").Tours;
 const isAdmin = require("../middlewares/isAdmin");
 
 
@@ -77,10 +79,15 @@ router.delete("/:cityId", validateToken, async (req, res) => {
     try {
       const foundedCity = await Cities.findOne({
         where: {
-          id: cityId,
+          id: cityId
         },
       });
       if (foundedCity != null) {
+        await Hotels.destroy({
+          where: {
+            cityId: cityId,
+          },
+        });
         await Cities.destroy({
           where: {
             id: cityId,
@@ -93,6 +100,7 @@ router.delete("/:cityId", validateToken, async (req, res) => {
       }
     }
     catch (error) {
+      console.log(error)
       res.status(500).json({ error: "Internal server error" });
     }
   }

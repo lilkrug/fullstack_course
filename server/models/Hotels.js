@@ -12,13 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }, {
     timestamps: false
   });
-  Hotels.associate = (models) => {
-    Hotels.belongsTo(models.Cities, {foreignKey: 'cityId'});
-  };
-
   return Hotels
 }

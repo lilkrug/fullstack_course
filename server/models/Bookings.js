@@ -5,9 +5,9 @@ module.exports = (sequelize, DataTypes) => {
           primaryKey: true,
           autoIncrement: true
         },
-        countOfPeople: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+        numberOfDays: {
+          type: DataTypes.INTEGER,
+          allowNull: false
         }
       },{
         timestamps: false

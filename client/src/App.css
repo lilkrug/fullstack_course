@@ -1,3 +1,124 @@
+
+.home-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-image: url('home.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.registr-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-image: url('registr.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.ChangePassword-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-image: url('ChangePassword.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+/* ChangePassword */
+.ChangePassword-page input{
+  width: 475px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px;
+}
+
+.ChangePassword-page button {
+  margin-top: 15px;
+  height: 40px;
+  border: none;
+  background-color: #fe6401;
+  border-radius: 5px;
+  color: white; 
+  margin: 0 auto;
+}
+
+.ChangePassword-page button:hover {
+  cursor: pointer;
+  background-color: dodgerblue;
+}
+
+.ChangePassword-page input {
+  border: 2px solid #fe6401;
+}
+
+/* LOGIN */
+.loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-image: url('auth2.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.loginContainer input {
+  width: 475px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  margin: 10px;
+}
+
+.loginContainer button {
+  margin-top: 15px;
+  height: 40px;
+  border: none;
+  background-color: #fe6401;
+  border-radius: 5px;
+  color: white;
+  margin: 0 auto;
+}
+
+.loginContainer input {
+  border: 2px solid #fe6401;
+}
+.loginContainer button:hover {
+  cursor: pointer;
+  background-color: dodgerblue;
+}
+/* profile-page */
+.profilePageContainer1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-image: url('profile.jpg');
+  background-size: cover;
+  background-position: center;
+}
+/* CREATE POST PAGE CSS */
+
+.createPostPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-image: url('createpostpage.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
 .App {
   width: 100%;
   height: auto;
@@ -21,8 +142,16 @@ body {
   flex-direction: column;
   margin-top: 50px;
   border: 1px solid lightgray;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: cursive;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+button[type="submit"] {
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
 }
 
 .post:hover {
@@ -50,10 +179,7 @@ body {
   margin-bottom: 20px;
 }
 
-.profilePageContainer {
-  display: flex;
-  flex-direction: column;
-}
+
 
 .basicInfo,
 .favoriteTeamForm,
@@ -120,17 +246,6 @@ body {
   margin-left: 10px;
 }
 
-/* CREATE POST PAGE CSS */
-
-.createPostPage {
-  font-family: Arial, Helvetica, sans-serif;
-  width: 100vw;
-  height: 70vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .formContainer {
   display: flex;
   flex-direction: column;
@@ -138,15 +253,16 @@ body {
   width: 500px;
   height: auto;
   padding: 20px;
-  border: 5px solid dodgerblue;
+  border: 5px solid #fe6401;
   border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .formContainer #inputCreatePost {
   height: 40px;
   margin-top: 10px;
   margin-bottom: 10px;
-  border: 2px solid grey;
+  border: 2px solid #fe6401;
   border-radius: 5px;
   padding-left: 10px;
   font-size: 20px;
@@ -156,7 +272,7 @@ body {
   margin-top: 15px;
   height: 40px;
   border: none;
-  background-color: lightskyblue;
+  background-color: #fe6401;
   border-radius: 5px;
   color: white;
 }
@@ -175,10 +291,14 @@ span {
 .navbar {
   width: 100%;
   height: 70px;
-  background-color: dodgerblue;
+  width: 100%;
+  height: 75px;
+  background-image: linear-gradient(to right, #ffc95f, #ffc6c2);
+  color: #fff;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: cursive;
 }
 
 .navbar .links {
@@ -297,34 +417,6 @@ button {
   font-size: 25px;
 }
 
-/* LOGIN */
-
-.loginContainer {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-  height: 100vh;
-  padding-top: 100px;
-}
-
-.loginContainer input,
-button {
-  width: 200px;
-  height: 50px;
-  border-radius: 8px;
-  border: none;
-  margin: 10px;
-}
-
-.loginContainer button {
-  background-color: dodgerblue;
-  color: white;
-}
-
-.loginContainer input {
-  border: 2px solid dodgerblue;
-}
 
 /* TABLE */
 /* table {
@@ -487,7 +579,6 @@ tr:hover {
   font-weight: bold;
   color: #004080;
 }
-
 
 /* ПОСТ */
 .posts-container {

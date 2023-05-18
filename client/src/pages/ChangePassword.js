@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Formik, Form} from "formik";
 
 function ChangePassword() {
   const [oldPassword, setOldPassword] = useState("");
@@ -29,39 +30,43 @@ function ChangePassword() {
           const errorMessage = error.response.data.error;
           Swal.fire({
             icon: 'error',
-            title: 'Error',
+            title: 'Ошибка',
             text: errorMessage,
-            confirmButtonColor: '#3085d6',
+            confirmButtonColor: '#fe6401',
           });
         } else {
           Swal.fire({
             icon: 'error',
-            title: 'Unexpected error occurred',
+            title: 'Произошла непредвиденная ошибка',
             text: error.message,
-            confirmButtonColor: '#3085d6',
+            confirmButtonColor: '#fe6401',
           });
         }
       });
   };
 
   return (
-    <div>
-      <h1>Change Your Password</h1>
+    <div className="ChangePassword-page">
+      <Formik>
+        <Form className="formContainer">
+      <h1>Изменить свой пароль</h1>
       <input
         type="password"
-        placeholder="Old Password..."
+        placeholder="Старый пароль"
         onChange={(event) => {
           setOldPassword(event.target.value);
         }}
       />
       <input
         type="password"
-        placeholder="New Password..."
+        placeholder="Новый пароль"
         onChange={(event) => {
           setNewPassword(event.target.value);
         }}
       />
-      <button onClick={changePassword}> Save Changes</button>
+      <button onClick={changePassword}> Сохранить изменения </button>
+      </Form>
+      </Formik>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
+import { Formik, Form} from "formik";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
 import Swal from "sweetalert2";
@@ -29,49 +30,55 @@ function Login() {
         if (error.response && error.response.status === 409) {
           Swal.fire({
             icon: 'error',
-            title: 'User is already created',
-            confirmButtonColor: '#3085d6',
+            title: 'Пользователь уже создан',
+            confirmButtonColor: '#fe6401',
           });
         } else if (error.response && error.response.status === 401) {
           Swal.fire({
             icon: 'error',
-            title: 'Wrong Username and Password combination',
-            confirmButtonColor: '#3085d6',
+            title: 'Неверная комбинация имени пользователя и пароля',
+            confirmButtonColor: '#fe6401',
           });
         } else if (error.response && error.response.status === 404) {
           Swal.fire({
             icon: 'error',
-            title: 'User doesn\'t exist',
-            confirmButtonColor: '#3085d6',
+            title: 'Пользователь не существует',
+            confirmButtonColor: '#fe6401',
           });
         } else {
           Swal.fire({
             icon: 'error',
-            title: 'Unexpected error occurred',
+            title: 'Произошла непредвиденная ошибка',
             text: error.message,
-            confirmButtonColor: '#3085d6',
+            confirmButtonColor: '#fe6401',
           });
         }
       });
   };
   return (
     <div className="loginContainer">
-      <label>Username:</label>
+      <Formik>
+      <Form className="formContainer">
+      <h1>Авторизация</h1>
+      <label>Имя пользователя:</label>
       <input
         type="text"
+        placeholder="Введите имя"
         onChange={(event) => {
           setUsername(event.target.value);
         }}
       />
-      <label>Password:</label>
+      <label>Пароль:</label>
       <input
         type="password"
+        placeholder="Введите пароль"
         onChange={(event) => {
           setPassword(event.target.value);
         }}
       />
-
-      <button onClick={login}> Login </button>
+      <button onClick={login}> Авторизоваться </button>
+      </Form>
+    </Formik>
     </div>
   );
 }

@@ -14,8 +14,14 @@ function Registration() {
   };
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().min(3).max(15).required(),
-    password: Yup.string().min(4).max(20).required(),
+    username: Yup.string()
+    .min(3, 'Имя пользователя должно быть не менее 3 символов')
+    .max(15, 'Имя пользователя должно быть не более 15 символов')
+    .required('Имя пользователя является обязательным полем'),
+    password: Yup.string()
+    .min(4, 'Пароль должен быть не менее 4 символов')
+    .max(20, 'Пароль должен быть не более 20 символов')
+    .required('Пароль является обязательным полем'),
   });
 
   const onSubmit = (data) => {
@@ -29,48 +35,49 @@ function Registration() {
         if (error.response && error.response.status === 409) {
           Swal.fire({
             icon: 'error',
-            title: 'User is already created',
-            confirmButtonColor: '#3085d6',
+            title: 'Пользователь уже создан',
+            confirmButtonColor: '#fe6401',
           });
         } else {
           Swal.fire({
             icon: 'error',
-            title: 'Unexpected error occurred',
+            title: 'Произошла непредвиденная ошибка',
             text: error.message,
-            confirmButtonColor: '#3085d6',
+            confirmButtonColor: '#fe6401',
           });
         }
       });
   };
 
   return (
-    <div>
+    <div className="registr-page">
       <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
         validationSchema={validationSchema}
       >
         <Form className="formContainer">
-          <label>Username: </label>
+          <h1>Регистрация</h1>
+          <label>Имя пользователя: </label>
           <ErrorMessage name="username" component="span" />
           <Field
             autoComplete="off"
             id="inputCreatePost"
             name="username"
-            placeholder="(Ex. John123...)"
+            placeholder="(alexxx111)"
           />
 
-          <label>Password: </label>
+          <label>Пароль: </label>
           <ErrorMessage name="password" component="span" />
           <Field
             autoComplete="off"
             type="password"
             id="inputCreatePost"
             name="password"
-            placeholder="Your Password..."
+            placeholder="пароль"
           />
 
-          <button type="submit">Register</button>
+          <button type="submit">Зарегистрироваться</button>
         </Form>
       </Formik>
     </div>

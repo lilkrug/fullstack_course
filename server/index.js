@@ -27,10 +27,14 @@ const usersController = require("./controllers/Users");
 app.use("/auth", usersController);
 const messageController = require("./controllers/Messages");
 app.use("/messages", messageController);
-const citiesController = require("./controllers/Cities");
-app.use("/cities", citiesController);
+// const citiesController = require("./controllers/Cities");
+// app.use("/cities", citiesController);
 const hotelsController = require("./controllers/Hotels");
 app.use("/hotels", hotelsController);
+const toursController = require("./controllers/Tours");
+app.use("/tours", toursController);
+const bookingsController = require("./controllers/Bookings");
+app.use("/bookings", bookingsController);
 
 
 db.sequelize.sync().then(() => {

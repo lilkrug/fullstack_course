@@ -7,12 +7,10 @@ import Swal from "sweetalert2";
 
 
 function AddHotel() {
-    const [selectedCityId, setSelectedCityId] = useState(null);
-    const [cities, setCities] = useState([]);
     let history = useHistory();
     const initialValues = {
         name: "",
-        cityId: 1,
+        city: "",
         starRating: 1
     };
 
@@ -20,17 +18,11 @@ function AddHotel() {
         if (!localStorage.getItem("accessToken")) {
             history.push("/login");
         }
-        axios.get("http://localhost:3001/cities/", {
-            headers: { accessToken: localStorage.getItem("accessToken") },
-        }).then((response) => {
-            console.log(response.data)
-            setCities(response.data);
-        });
     }, []);
     const validationSchema = Yup.object().shape({
-        name: Yup.string().required("You must input a Title!"),
-        cityId: Yup.number().required("Required"),
-        starRating: Yup.number().required("Required").min(1, "Min value is 1").max(5, "Max value is 5"),
+        name: Yup.string().required("Вы должны ввести название!"),
+        city: Yup.string().required("Вы должны ввести город!"),
+        starRating: Yup.number().required("Необходимо выбрать звезду").min(1, "Минимальное значение – 1.").max(5, "Максимальное значение - 5"),
     });
 
     const onSubmit = (data) => {
@@ -44,8 +36,8 @@ function AddHotel() {
                 if (response.status === 200) {
                     Swal.fire({
                       icon: "success",
-                      title: "Success",
-                      text: "Hotel added successfully",
+                      title: "Успех",
+                      text: "Отель успешно добавлен",
                     }).then(() => {
                       history.push("/");
                     });
@@ -57,27 +49,27 @@ function AddHotel() {
                 if (error.response.status === 400) {
                     Swal.fire({
                         icon: "error",
-                        title: "Error",
+                        title: "Ошибка",
                         text: errorMessage,
                     });
                 } else if (error.response.status === 409) {
                     Swal.fire({
                         icon: "error",
-                        title: "Error",
+                        title: "Ошибка",
                         text: errorMessage,
                     });
                 }
                 else if (error.response.status === 404) {
                     Swal.fire({
                         icon: "error",
-                        title: "Error",
+                        title: "Ошибка",
                         text: errorMessage,
                     });
                 } else {
                     Swal.fire({
                         icon: "error",
-                        title: "Error",
-                        text: "Failed to create hotel",
+                        title: "Ошибка",
+                        text: "Не удалось создать отель",
                     });
                 }
             });
@@ -91,7 +83,7 @@ function AddHotel() {
                 validationSchema={validationSchema}
             >
                 <Form className="formContainer">
-                    <label>Name: </label>
+                    <label>Название: </label>
                     <ErrorMessage name="name" component="span" />
                     <Field
                         autoComplete="off"
@@ -99,24 +91,23 @@ function AddHotel() {
                         name="name"
                         placeholder="(Столбцы)"
                     />
-                    <ErrorMessage name="cityId" component="span" />
-                    <Field as="select" name="cityId">
-                        {cities.map((city) => (
-                            <option key={city.id} value={city.id}>
-                                {city.name}
-                            </option>
-                        ))}
-                    </Field>
+                    <ErrorMessage name="city" component="span" />
+                    <Field
+                        autoComplete="off"
+                        id="inputCreatePost"
+                        name="city"
+                        placeholder="(Столбцы)"
+                    />
                     <ErrorMessage name="starRating" component="span" />
                     <Field as="select" name="starRating">
-                        <option value="">Select Stars</option>
+                        <option value="">Выберите звезды</option>
                         <option value={1}>1</option>
                         <option value={2}>2</option>
                         <option value={3}>3</option>
                         <option value={4}>4</option>
                         <option value={5}>5</option>
                     </Field>
-                    <button type="submit"> Add Hotel</button>
+                    <button type="submit"> Добавить Отель </button>
                 </Form>
             </Formik>
         </div>

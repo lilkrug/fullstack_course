@@ -2,11 +2,17 @@ import "./App.css";
 import Swal from "sweetalert2";
 import { BrowserRouter as Router, withRouter, Redirect, useHistory, Route, Switch, Link } from "react-router-dom";
 import Home from "./pages/Home";
-import CreatePost from "./pages/CreatePost";
-import AddCity from "./pages/AddCity";
+// import AddCity from "./pages/AddCity";
+import AddTour from "./pages/AddTour";
 import AddHotel from "./pages/AddHotel";
+// import CitiesTable from "./pages/CitiesTable";
+import ToursTable from "./pages/ToursTable";
+import Tours from "./pages/Tours";
+import Hotels from "./pages/Hotels";
+import BookingsTable from "./pages/BookingsTable";
+import AddBooking from "./pages/AddBooking";
 import UsersTable from "./pages/UsersTable";
-import Post from "./pages/Post";
+import HotelsTable from "./pages/HotelsTable";
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
@@ -75,11 +81,15 @@ function App() {
   const LoginWithRouter = withRouter(Login);
   const ChatWithRouter = withRouter(Chat);
   const HomeWithRouter = withRouter(Home);
-  const CreatePostWithRouter = withRouter(CreatePost);
-  const AddCityWithRouter = withRouter(AddCity);
   const AddHotelWithRouter = withRouter(AddHotel);
+  const AddBookingWithRouter = withRouter(AddBooking);
+  const AddTourWithRouter = withRouter(AddTour);
   const UsersTableWithRouter = withRouter(UsersTable);
-  const PostWithRouter = withRouter(Post);
+  const BookingsTableWithRouter = withRouter(BookingsTable);
+  const ToursTableWithRouter = withRouter(ToursTable);
+  const HotelsTableWithRouter = withRouter(HotelsTable);
+  const ToursWithRouter = withRouter(Tours);
+  const HotelsWithRouter = withRouter(Hotels);
   const ProfileWithRouter = withRouter(Profile);
   const ChangePasswordWithRouter = withRouter(ChangePassword);
 
@@ -107,15 +117,15 @@ function App() {
           if (response.data.error == 'jwt expired') {
             Swal.fire({
               icon: 'warning',
-              title: 'Session expired!',
-              text: 'Please log in again',
+              title: 'Сессия истекла!',
+              text: 'Пожалуйста, войдите снова',
             }).then(() => {
               window.location.replace("/login");
             });
           } else {
             Swal.fire({
               icon: 'error',
-              title: 'Oops...',
+              title: 'Упс',
               text: response.data.error,
             });
           }
@@ -132,7 +142,7 @@ function App() {
         console.log(error);
         Swal.fire({
           icon: 'error',
-          title: 'Oops...',
+          title: 'Упс',
           text: error.message,
         });
       });
@@ -153,18 +163,24 @@ function App() {
             <div className="links">
               {!authState.status ? (
                 <>
-                  <Link to="/login"> Login</Link>
-                  <Link to="/registration"> Registration</Link>
+                  <Link to="/login"> Авторизация </Link>
+                  <Link to="/registration"> Регистрация </Link>
                 </>
               ) : (
                 <>
-                  <Link to="/"> Home Page</Link>
-                  <Link to="/createpost"> Create A Post</Link>
+                  <Link to="/"> Домашняя страница </Link>
+                  <Link to="/addbooking"> Добавить бронирование</Link>
+                  <Link to="/tours"> Все туры</Link>
+                  <Link to="/hotels"> Все отели</Link>
                   {authState.isAdmin && (
                     <>
-                      <Link to="/userstable"> Users table</Link>
-                      <Link to="/addcity"> Add a Tour City</Link>
-                      <Link to="/addhotel"> Add a Hotel</Link>
+                      <Link to="/userstable"> Таблица пользователей </Link>
+                      <Link to="/hotelstable"> Таблица отелей</Link>
+                      <Link to="/bookingstable"> Таблица заказов</Link>
+                      <Link to="/tourstable">   Таблица туров </Link>
+                      <Link to="/addhotel"> Добавить отель</Link>
+                      <Link to="/addbooking"> Добавить бронирование</Link>
+                      <Link to="/addtour"> Добавить тур</Link>
                     </>
                   )}
                 </>
@@ -172,7 +188,7 @@ function App() {
             </div>
             <div className="loggedInContainer">
               <h1><Link to={"/profile/" + authState.id}>{authState.username}</Link></h1>
-              {authState.status && <button onClick={logout}> Logout</button>}
+              {authState.status && <button onClick={logout}> Выйти </button>}
             </div>
           </div>
           <Switch>
@@ -180,11 +196,17 @@ function App() {
             <AuthRoute path="/login" exact component={LoginWithRouter} />
             <PrivateRoute path="/" exact component={HomeWithRouter} />
             <PrivateRoute path="/chat" exact component={ChatWithRouter} />
-            <PrivateRoute path="/createpost" exact component={CreatePostWithRouter} />
+            <PrivateRoute path="/addbooking" exact component={AddBookingWithRouter} />
+            <PrivateRoute path="/tours" exact component={ToursWithRouter} />
+            <PrivateRoute path="/hotels" exact component={HotelsWithRouter} />
             <AdminRoute path="/userstable" exact component={UsersTableWithRouter} />
-            <AdminRoute path="/addcity" exact component={AddCityWithRouter} />
+            <AdminRoute path="/hotelstable" exact component={HotelsTableWithRouter} />
+            <AdminRoute path="/tourstable" exact component={ToursTableWithRouter} />
+            <AdminRoute path="/bookingstable" exact component={BookingsTableWithRouter} />
+            {/* <AdminRoute path="/addcity" exact component={AddCityWithRouter} /> */}
             <AdminRoute path="/addhotel" exact component={AddHotelWithRouter} />
-            <PrivateRoute path="/post/:id" exact component={PostWithRouter} />
+            {/* <AdminRoute path="/citiestable" exact component={CitiesTableWithRouter} /> */}
+            <AdminRoute path="/addtour" exact component={AddTourWithRouter} />
             <PrivateRoute path="/profile/:id" exact component={ProfileWithRouter} />
             <PrivateRoute path="/changepassword" exact component={ChangePasswordWithRouter} />
             <Route path="*" exact component={PageNotFound} />

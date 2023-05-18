@@ -9,25 +9,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(255),
             allowNull: false
         },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        price: {
+        priceOneDay: {
             type: DataTypes.DECIMAL(10, 2),
             allowNull: false
-        },
-        startDate: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        endDate: {
-            type: DataTypes.DATE,
-            allowNull: false
         }
-    },{
+    }, {
         timestamps: false
-      });
+    });
 
     Tours.associate = (models) => {
         Tours.belongsTo(models.Hotels, {

@@ -9,7 +9,6 @@ const UsersTable = () => {
     const [listOfUsers, setListOfUsers] = useState([]);
     const [editingId, setEditingId] = useState(null);
     const [updatedValues, setUpdatedValues] = useState({});
-    const [searchTerm, setSearchTerm] = useState("");
     const { authState } = useContext(AuthContext);
 
     let history = useHistory();
@@ -55,8 +54,8 @@ const UsersTable = () => {
         if (!fieldsUpdated) {
             Swal.fire({
                 icon: "info",
-                title: "No Update",
-                text: "You haven't made any updates.",
+                title: "Нет обновления",
+                text: "Вы не сделали никаких обновлений.",
             });
             return;
         }
@@ -66,45 +65,31 @@ const UsersTable = () => {
             });
             Swal.fire({
                 icon: "success",
-                title: "Success",
-                text: "User updated successfully",
+                title: "Успех",
+                text: "Пользователь успешно обновлен",
               });
             setEditingId(null); // Завершение режима редактирования
             fetchData(); // Обновление данных после обновления
         } catch (error) {
             console.error(error);
-            let errorMessage = "Failed to update user";
+            let errorMessage = "Не удалось обновить пользователя";
 
             if (error.response && error.response.status === 400) {
-                errorMessage = "Missing parameters";
+                errorMessage = "Отсутствующие параметры";
             } else if (error.response && error.response.status === 404) {
-                errorMessage = "User not found";
+                errorMessage = "Пользователь не найден";
             } else if (error.response && error.response.status === 409) {
-                errorMessage = "User name is already taken";
+                errorMessage = "Имя пользователя уже используется";
             } else if (error.response && error.response.data && error.response.data.error) {
                 errorMessage = error.response.data.error;
             }
 
             Swal.fire({
                 icon: 'error',
-                title: 'Error',
+                title: 'Ошибка',
                 text: errorMessage,
             });
         }
-    };
-
-    const handleInputChange = (e, id) => {
-        const { name, value } = e.target;
-        if (name === 'name' && value.trim() === '') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Name cannot be empty',
-            });
-            return;
-        }
-
-        setUpdatedValues({ ...updatedValues, [name]: value });
     };
 
     const handleDelete = async (id) => {
@@ -113,25 +98,25 @@ const UsersTable = () => {
             headers: { accessToken: localStorage.getItem("accessToken") },
           });
       
-          if (response.data.message === "User deleted successfully") {
+          if (response.data.message === "Пользователь успешно удален") {
             Swal.fire({
               icon: "success",
-              title: "Success",
-              text: "User deleted successfully",
+              title: "Успех",
+              text: "Пользователь успешно удален",
             });
             fetchData(); // Обновление данных после удаления
           } else {
             Swal.fire({
               icon: "error",
-              title: "Error",
-              text: "Failed to delete user",
+              title: "Ошибка",
+              text: "Не удалось удалить пользователя",
             });
           }
         } catch (error) {
           Swal.fire({
             icon: "error",
-            title: "Error",
-            text: "Failed to delete user",
+            title: "Ошибка",
+            text: "Не удалось удалить пользователя",
           });
           console.error(error);
         }
@@ -142,8 +127,8 @@ const UsersTable = () => {
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
-                    <th>Actions</th>
+                    <th>Имя пользователя</th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody>

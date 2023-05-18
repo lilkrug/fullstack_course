@@ -1,15 +1,30 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 function PageNotFound() {
-  return (
-    <div>
-      <h1>Page Not Found :/</h1>
-      <h3>
-        Go to the Home Page: <Link to="/"> Home Page</Link>
-      </h3>
-    </div>
-  );
+  const history = useHistory();
+    const [counter, setCounter] = useState(5);
+
+    useEffect(() => {
+        const timer =
+            counter > 0 &&
+            setTimeout(() => {
+                setCounter(counter - 1);
+            }, 1000);
+
+        if (counter === 0) {
+            history.push('/');
+        }
+
+        return () => clearTimeout(timer);
+    }, [counter, history]);
+    return (
+        <div>
+            <h1>Страница не найдена</h1>
+            <p>Вы будете перенаправлены через {counter} секунд.</p>
+        </div>
+    );
 }
 
 export default PageNotFound;

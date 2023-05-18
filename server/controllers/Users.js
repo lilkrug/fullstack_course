@@ -36,6 +36,19 @@ router.get("/", validateToken, async (req, res) => {
   }
 });
 
+// Retrieve all users
+router.get("/bookings", validateToken, async (req, res) => {
+  try {
+    const users = await Users.findAll({
+      attributes: ['id', 'username'], 
+    });
+    res.json(users);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Delete a user
 router.delete("/:id", validateToken,isAdmin, async (req, res) => {
   const { id } = req.params;

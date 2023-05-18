@@ -3,16 +3,41 @@ const router = express.Router();
 const Bookings = require("../models").Bookings;
 const Hotels = require("../models").Hotels;
 const Tours = require("../models").Tours;
-
+const Users = require("../models").Users;
+const isAdmin = require("../middlewares/isAdmin");
 
 const { validateToken } = require("../middlewares/AuthMiddleware");
 
 router.get("/", validateToken, async (req, res) => {
     try {
-        const listOfBookings = await Bookings.findAll();
+        const listOfBookings = await Bookings.findAll({
+            include: [
+                {
+                    model: Tours
+                },
+                {
+                    model: Users,
+                    attributes: ['id', 'username']
+                }
+            ]
+        });
         res.json(listOfBookings);
     }
-    catch(error){
+    catch (error) {
+        console.log(error)
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+router.get("/byId/:id", validateToken, async (req, res) => {
+    const id = req.params.id;
+    try {
+        const booking = await Bookings.findOne({
+            where: { id: id },
+            include: [Tours],
+        });
+        res.json(booking);
+    } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
 });
@@ -20,28 +45,33 @@ router.get("/", validateToken, async (req, res) => {
 router.get("/byUserId/:id", validateToken, async (req, res) => {
     const id = req.params.id;
     try {
-      const booking = await Bookings.findAll({
-        where: { UserId: id },
-        include: [Hotels, Tours],
-      });
-      res.json(booking);
+        const booking = await Bookings.findAll({
+            where: { userId: id },
+            include: [{
+                model:Tours,
+                include: [Hotels]
+            }]
+        });
+        res.json(booking);
     } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
+        console.log(error)
+        res.status(500).json({ error: "Internal server error" });
     }
-  });
+});
 
 router.post("/", validateToken, async (req, res) => {
     const booking = req.body;
-    if (booking.UserId!=null&&booking.TourId!=null&&booking.count_of_people!=null) {
+    console.log(booking)
+    if (booking.userId != null && booking.tourId != null && booking.numberOfDays != null) {
         try {
             const foundedTour = await Tours.findOne({
                 where: {
-                    id: booking.TourId,
+                    id: booking.tourId,
                 },
             });
             if (foundedTour != null) {
                 await Bookings.create(booking);
-                res.json({booking});
+                res.json({ booking });
             }
             else {
                 res.status(404).json({ error: "Tour doesn't exist" });
@@ -83,6 +113,49 @@ router.delete("/:bookingId", validateToken, async (req, res) => {
     }
     else {
         res.status(400).json({ error: "Missing bookingId" });
+    }
+});
+
+
+router.put("/edit/:id", validateToken, isAdmin, async (req, res) => {
+    const { id } = req.params;
+    const updatedBooking = req.body;
+    console.log(updatedBooking)
+
+    if (
+        updatedBooking.userId == null ||
+        updatedBooking.tourId == null ||
+        updatedBooking.numberOfDays < 0
+    ) {
+        return res.status(400).json({ error: "Invalid parameters" });
+    }
+
+    try {
+        const user = await Users.findByPk(updatedBooking.userId);
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const tour = await Tours.findByPk(updatedBooking.tourId);
+
+        if (!tour) {
+            return res.status(404).json({ error: "Tour not found" });
+        }
+
+        await Bookings.update(updatedBooking, {
+            where: { id: id }
+        })
+
+        res.json({
+            id: id,
+            userId: updatedBooking.userId,
+            cityId: updatedBooking.tourId,
+            numberOfDays: updatedBooking.numberOfDays,
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 

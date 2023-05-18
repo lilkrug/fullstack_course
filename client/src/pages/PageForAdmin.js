@@ -21,8 +21,8 @@ function PageForAdmin() {
     }, [counter, history]);
     return (
         <div>
-            <h1>You are not allowed to visit this page</h1>
-            <p>You will be redirected in {counter} seconds.</p>
+            <h1>Вам не разрешено посещать эту страницу</h1>
+            <p>Вы будете перенаправлены через {counter} секунд.</p>
         </div>
     );
 }
