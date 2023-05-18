@@ -172,6 +172,7 @@ function App() {
                   <Link to="/addbooking"> Добавить бронирование</Link>
                   <Link to="/tours"> Все туры</Link>
                   <Link to="/hotels"> Все отели</Link>
+                  <Link to="/chat"> Общий чат для выявления проблем</Link>
                   {authState.isAdmin && (
                     <>
                       <Link to="/userstable"> Таблица пользователей </Link>
