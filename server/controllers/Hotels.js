@@ -60,7 +60,7 @@ router.put("/edit/:id", validateToken, isAdmin, async (req, res) => {
   }
 });
 
-router.post("/", validateToken, async (req, res) => {
+router.post("/", validateToken,isAdmin, async (req, res) => {
   const hotel = req.body;
   console.log(hotel)
   if (hotel.name != null && hotel.city != null && hotel.starRating != null) {
@@ -88,7 +88,7 @@ router.post("/", validateToken, async (req, res) => {
   }
 });
 
-router.delete("/:hotelId", validateToken, async (req, res) => {
+router.delete("/:hotelId", validateToken,isAdmin, async (req, res) => {
   const hotelId = req.params.hotelId;
   if (hotelId != null) {
     try {

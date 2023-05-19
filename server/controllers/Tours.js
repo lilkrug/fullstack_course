@@ -30,7 +30,7 @@ router.get("/byTourId/:id", validateToken, async (req, res) => {
     }
 });
 
-router.post("/", validateToken, async (req, res) => {
+router.post("/", validateToken,isAdmin, async (req, res) => {
     const tour = req.body;
     console.log(tour)
     try {
@@ -129,7 +129,7 @@ router.put("/edit/:id", validateToken, isAdmin, async (req, res) => {
     }
 });
 
-router.delete("/:id", validateToken, async (req, res) => {
+router.delete("/:id", validateToken,isAdmin, async (req, res) => {
     const tourId = req.params.id;
     if (tourId != null) {
         try {

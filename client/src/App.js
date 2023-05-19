@@ -144,7 +144,7 @@ function App() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("isAdmin");
     setAuthState({ username: "", id: 0, status: false });
-    window.location.replace("/");
+    <Redirect to="/login" />
   };
 
   return (
@@ -172,7 +172,6 @@ function App() {
                       <Link to="/bookingstable"> Таблица заказов</Link>
                       <Link to="/tourstable">   Таблица туров </Link>
                       <Link to="/addhotel"> Добавить отель</Link>
-                      <Link to="/addbooking"> Добавить бронирование</Link>
                       <Link to="/addtour"> Добавить тур</Link>
                     </>
                   )}
