@@ -18,7 +18,7 @@ function AddTour() {
         if (!localStorage.getItem("accessToken")) {
             history.push("/login");
         }
-        axios.get("http://localhost:3001/hotels/", {
+        axios.get("https://course-project-75u9.onrender.com/hotels/", {
             headers: { accessToken: localStorage.getItem("accessToken") },
         }).then((response) => {
             console.log(response.data)
@@ -51,7 +51,7 @@ function AddTour() {
     const onSubmit = (data) => {
         console.log(data);
         axios
-            .post("http://localhost:3001/tours", data, {
+            .post("https://course-project-75u9.onrender.com/tours", data, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             })
             .then((response) => {

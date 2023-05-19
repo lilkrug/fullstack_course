@@ -20,7 +20,7 @@ function Hotels() {
                 history.push("/login");
             } else {
                 axios
-                    .get("http://localhost:3001/hotels", {
+                    .get("https://course-project-75u9.onrender.com/hotels", {
                         headers: { accessToken: localStorage.getItem("accessToken") }
                     })
                     .then((response) => {

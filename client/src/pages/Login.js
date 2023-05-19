@@ -14,7 +14,7 @@ function Login() {
 
   const login = () => {
     const data = { username: username, password: password };
-    axios.post("http://localhost:3001/auth/login", data)
+    axios.post("https://course-project-75u9.onrender.com/auth/login", data)
       .then((response) => {
         localStorage.setItem("accessToken", response.data.token);
         localStorage.setItem("isAdmin", response.data.isAdmin);

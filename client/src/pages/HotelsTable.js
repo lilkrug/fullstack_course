@@ -27,7 +27,7 @@ const HotelsTable = () => {
     const fetchData = async () => {
         try {
             axios
-                .get("http://localhost:3001/hotels", {
+                .get("https://course-project-75u9.onrender.com/hotels", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -69,7 +69,7 @@ const HotelsTable = () => {
             return;
         }
         try {
-            await axios.put(`http://localhost:3001/hotels/edit/${id}`, updatedValues, {
+            await axios.put(`https://course-project-75u9.onrender.com/hotels/edit/${id}`, updatedValues, {
                 headers: { accessToken: localStorage.getItem("accessToken") }
             });
             Swal.fire({
@@ -136,7 +136,7 @@ const HotelsTable = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:3001/hotels/${id}`, {
+            const response = await axios.delete(`https://course-project-75u9.onrender.com/hotels/${id}`, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             });
 

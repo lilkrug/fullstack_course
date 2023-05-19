@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { AuthContext } from "../helpers/AuthContext";
 import Swal from "sweetalert2";
 
-const ENDPOINT = 'http://localhost:3001';
+const ENDPOINT = 'https://course-project-75u9.onrender.com';
 
 function Chat() {
   const [message, setMessage] = useState('');
@@ -59,7 +59,7 @@ function Chat() {
       setMessage('');
     }
   };
-// style={{ height: '500px',width:'400px', overflowY: 'scroll' }}
+  
   return (
     <div>
       <div className='Chat-page'>

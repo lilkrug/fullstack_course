@@ -101,7 +101,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/auth/auth", {
+      .get("https://course-project-75u9.onrender.com/auth/auth", {
         headers: {
           accessToken: localStorage.getItem("accessToken"),
         },
