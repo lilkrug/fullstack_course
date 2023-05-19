@@ -28,7 +28,7 @@ const HotelsTable = () => {
     const fetchData = async () => {
         try {
             axios
-                .get("https://course-project-75u9.onrender.com/tours", {
+                .get("http://localhost:3001/tours", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -42,7 +42,7 @@ const HotelsTable = () => {
                     }
                 });
             axios
-                .get("https://course-project-75u9.onrender.com/hotels", {
+                .get("http://localhost:3001/hotels", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -80,11 +80,12 @@ const HotelsTable = () => {
                 icon: "info",
                 title: "Нет обновлений",
                 text: "Вы не сделали никаких обновлений.",
+                confirmButtonColor: '#fe6401',
             });
             return;
         }
         try {
-            await axios.put(`https://course-project-75u9.onrender.com/tours/edit/${id}`, updatedValues, {
+            await axios.put(`http://localhost:3001/tours/edit/${id}`, updatedValues, {
                 headers: { accessToken: localStorage.getItem("accessToken") }
             });
             Swal.fire({
@@ -112,6 +113,7 @@ const HotelsTable = () => {
                 icon: 'error',
                 title: 'Ошибка',
                 text: errorMessage,
+                confirmButtonColor: '#fe6401',
             });
         }
     };
@@ -123,6 +125,7 @@ const HotelsTable = () => {
                 icon: 'error',
                 title: 'Ошибка',
                 text: 'Имя не может быть пустым',
+                confirmButtonColor: '#fe6401',
             });
             return;
         }
@@ -133,6 +136,7 @@ const HotelsTable = () => {
                     icon: 'error',
                     title: 'Ошибка',
                     text: 'Значение должно быть неотрицательным числом',
+                    confirmButtonColor: '#fe6401',
                 });
                 return;
             }
@@ -143,7 +147,7 @@ const HotelsTable = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`https://course-project-75u9.onrender.com/tours/${id}`, {
+            const response = await axios.delete(`http://localhost:3001/tours/${id}`, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             });
 
@@ -152,6 +156,7 @@ const HotelsTable = () => {
                     icon: "success",
                     title: "Успех",
                     text: "Тур успешно удален",
+                    confirmButtonColor: '#fe6401',
                 });
                 fetchData();
             } else {
@@ -159,6 +164,7 @@ const HotelsTable = () => {
                     icon: "error",
                     title: "Ошибка",
                     text: "Не удалось удалить тур",
+                    confirmButtonColor: '#fe6401',
                 });
             }
         } catch (error) {
@@ -166,6 +172,7 @@ const HotelsTable = () => {
                 icon: "error",
                 title: "Ошибка",
                 text: "Не удалось удалить тур",
+                confirmButtonColor: '#fe6401',
             });
             console.error(error);
         }

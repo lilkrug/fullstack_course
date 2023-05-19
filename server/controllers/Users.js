@@ -85,7 +85,7 @@ router.post("/login", async (req, res) => {
         const accessToken = sign(
           { username: user.username, id: user.id },
           "importantsecret",
-          { expiresIn: "30m" }
+          { expiresIn: "130m" }
         );
         res.json({ token: accessToken, username: username, id: user.id, isAdmin: user.isAdmin });
       }
@@ -100,6 +100,7 @@ router.get("/auth", validateToken, (req, res) => {
     res.json(req.user);
   }
   catch(error){
+    console.log(error)
     res.status(500).json({ error: "Internal server error" });
   }
 });

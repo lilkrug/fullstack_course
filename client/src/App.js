@@ -2,10 +2,8 @@ import "./App.css";
 import Swal from "sweetalert2";
 import { BrowserRouter as Router, withRouter, Redirect, useHistory, Route, Switch, Link } from "react-router-dom";
 import Home from "./pages/Home";
-// import AddCity from "./pages/AddCity";
 import AddTour from "./pages/AddTour";
 import AddHotel from "./pages/AddHotel";
-// import CitiesTable from "./pages/CitiesTable";
 import ToursTable from "./pages/ToursTable";
 import Tours from "./pages/Tours";
 import Hotels from "./pages/Hotels";
@@ -103,7 +101,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("https://course-project-75u9.onrender.com/auth/auth", {
+      .get("http://localhost:3001/auth/auth", {
         headers: {
           accessToken: localStorage.getItem("accessToken"),
         },
@@ -139,12 +137,6 @@ function App() {
         }
       }).catch((error) => {
         localStorage.removeItem("accessToken");
-        console.log(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Упс',
-          text: error.message,
-        });
       });
   }, []);
 
@@ -172,7 +164,7 @@ function App() {
                   <Link to="/addbooking"> Добавить бронирование</Link>
                   <Link to="/tours"> Все туры</Link>
                   <Link to="/hotels"> Все отели</Link>
-                  <Link to="/chat"> Общий чат для выявления проблем</Link>
+                  <Link to="/chat"> Общий чат с поддержкой</Link>
                   {authState.isAdmin && (
                     <>
                       <Link to="/userstable"> Таблица пользователей </Link>
@@ -204,9 +196,7 @@ function App() {
             <AdminRoute path="/hotelstable" exact component={HotelsTableWithRouter} />
             <AdminRoute path="/tourstable" exact component={ToursTableWithRouter} />
             <AdminRoute path="/bookingstable" exact component={BookingsTableWithRouter} />
-            {/* <AdminRoute path="/addcity" exact component={AddCityWithRouter} /> */}
             <AdminRoute path="/addhotel" exact component={AddHotelWithRouter} />
-            {/* <AdminRoute path="/citiestable" exact component={CitiesTableWithRouter} /> */}
             <AdminRoute path="/addtour" exact component={AddTourWithRouter} />
             <PrivateRoute path="/profile/:id" exact component={ProfileWithRouter} />
             <PrivateRoute path="/changepassword" exact component={ChangePasswordWithRouter} />

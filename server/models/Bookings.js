@@ -4,11 +4,14 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
+        },fromDate: {
+          type: DataTypes.DATE,
+          allowNull: false,
         },
-        numberOfDays: {
-          type: DataTypes.INTEGER,
-          allowNull: false
-        }
+        toDate: {
+          type: DataTypes.DATE,
+          allowNull: false,
+        },
       },{
         timestamps: false
       });

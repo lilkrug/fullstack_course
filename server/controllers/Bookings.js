@@ -48,7 +48,7 @@ router.get("/byUserId/:id", validateToken, async (req, res) => {
         const booking = await Bookings.findAll({
             where: { userId: id },
             include: [{
-                model:Tours,
+                model: Tours,
                 include: [Hotels]
             }]
         });
@@ -62,7 +62,7 @@ router.get("/byUserId/:id", validateToken, async (req, res) => {
 router.post("/", validateToken, async (req, res) => {
     const booking = req.body;
     console.log(booking)
-    if (booking.userId != null && booking.tourId != null && booking.numberOfDays != null) {
+    if (booking.userId != null && booking.tourId != null && booking.fromDate != null && booking.toDate != null) {
         try {
             const foundedTour = await Tours.findOne({
                 where: {
@@ -121,11 +121,21 @@ router.put("/edit/:id", validateToken, isAdmin, async (req, res) => {
     const { id } = req.params;
     const updatedBooking = req.body;
     console.log(updatedBooking)
+    console.log(updatedBooking.dateFrom)
+    console.log(Date.parse(updatedBooking.dateFrom) > Date.parse(updatedBooking.dateTo))
+    // Validate dateFrom and dateTo
+    const currentDate = new Date().toISOString().split("T")[0];
+    if (
+        Date.parse(updatedBooking.dateFrom) < Date.parse(currentDate) ||
+    Date.parse(updatedBooking.dateTo) < Date.parse(currentDate) ||
+    Date.parse(updatedBooking.dateFrom) > Date.parse(updatedBooking.dateTo)
+    ) {
+        return res.status(400).json({ error: "Invalid dates" });
+    }
 
     if (
         updatedBooking.userId == null ||
-        updatedBooking.tourId == null ||
-        updatedBooking.numberOfDays < 0
+        updatedBooking.tourId == null
     ) {
         return res.status(400).json({ error: "Invalid parameters" });
     }
@@ -144,17 +154,16 @@ router.put("/edit/:id", validateToken, isAdmin, async (req, res) => {
         }
 
         await Bookings.update(updatedBooking, {
-            where: { id: id }
-        })
+            where: { id: id },
+        });
 
         res.json({
             id: id,
             userId: updatedBooking.userId,
             cityId: updatedBooking.tourId,
-            numberOfDays: updatedBooking.numberOfDays,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).json({ error: "Internal server error" });
     }
 });

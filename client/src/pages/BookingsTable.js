@@ -28,7 +28,7 @@ const BookingsTable = () => {
     const fetchData = async () => {
         try {
             axios
-                .get("https://course-project-75u9.onrender.com/bookings", {
+                .get("http://localhost:3001/bookings", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -42,7 +42,7 @@ const BookingsTable = () => {
                     }
                 });
             axios
-                .get("https://course-project-75u9.onrender.com/tours", {
+                .get("http://localhost:3001/tours", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -54,7 +54,7 @@ const BookingsTable = () => {
                     }
                 });
             axios
-                .get("https://course-project-75u9.onrender.com/auth/bookings", {
+                .get("http://localhost:3001/auth/bookings", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -94,7 +94,7 @@ const BookingsTable = () => {
             return;
         }
         try {
-            await axios.put(`https://course-project-75u9.onrender.com/bookings/edit/${id}`, updatedValues, {
+            await axios.put(`http://localhost:3001/bookings/edit/${id}`, updatedValues, {
                 headers: { accessToken: localStorage.getItem("accessToken") }
             });
             Swal.fire({
@@ -126,6 +126,13 @@ const BookingsTable = () => {
 
     const handleInputChange = (e, id) => {
         const { name, value } = e.target;
+        setUpdatedValues((prevState) => ({
+            ...prevState,
+            [name]: value,
+            // Include both date fields in updatedValues
+            fromDate: name === "fromDate" ? value : prevState.fromDate,
+            toDate: name === "toDate" ? value : prevState.toDate,
+        }));
         if (name === "numberOfDays") {
             if (value < 0 || isNaN(value)) {
                 // Вывод алерта при вводе недопустимого значения
@@ -143,7 +150,7 @@ const BookingsTable = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`https://course-project-75u9.onrender.com/bookings/${id}`, {
+            const response = await axios.delete(`http://localhost:3001/bookings/${id}`, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             });
 
@@ -151,21 +158,24 @@ const BookingsTable = () => {
                 Swal.fire({
                     icon: "success",
                     title: "Успех",
-                    text: "Отель успешно удален",
+                    text: "Бронирование успешно отменено",
+                    confirmButtonColor: '#fe6401',
                 });
                 fetchData();
             } else {
                 Swal.fire({
                     icon: "error",
                     title: "Ошибка",
-                    text: "Не удалось удалить отель",
+                    text: "Не удалось отменить бронирование",
+                    confirmButtonColor: '#fe6401',
                 });
             }
         } catch (error) {
             Swal.fire({
                 icon: "error",
                 title: "Ошибка",
-                text: "Не удалось удалить отель",
+                text: "Не удалось отменить бронирование",
+                confirmButtonColor: '#fe6401',
             });
             console.error(error);
         }
@@ -180,9 +190,10 @@ const BookingsTable = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Количество дней</th>
                             <th>Имя покупателя</th>
                             <th>Тур</th>
+                            <th>Дата с</th>
+                            <th>Дата по</th>
                             <th>Действия</th>
                         </tr>
                     </thead>
@@ -190,18 +201,6 @@ const BookingsTable = () => {
                         {listOfBookings.map((item) => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
-                                <td>
-                                    {editingId === item.id ? (
-                                        <input
-                                            type="number"
-                                            name="numberOfDays"
-                                            value={updatedValues.numberOfDays || item.numberOfDays}
-                                            onChange={(e) => handleInputChange(e, item.id)}
-                                        />
-                                    ) : (
-                                        item.numberOfDays
-                                    )}
-                                </td>
 
                                 <td>
                                     {editingId === item.id ? (
@@ -232,6 +231,13 @@ const BookingsTable = () => {
                                     ) : (
                                         item.Tour.name
                                     )}
+                                </td>
+
+                                <td>
+                                    {new Date(item.fromDate).toLocaleDateString("en-GB")}
+                                </td>
+                                <td>
+                                    {new Date(item.toDate).toLocaleDateString("en-GB")}
                                 </td>
                                 <td>
                                     {editingId === item.id ? (

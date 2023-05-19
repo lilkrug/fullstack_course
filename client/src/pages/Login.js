@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { Formik, Form} from "formik";
+import { Formik, Form } from "formik";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../helpers/AuthContext";
 import Swal from "sweetalert2";
@@ -14,7 +14,7 @@ function Login() {
 
   const login = () => {
     const data = { username: username, password: password };
-    axios.post("https://course-project-75u9.onrender.com/auth/login", data)
+    axios.post("http://localhost:3001/auth/login", data)
       .then((response) => {
         localStorage.setItem("accessToken", response.data.token);
         localStorage.setItem("isAdmin", response.data.isAdmin);
@@ -24,7 +24,7 @@ function Login() {
           status: true,
           isAdmin: response.data.isAdmin
         });
-        history.push("/");
+        history.push("/login");
       })
       .catch(error => {
         if (error.response && error.response.status === 409) {
@@ -57,28 +57,28 @@ function Login() {
   };
   return (
     <div className="loginContainer">
-      <Formik>
-      <Form className="formContainer">
-      <h1>Авторизация</h1>
-      <label>Имя пользователя:</label>
-      <input
-        type="text"
-        placeholder="Введите имя"
-        onChange={(event) => {
-          setUsername(event.target.value);
-        }}
-      />
-      <label>Пароль:</label>
-      <input
-        type="password"
-        placeholder="Введите пароль"
-        onChange={(event) => {
-          setPassword(event.target.value);
-        }}
-      />
-      <button onClick={login}> Авторизоваться </button>
-      </Form>
-    </Formik>
+      <Formik initialValues={{ username: '', password: '' }}>
+        <Form className="formContainer">
+          <h1>Авторизация</h1>
+          <label>Имя пользователя:</label>
+          <input
+            type="text"
+            placeholder="Введите имя"
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
+          />
+          <label>Пароль:</label>
+          <input
+            type="password"
+            placeholder="Введите пароль"
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+          />
+          <button onClick={() => login()}> Авторизоваться </button>
+        </Form>
+      </Formik>
     </div>
   );
 }

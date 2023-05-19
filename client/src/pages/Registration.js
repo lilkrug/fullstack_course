@@ -25,7 +25,7 @@ function Registration() {
   });
 
   const onSubmit = (data) => {
-    axios.post("https://course-project-75u9.onrender.com/auth", data)
+    axios.post("http://localhost:3001/auth", data)
       .then((response) => {
         // Обработка успешного ответа
         console.log("Registration successful");

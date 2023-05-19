@@ -14,23 +14,29 @@ function Tours() {
   let history = useHistory();
 
   useEffect(() => {
-    if (!localStorage.getItem("accessToken")) {
-      console.log(localStorage.getItem("accessToken"))
-      history.push("/login");
-    } else {
-      axios
-        .get("https://course-project-75u9.onrender.com/tours", {
-          headers: { accessToken: localStorage.getItem("accessToken") }
-        })
-        .then((response) => {
-          console.log(response.data.error != undefined)
-          if (response.data.error != undefined) {
-            history.push("/login");
-          }
-          else {
-            setListOfTours(response.data);
-          }
-        });
+    try {
+      if (!localStorage.getItem("accessToken")) {
+        console.log(localStorage.getItem("accessToken"))
+        history.push("/login");
+      } else {
+        axios
+          .get("http://localhost:3001/tours", {
+            headers: { accessToken: localStorage.getItem("accessToken") }
+          })
+          .then((response) => {
+            console.log(response.data.error != undefined)
+            if (response.data.error != undefined) {
+              history.push("/login");
+            }
+            else {
+              setListOfTours(response.data);
+            }
+          });
+      }
+    }
+    catch(error){
+      console.log(error)
+      history.push("/");
     }
   }, []);
 
@@ -52,13 +58,11 @@ function Tours() {
               .map((item) => (
                 <tr
                   key={item.id}
-                  onClick={() => {
-                    history.push(`/tour/${item.id}`);
-                  }}
                 >
                   <td>
                     <h1>{item.name}</h1>
-                    <h2>{item.Hotel.name}</h2>
+                    <h2>Отель:{item.Hotel.name}</h2>
+                    <h2>Цена за день:{item.priceOneDay}</h2>
                   </td>
                 </tr>
               ))}

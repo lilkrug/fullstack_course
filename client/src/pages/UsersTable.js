@@ -25,7 +25,7 @@ const UsersTable = () => {
     const fetchData = async () => {
         try {
             axios
-                .get("https://course-project-75u9.onrender.com/auth/", {
+                .get("http://localhost:3001/auth/", {
                     headers: { accessToken: localStorage.getItem("accessToken") }
                 })
                 .then((response) => {
@@ -38,7 +38,8 @@ const UsersTable = () => {
                     }
                 });
         } catch (error) {
-            console.error(error);
+            console.log(error)
+            history.push("/");
         }
     };
 
@@ -56,17 +57,19 @@ const UsersTable = () => {
                 icon: "info",
                 title: "Нет обновления",
                 text: "Вы не сделали никаких обновлений.",
+                confirmButtonColor: '#fe6401',
             });
             return;
         }
         try {
-            await axios.put(`https://course-project-75u9.onrender.com/auth/${id}`, updatedValues, {
+            await axios.put(`http://localhost:3001/auth/${id}`, updatedValues, {
                 headers: { accessToken: localStorage.getItem("accessToken") }
             });
             Swal.fire({
                 icon: "success",
                 title: "Успех",
                 text: "Пользователь успешно обновлен",
+                confirmButtonColor: '#fe6401',
               });
             setEditingId(null); // Завершение режима редактирования
             fetchData(); // Обновление данных после обновления
@@ -88,13 +91,14 @@ const UsersTable = () => {
                 icon: 'error',
                 title: 'Ошибка',
                 text: errorMessage,
+                confirmButtonColor: '#fe6401',
             });
         }
     };
 
     const handleDelete = async (id) => {
         try {
-          const response = await axios.delete(`https://course-project-75u9.onrender.com/auth/${id}`, {
+          const response = await axios.delete(`http://localhost:3001/auth/${id}`, {
             headers: { accessToken: localStorage.getItem("accessToken") },
           });
       
@@ -103,6 +107,7 @@ const UsersTable = () => {
               icon: "success",
               title: "Успех",
               text: "Пользователь успешно удален",
+              confirmButtonColor: '#fe6401',
             });
             fetchData(); // Обновление данных после удаления
           } else {
@@ -110,6 +115,7 @@ const UsersTable = () => {
               icon: "error",
               title: "Ошибка",
               text: "Не удалось удалить пользователя",
+              confirmButtonColor: '#fe6401',
             });
           }
         } catch (error) {
@@ -117,6 +123,7 @@ const UsersTable = () => {
             icon: "error",
             title: "Ошибка",
             text: "Не удалось удалить пользователя",
+            confirmButtonColor: '#fe6401',
           });
           console.error(error);
         }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import io from 'socket.io-client';
 import { AuthContext } from "../helpers/AuthContext";
+import Swal from "sweetalert2";
 
-const ENDPOINT = 'https://course-project-75u9.onrender.com';
+const ENDPOINT = 'http://localhost:3001';
 
 function Chat() {
   const [message, setMessage] = useState('');
@@ -49,14 +50,19 @@ function Chat() {
       scrollToBottom();
       setMessage('');
     } else {
-      alert('u cant input 0')
+      Swal.fire({
+        icon: 'error',
+        title: 'Ошибка',
+        text: 'Вы не можете ввести пустую строку',
+        confirmButtonColor: '#fe6401',
+      })
       setMessage('');
     }
   };
-
+// style={{ height: '500px',width:'400px', overflowY: 'scroll' }}
   return (
     <div>
-      <div style={{ height: '500px',width:'400px', overflowY: 'scroll' }}>
+      <div className='Chat-page'>
         {messages.map((message, index) => (
           <div key={index} style={{ wordWrap: 'break-word',wordBreak: 'break-word',whiteSpace: 'pre-wrap' }}>
             {message.author}:{message.text}

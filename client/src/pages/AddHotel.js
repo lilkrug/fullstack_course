@@ -28,7 +28,7 @@ function AddHotel() {
     const onSubmit = (data) => {
         console.log(data);
         axios
-            .post("https://course-project-75u9.onrender.com/hotels", data, {
+            .post("http://localhost:3001/hotels", data, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             })
             .then((response) => {
@@ -38,6 +38,7 @@ function AddHotel() {
                       icon: "success",
                       title: "Успех",
                       text: "Отель успешно добавлен",
+                      confirmButtonColor: '#fe6401',
                     }).then(() => {
                       history.push("/");
                     });
@@ -51,12 +52,14 @@ function AddHotel() {
                         icon: "error",
                         title: "Ошибка",
                         text: errorMessage,
+                        confirmButtonColor: '#fe6401',
                     });
                 } else if (error.response.status === 409) {
                     Swal.fire({
                         icon: "error",
                         title: "Ошибка",
                         text: errorMessage,
+                        confirmButtonColor: '#fe6401',
                     });
                 }
                 else if (error.response.status === 404) {
@@ -64,12 +67,14 @@ function AddHotel() {
                         icon: "error",
                         title: "Ошибка",
                         text: errorMessage,
+                        confirmButtonColor: '#fe6401',
                     });
                 } else {
                     Swal.fire({
                         icon: "error",
                         title: "Ошибка",
                         text: "Не удалось создать отель",
+                        confirmButtonColor: '#fe6401',
                     });
                 }
             });
@@ -89,7 +94,7 @@ function AddHotel() {
                         autoComplete="off"
                         id="inputCreatePost"
                         name="name"
-                        placeholder="(Столбцы)"
+                        placeholder="(SuperHotel)"
                     />
                     <ErrorMessage name="city" component="span" />
                     <Field

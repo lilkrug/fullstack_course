@@ -18,12 +18,29 @@ function AddTour() {
         if (!localStorage.getItem("accessToken")) {
             history.push("/login");
         }
-        axios.get("https://course-project-75u9.onrender.com/hotels/", {
+        axios.get("http://localhost:3001/hotels/", {
             headers: { accessToken: localStorage.getItem("accessToken") },
         }).then((response) => {
             console.log(response.data)
             setHotels(response.data);
-        });
+        }).catch((error) => {
+            if (error.response) {
+              const errorMessage = error.response.data.error;
+              Swal.fire({
+                icon: 'error',
+                title: 'Ошибка',
+                text: errorMessage,
+                confirmButtonColor: '#fe6401',
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Произошла непредвиденная ошибка',
+                text: error.message,
+                confirmButtonColor: '#fe6401',
+              });
+            }
+          });;
     }, []);
     const validationSchema = Yup.object().shape({
         name: Yup.string().required("Вы должны ввести название!"),
@@ -34,7 +51,7 @@ function AddTour() {
     const onSubmit = (data) => {
         console.log(data);
         axios
-            .post("https://course-project-75u9.onrender.com/tours", data, {
+            .post("http://localhost:3001/tours", data, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             })
             .then((response) => {

@@ -13,17 +13,22 @@ function Profile() {
   const { authState } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!localStorage.getItem("accessToken")) {
-      history.push("/login");
-    } else {
-      fetchData()
+    try {
+      if (!localStorage.getItem("accessToken")) {
+        history.push("/login");
+      } else {
+        fetchData()
+      }
+    }
+    catch(error){
+      history.push("/");
     }
   }, []);
 
 
   const fetchData = async () => {
     try {
-      axios.get(`https://course-project-75u9.onrender.com/auth/basicinfo/${id}`, {
+      axios.get(`http://localhost:3001/auth/basicinfo/${id}`, {
         headers: {
           accessToken: localStorage.getItem("accessToken"),
         },
@@ -38,7 +43,7 @@ function Profile() {
         .catch((error) => {
           console.error(error);
         });
-      axios.get(`https://course-project-75u9.onrender.com/bookings/byUserId/${id}`, {
+      axios.get(`http://localhost:3001/bookings/byUserId/${id}`, {
         headers: {
           accessToken: localStorage.getItem("accessToken"),
         },
@@ -61,7 +66,7 @@ function Profile() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`https://course-project-75u9.onrender.com/bookings/${id}`, {
+      const response = await axios.delete(`http://localhost:3001/bookings/${id}`, {
         headers: { accessToken: localStorage.getItem("accessToken") },
       });
 
@@ -70,6 +75,7 @@ function Profile() {
           icon: "success",
           title: "Успех",
           text: "Бронирование отменено",
+          confirmButtonColor: '#fe6401',
         });
         fetchData();
       } else {
@@ -77,6 +83,7 @@ function Profile() {
           icon: "error",
           title: "Ошибка",
           text: "Не удалось отменить бронирование",
+          confirmButtonColor: '#fe6401',
         });
       }
     } catch (error) {
@@ -84,6 +91,7 @@ function Profile() {
         icon: "error",
         title: "Ошибка",
         text: "Не удалось отменить бронирование",
+        confirmButtonColor: '#fe6401',
       });
       console.error(error);
     }
@@ -94,57 +102,56 @@ function Profile() {
       {username != null ? (<div className="profilePageContainer">
         <div className="basicInfo">
           {" "}
-            <div className="formContainer">
-              <h1> Имя пользователя: {username} </h1>
-              {authState.username === username && (
-                <>
-                  <button
-                    onClick={() => {
-                      history.push("/changepassword");
-                    }}
-                  >
-                    {" "}
-                    Изменить пароль
-                  </button>
-                  <div>
-                    {listOfBookings.length == 0 ? (
-                      <p>Нет бронирований</p>
-                    ) : (
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>ID</th>
-                            <th>Количество дней</th>
-                            <th>Тур</th>
-                            <th>Отель</th>
-                            <th>Действия</th>
+          <div className="formContainer">
+            <h1> Имя пользователя: {username} </h1>
+            {authState.username === username && (
+              <>
+                <button
+                  onClick={() => {
+                    history.push("/changepassword");
+                  }}
+                >
+                  {" "}
+                  Изменить пароль
+                </button>
+                <div>
+                  {listOfBookings.length == 0 ? (
+                    <p>Нет бронирований</p>
+                  ) : (
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Дата</th>
+                          <th>Название тура</th>
+                          <th>Название отеля</th>
+                          <th>Действия</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {listOfBookings.map((item) => (
+                          <tr key={item.id}>
+                            <td>
+                              Начало<p>{new Date(item.fromDate).toLocaleDateString("en-GB")}</p>
+                              Конец<p>{new Date(item.toDate).toLocaleDateString("en-GB")}</p>
+                            </td>
+                            <td>
+                              {item.Tour.name}
+                            </td>
+                            <td>
+                              {item.Tour.Hotel.name}
+                            </td>
+                            <td>
+                              <button onClick={() => handleDelete(item.id)}>Отменить бронирование</button>
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {listOfBookings.map((item) => (
-                            <tr key={item.id}>
-                              <td>{item.id}</td>
-                              <td>
-                                {item.numberOfDays}
-                              </td>
-                              <td>
-                                {item.Tour.name}
-                              </td>
-                              <td>
-                                {item.Tour.Hotel.name}
-                              </td>
-                              <td>
-                                <button onClick={() => handleDelete(item.id)}>Отменить бронирование</button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
       )

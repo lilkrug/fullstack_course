@@ -476,27 +476,36 @@ a.my-class {
   margin: 2rem 0;
 }
 
+/* Стиль для таблицы */
 table {
-  width: 100%;
-  border-collapse: collapse;
+  width: 100%; /* Ширина таблицы занимает 100% доступной ширины */
+  border-collapse: collapse; /* Схлопывание границ таблицы */
 }
 
-th,td {
-  padding: 8px;
-  border: 1px solid #3085d6;
-}
-
+/* Стиль для заголовка таблицы */
 th {
-  background-color: #3085d6;
-  color: #fff;
+  background-color: #f2f2f2; /* Цвет фона заголовка */
+  color: #333; /* Цвет текста заголовка */
+  font-weight: bold; /* Жирный шрифт для заголовка */
+  padding: 10px; /* Отступы внутри ячеек заголовка */
+  border: 1px solid #ccc; /* Граница ячеек заголовка */
 }
 
-tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
+/* Стиль для ячеек таблицы */
+td {
+  padding: 10px; /* Отступы внутри ячеек */
+  border: 1px solid #ccc; /* Граница ячеек */
+  text-align: center;
 }
 
-tbody tr:hover {
-  background-color: #cce0ff;
+/* Стиль для нечетных строк таблицы */
+tr:nth-child(odd) {
+  background-color: #f9f9f9; /* Цвет фона для нечетных строк */
+}
+
+/* Стиль для при наведении на ячейку */
+td:hover {
+  background-color: #e6e6e6; /* Цвет фона при наведении */
 }
 
 /* table {
@@ -587,4 +596,21 @@ tr:hover {
   gap: 10px;
   justify-content: center;
   /* Adjust this property to change the horizontal alignment */
+}
+
+/* CREATE chat-page CSS */
+
+.Chat-page {
+  width: 400px;
+  flex: 0 0 calc(50% - 5px);
+  max-height: 40px;
+  min-height: 358px;
+  border-radius: 10px;
+  display: flex;
+  overflow-y: scroll;
+  flex-direction: column;
+  margin-top: 50px;
+  border: 1px solid lightgray;
+  font-family: cursive;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
