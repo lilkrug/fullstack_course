@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/fullstack_course/static/css/main.4c9c3811.chunk.css",
-    "main.js": "/fullstack_course/static/js/main.c3df75d5.chunk.js",
-    "main.js.map": "/fullstack_course/static/js/main.c3df75d5.chunk.js.map",
+    "main.js": "/fullstack_course/static/js/main.ebaea752.chunk.js",
+    "main.js.map": "/fullstack_course/static/js/main.ebaea752.chunk.js.map",
     "runtime-main.js": "/fullstack_course/static/js/runtime-main.d586d398.js",
     "runtime-main.js.map": "/fullstack_course/static/js/runtime-main.d586d398.js.map",
-    "static/js/2.f0ab70a9.chunk.js": "/fullstack_course/static/js/2.f0ab70a9.chunk.js",
-    "static/js/2.f0ab70a9.chunk.js.map": "/fullstack_course/static/js/2.f0ab70a9.chunk.js.map",
+    "static/js/2.8a5e603f.chunk.js": "/fullstack_course/static/js/2.8a5e603f.chunk.js",
+    "static/js/2.8a5e603f.chunk.js.map": "/fullstack_course/static/js/2.8a5e603f.chunk.js.map",
     "static/js/3.82806981.chunk.js": "/fullstack_course/static/js/3.82806981.chunk.js",
     "static/js/3.82806981.chunk.js.map": "/fullstack_course/static/js/3.82806981.chunk.js.map",
     "index.html": "/fullstack_course/index.html",
     "static/css/main.4c9c3811.chunk.css.map": "/fullstack_course/static/css/main.4c9c3811.chunk.css.map",
-    "static/js/2.f0ab70a9.chunk.js.LICENSE.txt": "/fullstack_course/static/js/2.f0ab70a9.chunk.js.LICENSE.txt",
+    "static/js/2.8a5e603f.chunk.js.LICENSE.txt": "/fullstack_course/static/js/2.8a5e603f.chunk.js.LICENSE.txt",
     "static/media/App.css": "/fullstack_course/static/media/registr.5e06bb62.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.d586d398.js",
-    "static/js/2.f0ab70a9.chunk.js",
+    "static/js/2.8a5e603f.chunk.js",
     "static/css/main.4c9c3811.chunk.css",
-    "static/js/main.c3df75d5.chunk.js"
+    "static/js/main.ebaea752.chunk.js"
   ]
 }
